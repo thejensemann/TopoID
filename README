@@ -1,0 +1,37 @@
+Installation:
+=============
+
+Place the TopoID folder in some directory on your $Path,
+e.g. "~/.Mathematica/Applications", but also a soft link will do.
+Otherwise also the "TopoID/init.m" file can be loaded directly.
+
+- "KLink".
+
+- "post-EXP", etc. (executables in "AuTopo/sbin").
+
+- "qgraf.sty" for Mathematica compatible output, for ".dia" files.
+
+
+Note:
+=====
+
+For Alexey's ".dia" and ".qls" files:
+- Was something wrong in the sign of momenta in the ".dia" files?!
+- Inconsistency in ".qls" files:
+    cO(p1,...) -> q4, cO(p2,...) -> q3,
+  therefore we need in EXPConfig[..., Transformations -> {...}]
+    {out[3] -> out[4], out[4] -> out[3]}.
+
+
+
+
+Damit ist denke ich rechte klar, wie man die globale Ordnung der Topologien definiert, mit den "einfachsten" zuerst:
+- Kanaele des Prozesses mit den einfachsten zuerst: qp, qp, qQ, qg, gg.
+- Innerhalb der Kanaele die fermionischen Anteile: nf^2, nf^1, nf^0.
+- Anzahl der Linien: 8, 9, 10.
+- Planare vor nicht-planaren.
+- Viele Cuts/Skalenlose vor wenigen.
+- Viele Symmetrien vor wenigen.
+- Die alpha-parametrisierung.
+
+Selektion der "qp"- aus den "r"-Topologien...
