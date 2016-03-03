@@ -453,7 +453,7 @@ $CutRules["vertex"] =
 {in[_Integer] -> 1,
  out[_Integer] -> 2,
  (* -- *)
- i_Integer -> i + 2 };
+ i_Integer -> i + 2};
 
 (* diagram: line label -> line class *)
 $CutRules["dia"] =
