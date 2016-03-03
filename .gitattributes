@@ -1,0 +1,4 @@
+*.eps -text -diff
+*.jpg -text -diff
+*.png -text -diff
+*.pdf -text -diff

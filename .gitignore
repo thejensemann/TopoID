@@ -1,0 +1,10 @@
+**/*.aux
+**/*.bcf
+**/*.log
+**/*.nav
+**/*.out
+**/*.dvi
+**/*.run.xml
+**/*.snm
+**/*.synctex.gz
+**/*.toc
