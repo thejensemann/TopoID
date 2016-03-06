@@ -1,0 +1,95 @@
+//
+// gen-1.7:
+//   filtered QGRAF output by
+//   underlying cuts,
+//   color structures
+//
+
+// Tue Nov  4 14:18:22 2014
+
+//
+// qgraf-3.1.4:
+//   output style by Alexey Pak,
+//   modified by Jens Hoff
+//
+
+*--#[ PROLOGUE :
+
+* qgraf.dat parameters:
+
+*   output        = '1.qQ.raw';
+*   style         = '/users/ttp/jens/dev/bin/gen-new/qgraf.sty';
+*   model         = 'qgraf.mod';
+*   in            = qu[p1],Qu[p2];
+*   out           = qu[p1],Qu[p2];
+*   loops         = 1;
+*   loop_momentum = v;
+*   options       = onshell,nosnail,notadpole;
+*   true = iprop[hb,1,1];
+
+*--#] PROLOGUE :
+
+
+/************************************************/
+
+// FORM representation
+
+*--#[ D1 :
+
+* vertices:
+  cV(3,qu,qu,gl,1*3+1,1*3+2,1*3+3,p2,p1,-p1-p2) *
+  cV(3,qu,qu,gl,2*3+1,2*3+2,2*3+3,-p1,-p2,p1+p2) *
+  cV(3,gl,gl,hb,3*3+1,3*3+2,3*3+3,p1+p2,v1-p1-p2,-v1) *
+  cV(3,gl,gl,hb,4*3+1,4*3+2,4*3+3,-p1-p2,-v1+p1+p2,v1) *
+
+* propagators:
+  cP(gl,1*3+3,3*3+1,-p1-p2) *
+  cP(gl,2*3+3,4*3+1,p1+p2) *
+  cP(gl,3*3+2,4*3+2,v1-p1-p2) *
+  cP(hb,3*3+3,4*3+3,-v1) *
+
+* legs:
+  cI(qu,1,1*3+2,p1) *
+  cI(Qu,2,1*3+1,p2) *
+  cO(qu,2*3+1,3,p1) *
+  cO(Qu,2*3+2,4,p2) *
+
+* symmetry factor:
+  (+1);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "1"
+  #define NLEGS "4"
+  #define NVERT "4"
+  #define NPROP "4"
+
+*--#] D1 :
+
+// GraphViz representation
+
+graph "1" {
+  graph [overlap=false];
+  node [shape=point];
+  label="diagram 1, originally 1 (factor = +1)";
+  in1--1 [label="I qu(p1)",color=navy,style=solid];
+  in2--1 [label="I Qu(p2)",color=navy,style=solid];
+  2--out1 [label="O qu(p1)",color=navy,style=solid];
+  2--out2 [label="O Qu(p2)",color=navy,style=solid];
+  1--3 [label="gl(-p1-p2)",color=red,style=solid];
+  2--4 [label="gl(p1+p2)",color=red,style=solid];
+  3--4 [label="gl(v1-p1-p2)",color=red,style=solid];
+  3--4 [label="hb(-v1)",color=black,style=dashed];
+};
+
+
+/************************************************/
+
+*--#[ EPILOGUE :
+
+* number of diagrams
+  #define NDIAS "1"
+
+*--#] EPILOGUE :
+
+NDIAS=1
+

@@ -1,0 +1,316 @@
+//
+// gen-1.7:
+//   filtered QGRAF output by
+//   underlying cuts,
+//   color structures
+//
+
+// Tue Nov  4 11:44:04 2014
+
+//
+// qgraf-3.1.4:
+//   output style by Alexey Pak,
+//   modified by Jens Hoff
+//
+
+*--#[ PROLOGUE :
+
+* qgraf.dat parameters:
+
+*   output        = '3.qv.1f.raw';
+*   style         = '/users/ttp/jens/dev/bin/gen-new/qgraf.sty';
+*   model         = 'qgraf.mod';
+*   in            = qu[p1],Qu[p2];
+*   out           = qu[p1],Qu[p2];
+*   loops         = 3;
+*   loop_momentum = v;
+*   options       = onshell,nosnail,notadpole;
+*   true = iprop[hb,1,1];
+*   true = bridge[hb,1,1];
+
+*--#] PROLOGUE :
+
+
+/************************************************/
+
+// FORM representation
+
+*--#[ D1 :
+
+* vertices:
+  cV(3,qu,qu,gl,1*3+1,1*3+2,1*3+3,-v1,p1,v1-p1) *
+  cV(3,qu,qu,gl,2*3+1,2*3+2,2*3+3,p2,v1,-v1-p2) *
+  cV(3,qu,qu,gl,3*3+1,3*3+2,3*3+3,-p1,-v2,v2+p1) *
+  cV(3,qu,qu,gl,4*3+1,4*3+2,4*3+3,v2,-p2,-v2+p2) *
+  cV(3,gl,gl,hb,5*3+1,5*3+2,5*3+3,-v1+p1,v1+p2,-p1-p2) *
+  cV(3,gl,gl,hb,6*3+1,6*3+2,6*3+3,-v2-p1,v2-p2,p1+p2) *
+  cV(3,qu,qu,gl,7*3+1,7*3+2,7*3+3,-v3,-v2+v3+p2,v2-p2) *
+  cV(3,qu,qu,gl,8*3+1,8*3+2,8*3+3,v2-v3-p2,v3,-v2+p2) *
+
+* propagators:
+  cP(qu,2*3+2,1*3+1,v1) *
+  cP(gl,1*3+3,5*3+1,v1-p1) *
+  cP(gl,2*3+3,5*3+2,-v1-p2) *
+  cP(qu,3*3+2,4*3+1,-v2) *
+  cP(gl,3*3+3,6*3+1,v2+p1) *
+  cP(gl,4*3+3,7*3+3,-v2+p2) *
+  cP(hb,5*3+3,6*3+3,-p1-p2) *
+  cP(gl,6*3+2,8*3+3,v2-p2) *
+  cP(qu,7*3+2,8*3+1,-v2+v3+p2) *
+  cP(qu,8*3+2,7*3+1,v3) *
+
+* legs:
+  cI(qu,1,1*3+2,p1) *
+  cI(Qu,2,2*3+1,p2) *
+  cO(qu,3*3+1,3,p1) *
+  cO(Qu,4*3+2,4,p2) *
+
+* symmetry factor:
+  (-1);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "3"
+  #define NLEGS "4"
+  #define NVERT "8"
+  #define NPROP "10"
+
+*--#] D1 :
+
+// GraphViz representation
+
+graph "1" {
+  graph [overlap=false];
+  node [shape=point];
+  label="diagram 1, originally 652 (factor = -1)";
+  in1--1 [label="I qu(p1)",color=navy,style=solid];
+  in2--2 [label="I Qu(p2)",color=navy,style=solid];
+  3--out1 [label="O qu(p1)",color=navy,style=solid];
+  4--out2 [label="O Qu(p2)",color=navy,style=solid];
+  2--1 [label="qu(v1)",color=navy,style=solid];
+  1--5 [label="gl(v1-p1)",color=red,style=solid];
+  2--5 [label="gl(-v1-p2)",color=red,style=solid];
+  3--4 [label="qu(-v2)",color=navy,style=solid];
+  3--6 [label="gl(v2+p1)",color=red,style=solid];
+  4--7 [label="gl(-v2+p2)",color=red,style=solid];
+  5--6 [label="hb(-p1-p2)",color=black,style=dashed];
+  6--8 [label="gl(v2-p2)",color=red,style=solid];
+  7--8 [label="qu(-v2+v3+p2)",color=navy,style=solid];
+  8--7 [label="qu(v3)",color=navy,style=solid];
+};
+
+
+/************************************************/
+
+// FORM representation
+
+*--#[ D2 :
+
+* vertices:
+  cV(3,qu,qu,gl,1*3+1,1*3+2,1*3+3,-v1,p1,v1-p1) *
+  cV(3,qu,qu,gl,2*3+1,2*3+2,2*3+3,p2,v1,-v1-p2) *
+  cV(3,qu,qu,gl,3*3+1,3*3+2,3*3+3,-v2,-p2,v2+p2) *
+  cV(3,qu,qu,gl,4*3+1,4*3+2,4*3+3,-p1,v2,-v2+p1) *
+  cV(3,gl,gl,hb,5*3+1,5*3+2,5*3+3,-v1+p1,v1+p2,-p1-p2) *
+  cV(3,gl,gl,hb,6*3+1,6*3+2,6*3+3,-v2-p2,v2-p1,p1+p2) *
+  cV(3,qu,qu,gl,7*3+1,7*3+2,7*3+3,-v3,-v2+v3+p1,v2-p1) *
+  cV(3,qu,qu,gl,8*3+1,8*3+2,8*3+3,v2-v3-p1,v3,-v2+p1) *
+
+* propagators:
+  cP(qu,2*3+2,1*3+1,v1) *
+  cP(gl,1*3+3,5*3+1,v1-p1) *
+  cP(gl,2*3+3,5*3+2,-v1-p2) *
+  cP(qu,4*3+2,3*3+1,v2) *
+  cP(gl,3*3+3,6*3+1,v2+p2) *
+  cP(gl,4*3+3,7*3+3,-v2+p1) *
+  cP(hb,5*3+3,6*3+3,-p1-p2) *
+  cP(gl,6*3+2,8*3+3,v2-p1) *
+  cP(qu,7*3+2,8*3+1,-v2+v3+p1) *
+  cP(qu,8*3+2,7*3+1,v3) *
+
+* legs:
+  cI(qu,1,1*3+2,p1) *
+  cI(Qu,2,2*3+1,p2) *
+  cO(qu,4*3+1,3,p1) *
+  cO(Qu,3*3+2,4,p2) *
+
+* symmetry factor:
+  (-1);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "3"
+  #define NLEGS "4"
+  #define NVERT "8"
+  #define NPROP "10"
+
+*--#] D2 :
+
+// GraphViz representation
+
+graph "2" {
+  graph [overlap=false];
+  node [shape=point];
+  label="diagram 2, originally 657 (factor = -1)";
+  in1--1 [label="I qu(p1)",color=navy,style=solid];
+  in2--2 [label="I Qu(p2)",color=navy,style=solid];
+  4--out1 [label="O qu(p1)",color=navy,style=solid];
+  3--out2 [label="O Qu(p2)",color=navy,style=solid];
+  2--1 [label="qu(v1)",color=navy,style=solid];
+  1--5 [label="gl(v1-p1)",color=red,style=solid];
+  2--5 [label="gl(-v1-p2)",color=red,style=solid];
+  4--3 [label="qu(v2)",color=navy,style=solid];
+  3--6 [label="gl(v2+p2)",color=red,style=solid];
+  4--7 [label="gl(-v2+p1)",color=red,style=solid];
+  5--6 [label="hb(-p1-p2)",color=black,style=dashed];
+  6--8 [label="gl(v2-p1)",color=red,style=solid];
+  7--8 [label="qu(-v2+v3+p1)",color=navy,style=solid];
+  8--7 [label="qu(v3)",color=navy,style=solid];
+};
+
+
+/************************************************/
+
+// FORM representation
+
+*--#[ D3 :
+
+* vertices:
+  cV(3,qu,qu,gl,1*3+1,1*3+2,1*3+3,-p1,-v1,v1+p1) *
+  cV(3,qu,qu,gl,2*3+1,2*3+2,2*3+3,v1,-p2,-v1+p2) *
+  cV(3,qu,qu,gl,3*3+1,3*3+2,3*3+3,-v2,p1,v2-p1) *
+  cV(3,qu,qu,gl,4*3+1,4*3+2,4*3+3,p2,v2,-v2-p2) *
+  cV(3,gl,gl,hb,5*3+1,5*3+2,5*3+3,-v1-p1,v1-p2,p1+p2) *
+  cV(3,gl,gl,hb,6*3+1,6*3+2,6*3+3,-v2+p1,v2+p2,-p1-p2) *
+  cV(3,qu,qu,gl,7*3+1,7*3+2,7*3+3,-v3,-v2+v3-p2,v2+p2) *
+  cV(3,qu,qu,gl,8*3+1,8*3+2,8*3+3,v2-v3+p2,v3,-v2-p2) *
+
+* propagators:
+  cP(qu,1*3+2,2*3+1,-v1) *
+  cP(gl,1*3+3,5*3+1,v1+p1) *
+  cP(gl,2*3+3,5*3+2,-v1+p2) *
+  cP(qu,4*3+2,3*3+1,v2) *
+  cP(gl,3*3+3,6*3+1,v2-p1) *
+  cP(gl,4*3+3,7*3+3,-v2-p2) *
+  cP(hb,5*3+3,6*3+3,p1+p2) *
+  cP(gl,6*3+2,8*3+3,v2+p2) *
+  cP(qu,7*3+2,8*3+1,-v2+v3-p2) *
+  cP(qu,8*3+2,7*3+1,v3) *
+
+* legs:
+  cI(qu,1,3*3+2,p1) *
+  cI(Qu,2,4*3+1,p2) *
+  cO(qu,1*3+1,3,p1) *
+  cO(Qu,2*3+2,4,p2) *
+
+* symmetry factor:
+  (-1);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "3"
+  #define NLEGS "4"
+  #define NVERT "8"
+  #define NPROP "10"
+
+*--#] D3 :
+
+// GraphViz representation
+
+graph "3" {
+  graph [overlap=false];
+  node [shape=point];
+  label="diagram 3, originally 682 (factor = -1)";
+  in1--3 [label="I qu(p1)",color=navy,style=solid];
+  in2--4 [label="I Qu(p2)",color=navy,style=solid];
+  1--out1 [label="O qu(p1)",color=navy,style=solid];
+  2--out2 [label="O Qu(p2)",color=navy,style=solid];
+  1--2 [label="qu(-v1)",color=navy,style=solid];
+  1--5 [label="gl(v1+p1)",color=red,style=solid];
+  2--5 [label="gl(-v1+p2)",color=red,style=solid];
+  4--3 [label="qu(v2)",color=navy,style=solid];
+  3--6 [label="gl(v2-p1)",color=red,style=solid];
+  4--7 [label="gl(-v2-p2)",color=red,style=solid];
+  5--6 [label="hb(p1+p2)",color=black,style=dashed];
+  6--8 [label="gl(v2+p2)",color=red,style=solid];
+  7--8 [label="qu(-v2+v3-p2)",color=navy,style=solid];
+  8--7 [label="qu(v3)",color=navy,style=solid];
+};
+
+
+/************************************************/
+
+// FORM representation
+
+*--#[ D4 :
+
+* vertices:
+  cV(3,qu,qu,gl,1*3+1,1*3+2,1*3+3,-p1,-v1,v1+p1) *
+  cV(3,qu,qu,gl,2*3+1,2*3+2,2*3+3,v1,-p2,-v1+p2) *
+  cV(3,qu,qu,gl,3*3+1,3*3+2,3*3+3,p2,-v2,v2-p2) *
+  cV(3,qu,qu,gl,4*3+1,4*3+2,4*3+3,v2,p1,-v2-p1) *
+  cV(3,gl,gl,hb,5*3+1,5*3+2,5*3+3,-v1-p1,v1-p2,p1+p2) *
+  cV(3,gl,gl,hb,6*3+1,6*3+2,6*3+3,-v2+p2,v2+p1,-p1-p2) *
+  cV(3,qu,qu,gl,7*3+1,7*3+2,7*3+3,-v3,-v2+v3-p1,v2+p1) *
+  cV(3,qu,qu,gl,8*3+1,8*3+2,8*3+3,v2-v3+p1,v3,-v2-p1) *
+
+* propagators:
+  cP(qu,1*3+2,2*3+1,-v1) *
+  cP(gl,1*3+3,5*3+1,v1+p1) *
+  cP(gl,2*3+3,5*3+2,-v1+p2) *
+  cP(qu,3*3+2,4*3+1,-v2) *
+  cP(gl,3*3+3,6*3+1,v2-p2) *
+  cP(gl,4*3+3,7*3+3,-v2-p1) *
+  cP(hb,5*3+3,6*3+3,p1+p2) *
+  cP(gl,6*3+2,8*3+3,v2+p1) *
+  cP(qu,7*3+2,8*3+1,-v2+v3-p1) *
+  cP(qu,8*3+2,7*3+1,v3) *
+
+* legs:
+  cI(qu,1,4*3+2,p1) *
+  cI(Qu,2,3*3+1,p2) *
+  cO(qu,1*3+1,3,p1) *
+  cO(Qu,2*3+2,4,p2) *
+
+* symmetry factor:
+  (-1);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "3"
+  #define NLEGS "4"
+  #define NVERT "8"
+  #define NPROP "10"
+
+*--#] D4 :
+
+// GraphViz representation
+
+graph "4" {
+  graph [overlap=false];
+  node [shape=point];
+  label="diagram 4, originally 687 (factor = -1)";
+  in1--4 [label="I qu(p1)",color=navy,style=solid];
+  in2--3 [label="I Qu(p2)",color=navy,style=solid];
+  1--out1 [label="O qu(p1)",color=navy,style=solid];
+  2--out2 [label="O Qu(p2)",color=navy,style=solid];
+  1--2 [label="qu(-v1)",color=navy,style=solid];
+  1--5 [label="gl(v1+p1)",color=red,style=solid];
+  2--5 [label="gl(-v1+p2)",color=red,style=solid];
+  3--4 [label="qu(-v2)",color=navy,style=solid];
+  3--6 [label="gl(v2-p2)",color=red,style=solid];
+  4--7 [label="gl(-v2-p1)",color=red,style=solid];
+  5--6 [label="hb(p1+p2)",color=black,style=dashed];
+  6--8 [label="gl(v2+p1)",color=red,style=solid];
+  7--8 [label="qu(-v2+v3-p1)",color=navy,style=solid];
+  8--7 [label="qu(v3)",color=navy,style=solid];
+};
+
+
+/************************************************/
+
+*--#[ EPILOGUE :
+
+* number of diagrams
+  #define NDIAS "4"
+
+*--#] EPILOGUE :
+
+NDIAS=4
+

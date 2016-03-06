@@ -1,0 +1,37 @@
+% bold & italic
+\newcommand{\bfit}[1]{\textbf{\textit{ #1 }}}
+
+% multiline commments
+\newcommand{\comment}[1]{}
+
+% parentheses (, )
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+% brackets [, ]
+\newcommand{\lbk}{\left \lbrack}
+\newcommand{\rbk}{\right \rbrack}
+% braces {, }
+\newcommand{\lbc}{\left \lbrace}
+\newcommand{\rbc}{\right \rbrace}
+% empty delimeters
+\newcommand{\la}{\left.}
+\newcommand{\ra}{\right.}
+
+% numbering in "*"-math-environments
+\newcommand{\tack}{\addtocounter{equation}{1} \tag{\theequation}}
+
+% Landau-O
+\newcommand{\order}[1]{\ensuremath{\mathcal{O} \! \left( #1 \right)}}
+
+% bra & ket
+\newcommand{\bra}{\left \langle}
+\newcommand{\ket}{\right \rangle}
+% vacuum expectation value
+\newcommand{\vev}[1]{\bra 0 \left| \, #1 \, \right| 0 \ket}
+
+% MS-bar
+\newcommand{\MSbar}{\ensuremath{{\overline{\textrm{MS}}}}}
+% "correct" \epsilon, \varepsilon
+\newcommand{\ep}{\ensuremath{\epsilon}}
+% GeV
+\newcommand{\GeV}{\ensuremath{\, \textrm{GeV}}}

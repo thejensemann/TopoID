@@ -1,0 +1,28 @@
+How to minimize a set of master integrals:
+==========================================
+
+- Input:
+
+  * expression involving integrals -> use cancellation
+  or
+  * list of integrals
+
+  * ".map" files with the topology definitions
+
+  * access to reduction tables of topologies
+
+ [
+  * previous set of relations:
+      especially integral representations
+
+ ]
+
+- Output:
+
+  * expression
+  or
+  * new list of integrals
+
+  * rules for non-minimal integrals
+
+  * auxiliary relations

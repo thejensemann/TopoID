@@ -1,0 +1,148 @@
+
+List of files:
+==============
+
+  sys   --
+
+  dat   DONE
+  get   --
+
+  top   CURR
+
+  poly  DONE
+  cuts  --
+
+  map   DONE
+  obj   CURR
+
+  main  CURR
+
+  text  --
+  form  --
+  code  --
+
+  aux   DONE
+
+
+"dat.m": Data Type Patterns and Constructors
+============================================
+
+ScalarProducts -- possible scalar products,
+SetupPattern -- setup data pattern,
+SetupQ -- query function,
+Setup -- corresponding constructor,
+Elective -- optional pattern
+
+
+"get.m": Read Data from Files
+=============================
+
+GetDiagrams[<file>, [<name(s)>], [opts]],
+GetDiagram[<file # name>, [opts]] -> alias
+-- read from file FORM code of diagrams
+
+GetTopologies[<file>, [<name(s)>], [opts]]
+GetTopology[<file # name>, [opts]] -> alias
+-- read from file FORM code of topologies
+
+
+"poly.m": Related to Polynomials
+================================
+
+AlphaRepresentation[<facs>, <ks>, [opts]] -> {<U>, <W>}
+-- build U- and W-polynomials for an integral
+
+PolynomialRank[<poly>, [<vars>]] -> <int>
+-- defined via matrix rank of variable exponents
+
+ScalefulQ[<poly>, [<vars>]] -> <bool>
+-- check if an integral has scale via its U- and W-polynomials
+
+PolynomialOrderings[<poly>, [<vars>], [<n>]] -> <perms>
+-- canonical reorderings of variables in polynomial
+
+PermuteRules[<perm>, <vars>] -> <rules>
+-- apply reordering to expression
+
+SubGroups[{<U>, <W>}, <apar>] -> {<subt>, <zero>}
+-- inspect equivalent and vanishing sub-topologies
+
+SymmetricGroups[{<U>, <W>}, <apar>, [opts]] -> {<subt>, <zero>}
+-- inspect symmetric and vanishing sub-topologies
+
+PartialFractioning[<rels>, <facs>, <xs>] -> <rules>
+-- generate partial fractioning relations
+
+
+"cuts.m": Inspect Possible Cuts of Objects
+==========================================
+
+Cuts[<top>, [<n>], [opts]] -> {<cut>...}
+-- list of cuts (lists of line positions) of an object with graph data
+
+CutsSymbols[<top>, [<n>], [opts]] -> {<symbols>...}
+-- list of cuts (symbol lists) of an object containing graph data
+
+CutsQ[<top>, [opts]] -> <bool>
+-- query if object has any cuts
+
+
+"obj.m": Handle Properties of Objects
+=====================================
+
+XXXXX
+
+
+"aux.m": Auxiliary Routines
+===========================
+
+TopologyToRules[<top(s)>] -> <rules>
+-- obtain rules for manipulations on expressions involving topologies
+
+LookUp[<int(s)>, [opts]] -> <rules>
+-- get rules for reduction of integrals from table files
+
+TAB -> rules,
+TAP[<top(s)>, [opts]] -> rules
+-- dynamic replacement rules for reduction using LookUp[], acting
+   directly on expressions
+
+
+"main.m": Processing of Diagrams, Topologies, and Integrals
+===========================================================
+
+("main.m")
+NamingRules
+
+("dia2top.m")
+MapDiagramToTopology[<dia(s)>, <set>] -> {<map(s)>, <top(s)>}
+-- generate topologies out of diagrams
+
+("top2fac.m")
+MapTopologyToFactors[<top(s)>] -> {<map(s)>, <top(s)>}
+-- deconstruct factorizing topologies into their factors
+
+("top2top.m")
+MapTopologyToTopology[<src(s)>, <trg(s)>] -> <map(s)>
+-- compare sets of topologies, obtain only relations
+MinimizeTopologies[<tops>] -> {<maps>, <tops>}
+-- minimize set of topologies, obtain relations and new set
+
+("top2ind.m")
+MapTopologyToIndependents[<top(s)>, <set>] -> {<map(s)>, <top(s)>}
+-- map topologies onto their linearly independent (sub-)topologies
+
+("top2int.m")
+MapTopologyToIntegral[<map(s)>, <top(s)>, [<set>]] -> {<map(s)>, <int(s)>}
+-- generate integrals from mapping(s) and topologies
+
+("int2int.m")
+MapIntegralToIntegral[<src(s)>, <trg(s)>] -> <map(s)>
+-- compare sets of integrals, obtain only relations
+MinimizeIntegrals[<ints>] -> {<maps>, <ints>}
+-- minimize set of integrals, obtain relations and new set
+
+("int2top.m")
+MapIntegralToTopology[<int(s)>, <top(s)>] -> <map(s)>
+-- express integrals <int(s)> in terms of topologies <top(s)> if
+   possible, including also arbitrary numerators

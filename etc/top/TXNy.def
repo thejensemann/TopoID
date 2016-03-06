@@ -1,0 +1,46 @@
+#define pTXNy "p1,p2"
+#define kTXNy "p3"
+#define dTXNy "D1,D2,D3"
+
+* - p1,0 ->-@- D2,0 ------  (p1 + p2)^2 = - MM
+*           +             \
+*      D3,u,e              @-
+*           +             /
+* - p2,0 ->-@- D1,x,p3 -<-
+
+#procedure fTXNy(MM,M2ep)
+  id TXNy(a1?,a2?,a3?)
+    = `M2ep'^(-1) * (`MM')^(- 2 - a1 - a2 - a3)
+    * D1^-a1*D2^-a2*D3^-a3;
+#endprocedure
+
+#procedure gTXNy(MM,M2ep)
+  id D1^a1?*D2^a2?*D3^a3?
+    = `M2ep' * (`MM')^(2 + a1 + a2 + a3)
+    * TXNy(-a1,-a2,-a3);
+#endprocedure
+
+#procedure eTXNy(MM)
+  id D1 = p3.p3 + acc(x);
+  id D2 = p3.p3 + 2*p1.p3 + 2*p2.p3 + 2*p1.p2;
+  id D3 = 2*p1.p3 - 2*p2.p3*acc(u);
+  id p1.p2 = - 1/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure cTXNy(MM)
+  id p1.p3 = - 1/2 * acc(1/(1+u)) * (acc(u)*(D1 - D2 - acc(1+x)) - D3);
+  id p2.p3 = - 1/2 * acc(1/(1+u)) * (D1 - D2 + D3 - acc(1+x));
+  id p3.p3 = D1 - acc(x);
+  id p1.p2 = - 1/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure sTXNy
+* zeros
+  id TXNy(a1?neg0_,a2?,a3?) = 0;
+  id TXNy(a1?,a2?neg0_,a3?) = 0;
+  id TXNy(a1?,a2?,a3?neg0_) = 0;
+#endprocedure

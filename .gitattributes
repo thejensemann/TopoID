@@ -2,3 +2,17 @@
 *.jpg -text -diff
 *.png -text -diff
 *.pdf -text -diff
+
+*.ps -text -diff
+
+*.nb -text -diff
+*.map -text -diff
+
+*.dia -text -diff
+*.reg -text -diff
+topsel.*  -text -diff
+*.EXP -text -diff
+*.inc -text -diff
+*.inc_MATAD -text -diff
+*.def -text -diff
+*.sh -text -diff

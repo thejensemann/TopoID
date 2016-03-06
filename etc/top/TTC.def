@@ -1,0 +1,58 @@
+#define pTTC "p1,p2"
+#define kTTC "v1,v2"
+#define dTTC "D1,D2,D3,D4,D5,D6,D7"
+
+* - p1,0 ->-@= D1,MM*x,v1 =>====\   /---@- p1 ->-  (p1 + p2)^2 = - MM
+*           |                   \\ /    |
+*           v D5,0,p1-v1         \\     ^ D4,0,p1-v2
+*           |                    /\\    |
+*           @- D2,0,v2 ->-------/  \\   @
+*           |                       \\ /|
+*           v D7,0,p1-v1-v2          \\ v D6,0,p2-v1
+*           |                        /\\|
+* - p2,0 ->-@- D3,0,p1+p2-v1-v2 ->--/  \@- p2 ->-
+
+#procedure fTTC(MM,M2ep)
+  id TTC(a1?,a2?,a3?,a4?,a5?,a6?,a7?)
+    = `M2ep'^(-2) * (`MM')^(- 4 - a1 - a2 - a3 - a4 - a5 - a6 - a7)
+    * D1^-a1*D2^-a2*D3^-a3*D4^-a4*D5^-a5*D6^-a6*D7^-a7;
+#endprocedure
+
+#procedure gTTC(MM,M2ep)
+  id D1^a1?*D2^a2?*D3^a3?*D4^a4?*D5^a5?*D6^a6?*D7^a7?
+    = `M2ep'^2 * (`MM')^(4 + a1 + a2 + a3 + a4 + a5 + a6 + a7)
+    * TTC(-a1,-a2,-a3,-a4,-a5,-a6,-a7);
+#endprocedure
+
+#procedure eTTC(MM)
+  id D1 = v1.v1 + (`MM') * acc(x);
+  id D2 = v2.v2;
+  id D3 = v1.v1 + v2.v2 + 2*p1.p2 - 2*p1.v1 - 2*p1.v2 - 2*p2.v1 - 2*p2.v2 + 2*v1.v2;
+  id D4 = v2.v2 - 2*p1.v2;
+  id D5 = v1.v1 - 2*p1.v1;
+  id D6 = v1.v1 - 2*p2.v1;
+  id D7 = v1.v1 + v2.v2 - 2*p1.v1 - 2*p1.v2 + 2*v1.v2;
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure cTTC(MM)
+  id p2.v2 = 1/2 * (- D1 - D3 + D6 + D7 - (`MM')*acc(1 - x));
+  id p2.v1 = 1/2 * (D1 - D6 - (`MM')*acc(x));
+  id v1.v2 = 1/2 * (- D4 - D5 + D7);
+  id p1.v1 = 1/2 * (D1 - D5 - (`MM')*acc(x));
+  id p1.v2 = 1/2 * (D2 - D4);
+  id v2.v2 = D2;
+  id v1.v1 = D1 - (`MM')*acc(x);
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure sTTC
+* only cuts through lines 1,2,3 are needed
+  id TTC(a1?neg0_,a2?,a3?,a4?,a5?,a6?,a7?) = 0;
+  id TTC(a1?,a2?neg0_,a3?,a4?,a5?,a6?,a7?) = 0;
+  id TTC(a1?,a2?,a3?neg0_,a4?,a5?,a6?,a7?) = 0;
+#endprocedure

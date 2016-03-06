@@ -1,0 +1,94 @@
+<prologue>
+ClearAll[["Diagrams*"]];
+
+BeginPackage[["Diagrams`"]];
+
+(* <program> output:
+  Mathematica style (version 19.03.2012)
+  by Jens Hoff (jens@particle.uni-karlsruhe.de)
+*)
+
+(* usage messages *)
+QDat::usage =
+  "List containing the statements from \"qgraf.dat\".";
+DiaNr::usage =
+  "Number of diagrams read in (at the moment).";
+Dias::usage =
+  "Container function for the diagram data, use \"Dias[[i]]\" for access.";
+
+(* qgraf.dat statements *)
+QDat = "
+<command_loop>
+<back>  <command_line_loop><command_data><back><end>
+<end>
+";
+
+(* parsing the string *)
+QDat = StringReplace[[QDat,
+  {"\n" ->> "", " " ->> "", "'" ->> "\"", "=" ->> "->>"}]];
+(QDat = StringReplace[[QDat, #]])& /@ {
+  RegularExpression[[";in->>(.+?);"]] ->> ";in->>{$1};",
+  RegularExpression[[";out->>(.+?);"]] ->> ";out->>{$1};",
+  RegularExpression[[";options->>(.+?);"]] ->> ";options->>{$1};"
+};
+QDat = StringSplit[[QDat, ";"]] // ToExpression;
+WriteString[["stdout", "saved statements from qgraf.dat in \"QDat\"\n"]];
+
+(* enter message, resp. dynamic counter in frontend *)
+DiaNr = 0;
+If[[$FrontEnd === Null,
+  WriteString[["stdout", "starting to read diagrams ...\n"]],
+  PrintTemporary[[Dynamic[["reading diagram " <<>> ToString[[DiaNr]]]]]];
+]];
+
+<diagram>
+Dias[[DiaNr = <diagram_index>]] = {
+  name ->> "D<diagram_index>",
+  in ->> {
+<in_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <in_index>,
+<back> <vertex_index>*5+<ray_index>
+<back> },
+<end><back><back>
+  },
+  out ->> {
+<out_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <vertex_index>*5+<ray_index>,
+<back> <leg_index>
+<back> },
+<end><back><back>
+  },
+  ps ->> {
+<propagator_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <vertex_index>*5+<ray_index>,
+<back> <dual-vertex_index>*5+<dual-ray_index>
+<back> },
+<end><back><back>
+  },
+  vs ->> {
+<vertex_loop>
+<back>    {
+      { <ray_loop>"<field>", <end><back><back> },
+      { <ray_loop><momentum>, <end><back><back> },
+      { <ray_loop><vertex_index>*5+<ray_index>, <end><back><back> }
+    },
+<end><back><back>
+  }
+};
+
+<epilogue>
+(* exit message *)
+WriteString[["stdout",
+  "saved diagrams in \"Dias[[{1, DiaNr = <diagram_index>}]]\"\n"]];
+
+EndPackage[[]];
+<exit>

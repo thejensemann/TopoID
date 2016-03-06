@@ -1,0 +1,56 @@
+TODO:
+=====
+
+= Momentum Flow:
+  * GetDiagrams, MapDiagramToTopology, EXPConfig, ...
+
+= Form of kept expressions, how to process, convert?
+  * >facs<, >scps<, >rels<, ...
+  * In PrepareTopology?
+
+= Make Parallel work again!
+
+Setup.m:
+- Routines for manipulation.
+- Constructor, modifier, ...
+- Generate constants from masses squared?
+
+FORM.m:
+- SplitLines: not within FORMSymbol, i.e. [1-x], ...
+- Treat FORMComment[] right...
+
+Graph.m:
+- Cut-finder for super-topologies based on on-shell-ness?
+- TopologyPlot:
+  * Takahiros vertex layout function?
+  * Draw positions + dots/crosses for integrals.
+  * Do not draw indices when called as TopologyPlot.
+- Idea: use reconstructed graphs for topsel file?
+- TopologyGraphs:
+  * Reconstruct graphs better.
+  * Add Verbosity option.
+  * Nr. of graphs, linespec, ...
+  * Document!
+
+Topology.m:
+- Constructor: e.g. Topology["<name>", {k1^2, k2^2 - k1^2, ...}].
+
+Object.m:
+- Generate hash value >hash< from alpha-representation w/o symbols
+  (always rename symbols and invariants to something generic).
+    MapIndexed[#1 -> Symbol["x" <> ToString[#2[[1]]]] & , Variables[expr]]
+- Momentum base change?
+- Elevate: n[] -> d[] ? Actually, degrade ;).
+- CompleteTopology: pinpoint completion methods better...
+
+Common.m:
+- VerbosityRules, FlagRules, Report, Status, ...
+- Status: overwrite rest of line with " ".
+- Write file with date commment, loading message.
+
+========================================================================
+
+- Optionally contract numerators (symbols or indices) -> top2int
+- Consecutive vertex numbers? -> Topology.m, Graph.m?
+
+========================================================================

@@ -1,0 +1,741 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     24116,        732]
+NotebookOptionsPosition[     21493,        644]
+NotebookOutlinePosition[     21850,        660]
+CellTagsIndexPosition[     21807,        657]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"<<", "\"\<../../topoid.m\>\""}]], "Input",
+ CellChangeTimes->{{3.58332971892585*^9, 3.583329731102127*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"TopoID", "::", "debug"}], "MessageName"], 
+  RowBox[{":", " "}], "\<\"DEBUGGING MODE IS *ACTIVE* !\"\>"}]], "Message", \
+"MSG",
+ CellChangeTimes->{3.5833297339140253`*^9, 3.5833815708239927`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"TopoID", "::", "data"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"PATTERN MATCHING IS *\[NoBreak]\\!\\(\\\"INACTIVE\\\"\\)\
+\[NoBreak]* !\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.5833297339140253`*^9, 3.583381570835747*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"tmp", "::", "shdw"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"Symbol \[NoBreak]\\!\\(\\\"tmp\\\"\\)\[NoBreak] appears in \
+multiple contexts \[NoBreak]\\!\\({\\\"TopoID`\\\", \\\"Global`\\\"}\\)\
+\[NoBreak]; definitions in context \[NoBreak]\\!\\(\\\"TopoID`\\\"\\)\
+\[NoBreak] may shadow or be shadowed by other definitions. \
+\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
+ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/General/shdw\\\", \
+ButtonNote -> \\\"TopoID`tmp::shdw\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.5833297339140253`*^9, 3.583381570843898*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"TopoID", "::", "corrupt"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The file \\\"\[NoBreak]\\!\\(\\\"inc/syst.m\\\"\\)\
+\[NoBreak]\\\" is corrupted!\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.5833297339140253`*^9, 3.583381570851348*^9}],
+
+Cell["\<\
+
+PACKAGE:
+  TopoID -- [Topo]logy [ID]entification Package
+VERSION:
+  1.0 (2013-06-XX)
+AUTHORS:
+  Jens Hoff & Alexey Pak
+MAILTO:
+  [jens.hoff@kit.edu] or [jens@particle.uni-karlsruhe.de]
+DESCRIPTION:
+- Starting from Feynman diagrams, the underlying generic topologies are
+  identified and their set is minimized.  These are decomposed into
+  (linearly independent) Laporta topologies.
+- FORM code can be generated in order to map diagrams onto them and to
+  process both types of topologies.
+- Afterwards emerging sets of master integrals can be minimized. This
+  includes base changes.
+- Usage information is available through ?TopoID, for instance.
+  Provided functions and used symbols are listed in the variables
+  $TopoIDFunctions and $TopoIDSymbols.
+- The debugging mode can be enabled with
+    $TopoIDDebug = True;
+  before loading the package.
+\
+\>", "Print",
+ CellChangeTimes->{3.583329734209682*^9, 3.5833815708688393`*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dias", "=", 
+   RowBox[{"GetDias", "[", "\"\<../dia/1.gr.dia\>\"", "]"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.5833298710704308`*^9, 3.5833298945571613`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"setup", "=", 
+   RowBox[{"InitSetup", "[", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Externals", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"p1", ",", "p2"}], "}"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Internals", "\[Rule]", 
+       RowBox[{"{", "v1", "}"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Masses", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"\"\<qu\>\"", "\[Rule]", "0"}], ",", 
+         RowBox[{"\"\<qd\>\"", "\[Rule]", "0"}], ",", 
+         RowBox[{"\"\<hb\>\"", "\[Rule]", "mh"}], ",", 
+         RowBox[{"\"\<gl\>\"", "\[Rule]", "0"}], ",", 
+         RowBox[{"\"\<gh\>\"", "\[Rule]", "0"}], ",", 
+         RowBox[{"\"\<si\>\"", "\[Rule]", "0"}]}], "}"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Constants", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"s", ",", 
+         RowBox[{"mh", "^", "2"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Constraints", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"p1", "^", "2"}], "\[Rule]", "0"}], ",", 
+         RowBox[{
+          RowBox[{"p2", "^", "2"}], "\[Rule]", "0"}], ",", 
+         RowBox[{
+          RowBox[{"p1", "*", "p2"}], "\[Rule]", 
+          RowBox[{
+           RowBox[{"-", "s"}], "/", "2"}]}]}], "}"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Rules", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"mh", "^", "2"}], "\[Rule]", 
+         RowBox[{"s", "*", "x"}]}], "}"}]}]}], "}"}], "]"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.58332989666222*^9, 3.583329917463257*^9}, {
+  3.5833299736381483`*^9, 3.5833300388406878`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"dmaps", ",", "dtops"}], "}"}], "=", 
+   RowBox[{"MapDiaTop", "[", 
+    RowBox[{"dias", ",", "setup"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.583330044101396*^9, 3.583330059916379*^9}, {
+  3.583330103658511*^9, 3.583330117988556*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"gmaps", ",", "gtops"}], "}"}], "=", 
+   RowBox[{"MapTopTop", "[", "dtops", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.583330120542568*^9, 3.583330135888137*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"lmaps", ",", "ltops"}], "}"}], "=", 
+   RowBox[{"MapTopLin", "[", 
+    RowBox[{"gtops", ",", "setup"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.5833301412911243`*^9, 3.583330174673605*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"bmaps", ",", "btops"}], "}"}], "=", 
+   RowBox[{"MapTopTop", "[", "ltops", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.583330177829764*^9, 3.583330197901635*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", "\[IndentingNewLine]", 
+  "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.583389186571246*^9, 3.5833891878724613`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"<<", "\"\<../../inc/top.m\>\""}]], "Input",
+ CellChangeTimes->{{3.583329757554863*^9, 3.583329765596694*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"TopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"gtops", "[", 
+     RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], "//", 
+  "TableForm"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"TopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"btops", "[", 
+     RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], "//", 
+  "TableForm"}]}], "Input",
+ CellChangeTimes->{{3.5833303169680843`*^9, 3.583330342601802*^9}, 
+   3.5833304204399433`*^9, {3.583381597850971*^9, 3.583381696639501*^9}, {
+   3.58338172729825*^9, 3.583381788802071*^9}, {3.583389192985382*^9, 
+   3.5833892299596643`*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     RowBox[{"-", "2"}], "0", "1", "0", "1", 
+     RowBox[{"-", "1"}], "0", "0", "0"},
+    {"0", "0", "1", "0", "0", "0", 
+     RowBox[{"-", "1"}], "0", "0"},
+    {
+     RowBox[{"-", "2"}], "2", "1", "1", "0", "0", "0", 
+     RowBox[{"-", "1"}], "0"},
+    {"0", "2", "1", "0", "0", "0", "0", "0", 
+     RowBox[{"-", "1"}]}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.583381789284041*^9, 3.58338186525112*^9, 3.583382141992408*^9, 
+   3.583382177725528*^9, {3.58338221742321*^9, 3.583382241991407*^9}, 
+   3.583382522829298*^9, {3.583383426706731*^9, 3.583383429874959*^9}, 
+   3.58338454299093*^9, {3.583384630028297*^9, 3.583384648149329*^9}, {
+   3.5833891993174763`*^9, 3.583389230538863*^9}, 3.5833893205284557`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"0", "0", "1", "0", "0", 
+     RowBox[{"-", "1"}], "0", "0"},
+    {
+     RowBox[{"-", "2"}], "2", "1", "1", "0", "0", 
+     RowBox[{"-", "1"}], "0"},
+    {"0", "2", "1", "0", "0", "0", "0", 
+     RowBox[{"-", "1"}]}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.583381789284041*^9, 3.58338186525112*^9, 3.583382141992408*^9, 
+   3.583382177725528*^9, {3.58338221742321*^9, 3.583382241991407*^9}, 
+   3.583382522829298*^9, {3.583383426706731*^9, 3.583383429874959*^9}, 
+   3.58338454299093*^9, {3.583384630028297*^9, 3.583384648149329*^9}, {
+   3.5833891993174763`*^9, 3.583389230538863*^9}, 3.583389320534181*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"TopologyConsistentQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyConsistentQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyInconsistentQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyInconsistentQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.583389234153454*^9, 3.583389277909432*^9}, {
+  3.5833893267900248`*^9, 3.5833893765985327`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{
+  3.5833892482525167`*^9, 3.5833892783519773`*^9, {3.583389321809293*^9, 
+   3.583389377044558*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{
+  3.5833892482525167`*^9, 3.5833892783519773`*^9, {3.583389321809293*^9, 
+   3.58338937705249*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{
+  3.5833892482525167`*^9, 3.5833892783519773`*^9, {3.583389321809293*^9, 
+   3.5833893770622187`*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{
+  3.5833892482525167`*^9, 3.5833892783519773`*^9, {3.583389321809293*^9, 
+   3.583389377072599*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ReduceTopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"TopologyMatrix", "[", 
+     RowBox[{
+      RowBox[{"gtops", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], ",", "setup"}], 
+   "]"}], "//", "TableForm"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ReduceTopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"TopologyMatrix", "[", 
+     RowBox[{
+      RowBox[{"btops", "[", 
+       RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], ",", "setup"}], 
+   "]"}], "//", "TableForm"}]}], "Input",
+ CellChangeTimes->{{3.58338940566503*^9, 3.5833894552065773`*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     RowBox[{"-", "2"}], "0", "1"},
+    {"0", "0", "1"},
+    {
+     RowBox[{"-", "2"}], "2", "1"},
+    {"0", "2", "1"}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{{3.583389418939439*^9, 3.5833894559645433`*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"0", "0", "1"},
+    {
+     RowBox[{"-", "2"}], "2", "1"},
+    {"0", "2", "1"}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{{3.583389418939439*^9, 3.583389455970016*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ReducedTopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"gtops", "[", 
+     RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], "//", 
+  "TableForm"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ReducedTopologyMatrix", "[", 
+   RowBox[{
+    RowBox[{"btops", "[", 
+     RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}], "//", 
+  "TableForm"}]}], "Input",
+ CellChangeTimes->{{3.5833303169680843`*^9, 3.583330342601802*^9}, 
+   3.5833304204399433`*^9, {3.583381597850971*^9, 3.583381696639501*^9}, {
+   3.58338172729825*^9, 3.583381788802071*^9}, {3.583389192985382*^9, 
+   3.5833892299596643`*^9}, {3.5833894826877623`*^9, 3.5833894878440857`*^9}}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     RowBox[{"-", "2"}], "0", "1"},
+    {"0", "0", "1"},
+    {
+     RowBox[{"-", "2"}], "2", "1"},
+    {"0", "2", "1"}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.5833894888900537`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"0", "0", "1"},
+    {
+     RowBox[{"-", "2"}], "2", "1"},
+    {"0", "2", "1"}
+   },
+   GridBoxAlignment->{
+    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+     "RowsIndexed" -> {}},
+   GridBoxSpacings->{"Columns" -> {
+       Offset[0.27999999999999997`], {
+        Offset[2.0999999999999996`]}, 
+       Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+       Offset[0.2], {
+        Offset[0.4]}, 
+       Offset[0.2]}, "RowsIndexed" -> {}}],
+  Function[BoxForm`e$, 
+   TableForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.583389488897997*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"TopologyRank", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyRank", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.583389499403448*^9, 3.5833895288291273`*^9}}],
+
+Cell[BoxData["3"], "Output",
+ CellChangeTimes->{{3.5833895075834827`*^9, 3.583389529226638*^9}}],
+
+Cell[BoxData["3"], "Output",
+ CellChangeTimes->{{3.5833895075834827`*^9, 3.5833895292340803`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"TopologyCompleteQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyCompleteQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyIncompleteQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyIncompleteQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.583389552186164*^9, 3.58338958277032*^9}, {
+  3.58338965720393*^9, 3.583389670090262*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583389564049716*^9, 3.583389587686475*^9}, {
+  3.583389651717301*^9, 3.5833896710542603`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583389564049716*^9, 3.583389587686475*^9}, {
+  3.583389651717301*^9, 3.583389671064212*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{{3.583389564049716*^9, 3.583389587686475*^9}, {
+  3.583389651717301*^9, 3.583389671074649*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{{3.583389564049716*^9, 3.583389587686475*^9}, {
+  3.583389651717301*^9, 3.5833896710851583`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"TopologyDependentQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyDependentQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyIndependentQ", "[", 
+  RowBox[{
+   RowBox[{"gtops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyIndependentQ", "[", 
+  RowBox[{
+   RowBox[{"btops", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], ",", "setup"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.5833897023311987`*^9, 3.5833897299645967`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583389706308072*^9, 3.583389730670144*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{{3.583389706308072*^9, 3.583389730679937*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{{3.583389706308072*^9, 3.583389730689887*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583389706308072*^9, 3.5833897306997433`*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.583390472122971*^9, 3.583390472358054*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Length", "[", 
+    RowBox[{"facs", "/.", "#"}], "]"}], "&"}], "/@", "dtops"}]], "Input",
+ CellChangeTimes->{{3.583390278842519*^9, 3.583390296197206*^9}, {
+  3.583390332870236*^9, 3.583390335079026*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "2", ",", "2", ",", "2", ",", "2", ",", "2", ",", "2", ",", "2", ",", "2", 
+   ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", 
+   "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", 
+   ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "3", ",", 
+   "3", ",", "3", ",", "4", ",", "4", ",", "4", ",", "4", ",", "4", ",", "4", 
+   ",", "4", ",", "4"}], "}"}]], "Output",
+ CellChangeTimes->{{3.5833902798623943`*^9, 3.583390297042004*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"TopologyCompleteQ", "[", 
+  RowBox[{
+   RowBox[{"dtops", "[", 
+    RowBox[{"[", "30", "]"}], "]"}], ",", "setup"}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"TopologyIndependentQ", "[", 
+  RowBox[{
+   RowBox[{"dtops", "[", 
+    RowBox[{"[", "20", "]"}], "]"}], ",", "setup"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.583390302202223*^9, 3.5833904139797897`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583390312473894*^9, 3.583390414412325*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.583390312473894*^9, 3.583390414422858*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"TopologyCompleteQ", "[", 
+    RowBox[{"#", ",", "setup"}], "]"}], "&"}], "/@", "dtops"}]], "Input",
+ CellChangeTimes->{{3.583390416321178*^9, 3.583390432599524*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "False", ",", "False", ",", "False", ",", "False", ",", "False", ",", 
+   "False", ",", "False", ",", "False", ",", "True", ",", "True", ",", "True",
+    ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", 
+   "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", 
+   ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", 
+   "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", 
+   ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", 
+   "True", ",", "True"}], "}"}]], "Output",
+ CellChangeTimes->{{3.583390429423711*^9, 3.583390433212266*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"TopologyIndependentQ", "[", 
+    RowBox[{"#", ",", "setup"}], "]"}], "&"}], "/@", "dtops"}]], "Input",
+ CellChangeTimes->{{3.5833904485478077`*^9, 3.583390450780816*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", 
+   ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", 
+   "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", 
+   ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", 
+   "True", ",", "True", ",", "True", ",", "True", ",", "True", ",", "True", 
+   ",", "True", ",", "True", ",", "True", ",", "True", ",", "False", ",", 
+   "False", ",", "False", ",", "False", ",", "False", ",", "False", ",", 
+   "False", ",", "False"}], "}"}]], "Output",
+ CellChangeTimes->{3.58339045161664*^9}]
+}, Open  ]]
+},
+WindowSize->{1012, 1059},
+WindowMargins->{{Automatic, 3}, {2, Automatic}},
+ShowSelection->True,
+FrontEndVersion->"8.0 for Linux x86 (64-bit) (October 10, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 131, 2, 29, "Input"],
+Cell[713, 26, 243, 6, 20, "Message"],
+Cell[959, 34, 284, 7, 20, "Message"],
+Cell[1246, 43, 666, 12, 20, "Message"],
+Cell[1915, 57, 296, 7, 20, "Message"],
+Cell[2214, 66, 942, 26, 367, "Print"]
+}, Open  ]],
+Cell[3171, 95, 199, 5, 29, "Input"],
+Cell[3373, 102, 1710, 44, 138, "Input"],
+Cell[5086, 148, 308, 8, 29, "Input"],
+Cell[5397, 158, 231, 6, 29, "Input"],
+Cell[5631, 166, 262, 7, 29, "Input"],
+Cell[5896, 175, 231, 6, 29, "Input"],
+Cell[6130, 183, 174, 3, 84, "Input"],
+Cell[6307, 188, 133, 2, 29, "Input"],
+Cell[CellGroupData[{
+Cell[6465, 194, 626, 16, 48, "Input"],
+Cell[7094, 212, 1210, 30, 88, "Output"],
+Cell[8307, 244, 1100, 27, 72, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9444, 276, 765, 21, 84, "Input"],
+Cell[10212, 299, 152, 3, 29, "Output"],
+Cell[10367, 304, 151, 3, 29, "Output"],
+Cell[10521, 309, 155, 3, 29, "Output"],
+Cell[10679, 314, 153, 3, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10869, 322, 618, 17, 48, "Input"],
+Cell[11490, 341, 696, 21, 88, "Output"],
+Cell[12189, 364, 652, 19, 72, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12878, 388, 690, 16, 48, "Input"],
+Cell[13571, 406, 672, 21, 88, "Output"],
+Cell[14246, 429, 628, 19, 72, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14911, 453, 374, 10, 48, "Input"],
+Cell[15288, 465, 96, 1, 29, "Output"],
+Cell[15387, 468, 98, 1, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15522, 474, 751, 21, 84, "Input"],
+Cell[16276, 497, 148, 2, 29, "Output"],
+Cell[16427, 501, 146, 2, 29, "Output"],
+Cell[16576, 505, 147, 2, 29, "Output"],
+Cell[16726, 509, 149, 2, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[16912, 516, 712, 20, 84, "Input"],
+Cell[17627, 538, 97, 1, 29, "Output"],
+Cell[17727, 541, 98, 1, 29, "Output"],
+Cell[17828, 544, 98, 1, 29, "Output"],
+Cell[17929, 547, 99, 1, 29, "Output"]
+}, Open  ]],
+Cell[18043, 551, 146, 2, 66, "Input"],
+Cell[CellGroupData[{
+Cell[18214, 557, 250, 6, 29, "Input"],
+Cell[18467, 565, 544, 9, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19048, 579, 389, 10, 48, "Input"],
+Cell[19440, 591, 97, 1, 29, "Output"],
+Cell[19540, 594, 97, 1, 29, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19674, 600, 212, 5, 29, "Input"],
+Cell[19889, 607, 678, 11, 66, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20604, 623, 217, 5, 29, "Input"],
+Cell[20824, 630, 653, 11, 66, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

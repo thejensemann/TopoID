@@ -1,0 +1,7 @@
+* comments
+** use last string in output statement from qgraf.dat as package name
+** include constants and functions from model file
+** commentaries/folds
+   C++ and Mathematica can be combined with FORM but not with each other
+** used labels
+   <field_index> probably same effect as <vertex_index>*5+<ray_index>

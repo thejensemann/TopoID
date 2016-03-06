@@ -1,0 +1,36 @@
+External/Release
+================
+
+- hepforge
+  - account
+  - page
+
+- TTP page
+
+- really GPLv3?
+
+
+Internal/Code
+=============
+
+- shorter loading message
+
+- etc/: revise Mma qgraf styles
+
+- check/:
+
+  - gather stuff (diss.)
+
+  - clean-up
+
+- doc/: clean-up
+
+- examples/:
+
+  - gather stuff
+
+  - clean-up
+
+- TODO.dir: clean-up
+
+- check whether TopoID:Cuts can handle 3 or more connectivity components

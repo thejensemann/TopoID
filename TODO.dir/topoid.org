@@ -1,0 +1,24 @@
+* notes
+- What are the independent scalar products?
+  Loop momenta: {v1, v2, v3, ...}
+  => each loop momentum with all others: {v1^2, v1.v2, v1.v3, v2^2,
+  v2.v3, v3, ...};
+  External momenta: {p1, p2, ...}
+  => each loop momentum with all externals: {p1.v1, p2.v1, p1.v2, p2.v2,
+  p1.v3, p2.v3, ...};
+  Here: 4 external legs ==(momentum conservation)==> 3 independent
+  external momenta ==(on-shell)==> 2 independent remain!?
+- Subtopologies:
+  Same nr. of lines doesn't imply same equivalence/symmetry class and
+  alpha-representation!
+- Idea:
+  Subtopology identification <-> polynomial GCD?
+* questions
+- One line of the alpha-representation factorizes if it forms a one-line
+  tadpole. Does the alpha-representation factorize in general when the
+  diagram or integral factorizes/splits?
+- Is it possible to reconstruct a graph from an alpha-representation?
+  (See matroids?)
+- What is the purpose of the marker?
+  Setting it to 1/(1-1) after mapping to linearly independent
+  subtopologies causes an exit in case of unmapped terms.

@@ -1,0 +1,98 @@
+<prologue>
+//
+// <program>:
+//   output style by Alexey Pak,
+//   modified by Jens Hoff
+//
+
+*--#[[ PROLOGUE :
+
+* qgraf.dat parameters:
+
+<command_loop>*<command_line_loop> <command_data>
+<end><back><end><back>
+
+*--#]] PROLOGUE :
+
+<diagram>
+
+/************************************************/
+
+// FORM representation
+
+*--#[[ D<diagram_index> :
+
+* vertices:
+<vertex_loop>  cV(<vertex_degree>
+<back><ray_loop>,[formid]<end>
+<back><ray_loop>,<vertex_index>*<vertex_degree>+<ray_index><end>
+<back><ray_loop>,<momentum><end>) *
+<end><back>
+
+* propagators:
+<propagator_loop>  cP(
+<back>[formid],
+<back><vertex_index>*<vertex_degree>+<ray_index>,
+<back><dual-vertex_index>*<dual-vertex_degree>+<dual-ray_index>,
+<back><momentum>) *
+<end><back>
+
+* legs:
+<in_loop>  cI(
+<back><field>,
+<back><in_index>,
+<back><vertex_index>*<vertex_degree>+<ray_index>,
+<back><momentum>) *
+<end><back>
+<out_loop>  cO(
+<back><field>,<vertex_index>*<vertex_degree>+<ray_index>,
+<back><leg_index>,
+<back><momentum>) *
+<end><back>
+
+* symmetry factor:
+  (<sign><symmetry_factor>);
+
+* numbers of loops, legs, vertices, propagators:
+  #define NLOOP "<loops>"
+  #define NLEGS "<legs>"
+  #define NVERT "<vertices>"
+  #define NPROP "<propagators>"
+
+*--#]] D<diagram_index> :
+
+// GraphViz representation
+
+graph "<diagram_index>" {
+  graph [[overlap=false]];
+  node [[shape=point]];
+  label="diagram <diagram_index>
+<back> (factor = <sign><symmetry_factor>)";
+<back><in_loop>
+  in<in_index>--<vertex_index>
+<back> [[label="I <field>(<momentum>)"[gvattrib]]];
+<back><end>
+<back><out_loop>
+  <vertex_index>--out<out_index>
+<back> [[label="O <field>(<momentum>)"[gvattrib]]];
+<back><end>
+<back><propagator_loop>
+  <vertex_index>--<dual-vertex_index>
+<back> [[label="[formid](<momentum>)"[gvattrib]]];
+<back><end>
+};
+
+<epilogue>
+
+/************************************************/
+
+*--#[[ EPILOGUE :
+
+* number of diagrams
+  #define NDIAS "<diagram_index>"
+
+*--#]] EPILOGUE :
+
+NDIAS=<diagram_index>
+
+<exit>

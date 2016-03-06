@@ -1,0 +1,87 @@
+
+Notes:
+======
+
+- Possible scalar products and the symmetries respecting them are
+  actually not necessary before generating the code processing the
+  topologies, generic and basic ones.
+
+- The first entry listed in
+    Constants -> {...}
+  in the call of Setup[] is used as base scale for FORM code generation.
+  The entries are assumed to be of mass dimension two.
+
+- Cuts[] determines possible cuts from >facs< and inserts a list of
+  cuts:
+    cuts -> {{1, 2, 3, 8}, {1, 2, 5}, ...}
+  which refers to lines given in >pros<, resp. >facs<.
+
+- The logical expression for zero sub-topologies due to >zero< and
+  >cuts< combined is generated and stored in >zero< via
+  ZeroCutsTopology[].
+
+
+Finalize:
+=========
+
+=== source code 2 ===
+- Invoke Names["Global`*"] before and after loading a file and compare.
+- Protect all?
+- SwitchContext, TopoIDGet?
+- Separate context for some libraries?
+- Think about: main, sing./plur., overloads, triggers, traps; aliases, shortcuts.
+
+=== source code 1 ===
+- Numbering in source code: (i), [i], [1], ... .
+- Insert \" into message texts where needed.
+- Search and unify:
+  * 'and' or '&',
+  * patternname:pattern,
+  * ! XXX -> !XXX.
+- Pure functions always as:
+    <code> & /@ <list>
+  or
+    (<code> & ) /@ <list>
+  if needed.
+- Try to get rid of Flatten where possible, except
+    Flatten[Position[...] /. {} -> 0].
+
+=== source code 0 ===
+- Use:
+  * Verbosity(Rules)[], Report[],
+  * DefaultList[], CheckList[],
+  * Status[], Progress[].
+- Use functions from "top.m", "map.m", "obj.m".
+- Use Pattern functions, e.g. SetupPattern[].
+- Check messages.
+
+- ... -> (... /. ) -- parentheses not needed
+
+
+
+
+Options[A] =
+  Options[B];
+
+---
+
+Options[A] =
+  {};
+
+Options[A] =
+  Join @@ Options /@ {A, B}
+
+---
+
+Options[A] =
+  {};
+
+Options[A] =
+  DeleteDuplicates[Join @@ Options /@ {A, B}, First[#1] === First[#2] & ];
+
+
+---
+
+- check patterns (../..., __/___)
+
+- unify messages... input checks...

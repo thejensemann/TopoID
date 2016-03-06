@@ -1,0 +1,59 @@
+#define pTTJ "p1,p2"
+#define kTTJ "v1,v2"
+#define dTTJ "D1,D2,D3,D4,D5,D6,D7"
+
+* - p1,0 ->-@- D3,0,p1+v2 ->-@- D1,MM*x,v1 -<----@- p1 ->- (p1 + p2)^2 = - MM
+*            \               |                    \
+*             - D2,0,v2 -<------                   \
+*                            |  \                   ^ D7,0,p1+v1
+*           D5,0,p1+v1+v2 -<-    \                   \
+*            /                    \                   \
+* - p2,0 ->-@- D4,0,p1+p2+v1+v2 ->-@- D6,0,p1+p2+v1 ->-@- p2 ->-
+
+#procedure fTTJ(MM,M2ep)
+  id TTJ(a1?,a2?,a3?,a4?,a5?,a6?,a7?)
+    = `M2ep'^(-2) * (`MM')^(- 4 - a1 - a2 - a3 - a4 - a5 - a6 - a7)
+    * D1^-a1*D2^-a2*D3^-a3*D4^-a4*D5^-a5*D6^-a6*D7^-a7;
+#endprocedure
+
+#procedure gTTJ(MM,M2ep)
+  id D1^a1?*D2^a2?*D3^a3?*D4^a4?*D5^a5?*D6^a6?*D7^a7?
+    = `M2ep'^2 * (`MM')^(4 + a1 + a2 + a3 + a4 + a5 + a6 + a7)
+    * TTJ(-a1,-a2,-a3,-a4,-a5,-a6,-a7);
+#endprocedure
+
+#procedure eTTJ(MM)
+  id D1 = v1.v1 + (`MM')*acc(x);
+  id D2 = v2.v2;
+  id D3 = v2.v2 + 2*p1.v2;
+  id D4 = v1.v1 + v2.v2 + 2*p1.p2 + 2*p1.v1 + 2*p1.v2 + 2*p2.v1 + 2*p2.v2 + 2*v1.v2;
+  id D5 = v1.v1 + v2.v2 + 2*p1.v1 + 2*p1.v2 + 2*v1.v2;
+  id D6 = v1.v1 + 2*p1.p2 + 2*p1.v1 + 2*p2.v1;
+  id D7 = v1.v1 + 2*p1.v1;
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure cTTJ(MM)
+  id p2.v2 = 1/2 * (D4 - v1.v1 - v2.v2 - 2*p1.p2 - 2*p1.v1 - 2*p1.v2 - 2*p2.v1 - 2*v1.v2);
+  id v1.v2 = 1/2 * (D5 - v1.v1 - v2.v2 - 2*p1.v1 - 2*p1.v2);
+  id p2.v1 = 1/2 * (D6 - v1.v1 - 2*p1.p2 - 2*p1.v1);
+  id p1.v2 = 1/2 * (D3 - v2.v2);
+  id p1.v1 = 1/2 * (D7 - v1.v1);
+  id v1.v1 = D1 - (`MM')*acc(x);
+  id v2.v2 = D2;
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure sTTJ
+* need only cuts either through 1,6 or through 1,2,4
+  id TTJ(a1?neg0_,a2?,a3?,a4?,a5?,a6?,a7?) = 0;
+  id TTJ(a1?,a2?neg0_,a3?,a4?,a5?,a6?neg0_,a7?) = 0;
+  id TTJ(a1?,a2?,a3?,a4?neg0_,a5?,a6?neg0_,a7?) = 0;
+* zeros:
+  id TTJ(a1?,a2?neg0_,a3?neg0_,a4?,a5?,a6?,a7?) = 0;
+  id TTJ(a1?,a2?,a3?,a4?neg0_,a5?neg0_,a6?,a7?) = 0;
+#endprocedure

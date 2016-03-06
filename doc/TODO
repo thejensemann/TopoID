@@ -1,0 +1,12 @@
+
+
+
+- Usage information is available through ?TopoID, for instance.
+  Provided functions and used symbols are listed in the variables
+    $TopoIDFunctions and $TopoIDSymbols.
+- The debugging mode can be enabled with
+    $TopoIDDebug = True;
+  before loading the package.
+
+
+Documentation, ? operator

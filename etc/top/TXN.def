@@ -1,0 +1,45 @@
+#define pTXN "p1,p2"
+#define kTXN "p3"
+#define dTXN "D1,D2,D3"
+
+* - p1,0 ->-@- D2,0 ---  (p1 + p2)^2 = - MM
+*           |          \
+*   D3,0,p3 ^           @-
+*           |          /
+* - p2,0 ->-@- D1,x ---
+
+#procedure fTXN(MM,M2ep)
+  id TXN(a1?,a2?,a3?)
+    = `M2ep'^(-1) * (`MM')^(- 2 - a1 - a2 - a3)
+    * D1^-a1*D2^-a2*D3^-a3;
+#endprocedure
+
+#procedure gTXN(MM,M2ep)
+  id D1^a1?*D2^a2?*D3^a3?
+    = `M2ep' * (`MM')^(2 + a1 + a2 + a3)
+    * TXN(-a1,-a2,-a3);
+#endprocedure
+
+#procedure eTXN(MM)
+  id D1 = p3.p3 - 2*p2.p3 + (`MM')*acc(x);
+  id D2 = p3.p3 + 2*p1.p3;
+  id D3 = p3.p3;
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure cTXN(MM)
+  id p1.p3 = 1/2 * (D2 - p3.p3);
+  id p2.p3 = 1/2 * (- D1 + p3.p3 + (`MM')*acc(x));
+  id p3.p3 = D3;
+  id p1.p2 = - (`MM')/2;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+#endprocedure
+
+#procedure sTXN
+* zeros
+  id TXN(a1?neg0_,a2?,a3?) = 0;
+  id TXN(a1?,a2?neg0_,a3?) = 0;
+#endprocedure

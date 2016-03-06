@@ -1,0 +1,146 @@
+TODO:
+=====
+
+- Compress[...] on arep?
+
+- Nullspace[...] for Completeness? Construction in some specific way aligned to given vectors?
+
+- Minimum, Maximum <-> Min, Max ?
+
+- lvl_ -> lv_
+
+- Method -> {...}
+
+- Global`* <-> Options[], SetOptions[]
+
+
+--------------------
+
+"init.m":
+"Common.m":
+"System.m":
+
+
+--------------------
+
+"Load.m":
+=========
+
+-
+
+
+--------------------
+
+"Setup.m":
+==========
+
+- Rules -> Transformations? No!
+
+- Constraints -> "Common.m"
+
+
+"Topology.m":
+=============
+
+-- OK --
+
+
+"Mapping.m":
+============
+
+-- OK --
+
+
+"Polynomial.m":
+===============
+
+-
+
+
+"Cuts.m":
+=========
+
+-
+
+
+"Object.m":
+===========
+
+- PrepareTopology:
+  * Rename factors: d[1], d[4], n[3], ... -> d[1], d[2], n[1], ...
+  * Check for rewriting of [1-x], ...
+  * Symbols, Exclude, ...
+
+- GraphMapTopology::nomatch, MapToTopology::match, ...
+
+- Check subt, zero, cuts before and after MapToIndependents[].
+
+
+"Core.m":
+=========
+
+[- MinimizeTopologies[], MapTopologyToTopology[].]
+
+- MapIntegralToTopology.
+
+-
+
+
+--------------------
+
+
+"Calculate.m":
+==============
+
+- Cleaning...
+
+
+--------------------
+
+
+"Text.m":
+=========
+
+-
+
+
+"FORM.m":
+=========
+
+-
+
+
+"Code.m":
+=========
+
+- Cleaning...
+
+- Variable scheme for FORMTopologyMain?
+
+
+"EXP.m":
+========
+
+-
+
+
+"Super.m":
+==========
+
+- UnionTopology, TopologyIntersections
+
+
+
+"FeynMF.m":
+===========
+
+-
+
+
+"Graph.m":
+==========
+
+-
+
+
+--------------------

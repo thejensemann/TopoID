@@ -1,37 +1,91 @@
-Installation:
-=============
-
-Place the TopoID folder in some directory on your $Path,
-e.g. "~/.Mathematica/Applications", but also a soft link will do.
-Otherwise also the "TopoID/init.m" file can be loaded directly.
-
-- "KLink".
-
-- "post-EXP", etc. (executables in "AuTopo/sbin").
-
-- "qgraf.sty" for Mathematica compatible output, for ".dia" files.
+              _______                      _   ____
+ --->---+--- |__   __| ------------------ | | |  _ \ ---+--->---
+         \      | |   __    ____     __   | | | | \ \   |
+          +     | |  /  \  |  _ \   /  \  | | | |  \ \  |
+          |\    | | / /\ \ | | \ \ / /\ \ | | | |  / /  +--->---
+          | \   | | \ \/ / | |_/ / \ \/ / | | | |_/ /  /
+          |  \  |_|  \__/  |  __/   \__/  |_| |____/  +
+          |   \            | |                       / \
+ --->-----+----+---------- |_| ---------------------+---+--->---
 
 
-Note:
-=====
+TopoID is a Mathematica package capable of [Topo]logy [ID]entification
+and related tasks appearing in multiloop calculations.
 
-For Alexey's ".dia" and ".qls" files:
-- Was something wrong in the sign of momenta in the ".dia" files?!
-- Inconsistency in ".qls" files:
-    cO(p1,...) -> q4, cO(p2,...) -> q3,
-  therefore we need in EXPConfig[..., Transformations -> {...}]
-    {out[3] -> out[4], out[4] -> out[3]}.
+Starting from Feynman diagrams, the underlying generic topologies are
+identified and their set is minimized.  These generic topologies can
+then be decomposed into (linearly independent) Laporta topologies.  FORM
+code can be generated in order to map diagrams onto generic topologies
+and to process both types of topologies.  Afterwards emerging sets of
+master integrals can also be minimized, including generic base changes.
+
+Webpage
+-------
+
+"http://topoid.hepforge.org/" or "http://www.ttp.kit.edu/~jens/".
 
 
+Contact
+-------
+
+"jens.hoff@kit.edu" or "jens.hoff@desy.de".
 
 
-Damit ist denke ich rechte klar, wie man die globale Ordnung der Topologien definiert, mit den "einfachsten" zuerst:
-- Kanaele des Prozesses mit den einfachsten zuerst: qp, qp, qQ, qg, gg.
-- Innerhalb der Kanaele die fermionischen Anteile: nf^2, nf^1, nf^0.
-- Anzahl der Linien: 8, 9, 10.
-- Planare vor nicht-planaren.
-- Viele Cuts/Skalenlose vor wenigen.
-- Viele Symmetrien vor wenigen.
-- Die alpha-parametrisierung.
+Publications
+------------
 
-Selektion der "qp"- aus den "r"-Topologien...
+- Alexey Pak, "The Toolbox of modern multi-loop calculations: novel
+  analytic and semi-analytic techniques", [Pak:2011xt],
+  "http://arxiv.org/pdf/1111.0868.pdf".
+- Jens Hoff and Jonathan Grigo, "Mass-corrections to double-Higgs
+  production & TopoID", [Grigo:2014oqa],
+  "http://arxiv.org/pdf/1407.1617.pdf"
+- Jens Hoff, "Methods for multiloop calculations and Higgs boson
+  production at the LHC, "http://d-nb.info/1071894153/34".
+- Jens Hoff, "The Mathematica package TopoID and its application to the
+  Higgs boson production cross section", [TODO: identifier], "TODO:
+  weblink"
+- Jens Hoff and Alexey Pak, "TODO: title", [TODO: identifier], "TODO:
+  weblink"
+
+
+Authors
+=======
+
+The first version of TopoID is due to Alexey Pak.  To be more specific
+the code for two main algorithms (canonical ordering of polynomials for
+topology identification and usage of Groebner bases for partial
+fractioning) described in [Pak:2011xt] was adopted initially.  This code
+was later rewritten completely and integrated into a new package by Jens
+Hoff.  Since then the package gained a lot of functionality, see the
+documentation for further information.
+
+
+License
+=======
+
+This package is distributed under GPLv3.  See the file COPYING.  If you
+use the package for a project, please cite it as:
+
+  [TODO: LaTeX code]
+
+
+Files and directories
+=====================
+
+- The main directory "TopoID/" contains the source code of the package.
+- "etc/" contains ancillary QGRAF style files and FORM routines.
+- "doc/" contains a complete user manual (the publication [TODO:
+  identifier]) and a tutorial in pdf format.
+- "examples/" helds various simple demonstrations of the features of
+  TopoID.
+- "check/" helds test routines for the modules of TopoID and is meant
+  mainly for keeping up consistency in development.
+- "NEWS" contains the most important changes in different versions.
+- "TODO" contains a list of features to be integrated in the future.
+
+
+Installation
+============
+
+See the file "INSTALL".

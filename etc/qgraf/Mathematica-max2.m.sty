@@ -1,0 +1,89 @@
+<prologue>
+(* <program> output:
+  Mathematica style (version 19.03.2012)
+  by Jens Hoff (jens@particle.uni-karlsruhe.de)
+*)
+
+(* qgraf.dat statements *)
+qDat = "
+<command_loop>
+<back>  <command_line_loop><command_data><back><end>
+<end>
+";
+
+(* parsing the string *)
+qDat = StringReplace[[qDat,
+  {"\n" ->> "", " " ->> "", "'" ->> "\"", "=" ->> "->>"}]];
+(qDat = StringReplace[[qDat, #]])& /@ {
+  RegularExpression[[";in->>(.+?);"]] ->> ";in->>{$1};",
+  RegularExpression[[";out->>(.+?);"]] ->> ";out->>{$1};",
+  RegularExpression[[";options->>(.+?);"]] ->> ";options->>{$1};"
+};
+qDat = StringSplit[[qDat, ";"]] // ToExpression;
+
+(* saving *)
+qOut = output /. qDat;
+QDat[[qOut]] = qDat;
+WriteString[["stdout",
+  "saved statements from \"qgraf.dat\" in QDat[[\"" <<>> qOut <<>> "\"]]\n"]];
+
+(* enter message, resp. dynamic counter in frontend *)
+diaNr = 0;
+If[[$FrontEnd === Null,
+  WriteString[["stdout", "starting to read diagrams ...\n"]],
+  PrintTemporary[[Dynamic[["reading diagram " <<>> ToString[[diaNr]]]]]];
+]];
+
+<diagram>
+Dias[[qOut, diaNr = <diagram_index>]] = {
+  name ->> "D<diagram_index>",
+  in ->> {
+<in_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <in_index>,
+<back> <vertex_index>*5+<ray_index>
+<back> },
+<end><back><back>
+  },
+  out ->> {
+<out_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <vertex_index>*5+<ray_index>,
+<back> <leg_index>
+<back> },
+<end><back><back>
+  },
+  ps ->> {
+<propagator_loop>
+<back>    {
+<back> "<field>",
+<back> <momentum>,
+<back> <vertex_index>*5+<ray_index>,
+<back> <dual-vertex_index>*5+<dual-ray_index>
+<back> },
+<end><back><back>
+  },
+  vs ->> {
+<vertex_loop>
+<back>    {
+      { <ray_loop>"<field>", <end><back><back> },
+      { <ray_loop><momentum>, <end><back><back> },
+      { <ray_loop><vertex_index>*5+<ray_index>, <end><back><back> }
+    },
+<end><back><back>
+  }
+};
+
+<epilogue>
+(* exit message *)
+WriteString[["stdout",
+  "saved diagrams in Dias[[\"" <<>> qOut <<>>
+  "\", {1, diaNr = <diagram_index>}]]\n"]];
+
+(* clean unused var.s *)
+ClearAll[[qDat(*, qOut, diaNr*)]];
+<exit>

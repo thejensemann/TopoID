@@ -1,0 +1,54 @@
+Prerequisites
+=============
+
+TopoID was developed almost completely under Mathematica 8.  Some
+functions not yet available in earlier versions are used.  Thus,
+Mathematica 8 and above are recommended.  It has also been tested under
+versions 9 and 10.
+
+Apart from Mathematica, QGRAF to generate the input for TopoID and FORM
+to process the output, no other dependencies exits.  For the output of
+QGRAF to be suitable for TopoID, it should be generated with one the
+style files provided in "etc/" of this distribution.  One variant of the
+routine LookUp[] uses KLink as included in FIRE/FIESTA.
+
+For the mentioned software, see:
+  - Mathematica   http://www.wolfram.com/mathematica/
+  - QGRAF         http://cfif.ist.utl.pt/~paulo/qgraf.html
+  - FORM          http://www.nikhef.nl/~form/
+  - KLink         https://bitbucket.org/feynmanIntegrals/
+
+
+Installation
+============
+
+TopoID should to be loaded like any proper Mathematica Package which is
+done via
+
+  << TopoID`;
+
+or
+
+  Needs["TopoID`"];
+
+Otherwise it can happen that not all components are loaded correctly.
+
+When Mathematica is instructed to load a package, it searches the pathes
+listed in $Path and the current Directory[] for files or directories
+matching the package name (e.g. "TopoID.m" or "TopoID/").  If a file is
+found, it is just loaded.  If a directory is found, it should contain a
+file named "init.m" which is loaded subsequently.
+
+TopoID makes use of the latter mechanism (but loading directly
+"<path_to_parent_directory_of_TopoID>/TopoID/init.m" works too).
+Therefore, in order to use the package it is recommended to place the
+directory "TopoID/" of this distribution (or a symbolic link) in a
+folder that is listed under $Path (e.g. "~/.Mathematica/Applications/")
+or in a dedicated folder which is then added to $Path.  This can be
+achieved with
+
+  AppendTo[$Path, "<path_to_parent_directory_of_TopoID>"];
+
+Note that this line of code can be used either in each Mathematica
+session where TopoID is loaded or in a global "init.m" file
+(e.g. "~/.Mathematica/Kernel/init.m").

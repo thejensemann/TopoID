@@ -1,0 +1,45 @@
+#define pTRI "p1,p2"
+#define kTRI "v1"
+#define dTRI "D1,D2,D3"
+
+* - p1,0 ->-@- D2,0 -   p0^2 = (p1 + p2)^2 = - MM
+*           |        |
+*   D1,0,v1 ^        @- p0,M ->-
+*           |        |
+* - p2,0 ->-@- D3,0 -
+
+#procedure fTRI(MM,M2ep)
+  id TRI(a1?,a2?,a3?)
+    = `M2ep'^(-1) * (`MM')^(- 2 - a1 - a2 - a3)
+    * D1^-a1*D2^-a2*D3^-a3;
+#endprocedure
+
+#procedure gTRI(MM,M2ep)
+  id D1^a1?*D2^a2?*D3^a3?
+    = `M2ep' * (`MM')^(2 + a1 + a2 + a3)
+    * TRI(-a1,-a2,-a3);
+#endprocedure
+
+#procedure eTRI(MM)
+  id D1 = v1.v1;
+  id D2 = v1.v1 + 2*p1.v1;
+  id D3 = v1.v1 - 2*p2.v1;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+  id p1.p2 = - (`MM')/2;
+#endprocedure
+
+#procedure cTRI(MM)
+  id p1.v1 = 1/2 * (D2 - v1.v1);
+  id p2.v1 = 1/2 * (- D3 + v1.v1);
+  id v1.v1 = D1;
+  id p1.p1 = 0;
+  id p2.p2 = 0;
+  id p1.p2 = - (`MM')/2;
+#endprocedure
+
+#procedure sTRI
+* zeros
+  id TRI(a1?,a2?neg0_,a3?) = 0;
+  id TRI(a1?,a2?,a3?neg0_) = 0;
+#endprocedure

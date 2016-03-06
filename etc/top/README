@@ -1,0 +1,5 @@
+Hand-written basic topology definitions due to Alexey.  They where used
+in the calculation of the top-quark mass-corrections to the total
+hadronic cross section for Higgs-boson production at NNLO [Pak:2009dg].
+Those resulted from the co-subgraphs of the diagrams after the
+asymptotic expansion in the large top-quark mass.
