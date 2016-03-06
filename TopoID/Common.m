@@ -8,11 +8,11 @@ BeginPackage["TopoID`Common`", {"TopoID`System`"}];  (* TODO: TEMP *)
 
 (* current version *)
 $TopoIDVersion =
-  "1.2";
+  "2.0";
 
 (* corresponding release date *)
 $TopoIDDate =
-  "2015-05-20";  (* TODO: update when done *)
+  "2016-XX-XX";  (* TODO: update when done *)
 
 (* list of provided functions *)
 $TopoIDFunctions =
