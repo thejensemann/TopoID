@@ -53,7 +53,8 @@ BeginPackage[
      }];
 
 TopoID::usage = StringJoin[
-  "              _______                      _   ____
+  "
+              _______                      _   ____
  --->---+--- |__   __| ------------------ | | |  _ \\ ---+--->---
          \\      | |   __    ____     __   | | | | \\ \\   |
           +     | |  /  \\  |  _ \\   /  \\  | | | |  \\ \\  |
@@ -63,7 +64,7 @@ TopoID::usage = StringJoin[
           |   \\            | |                       / \\
  --->-----+----+---------- |_| ---------------------+---+--->---
        by J.Hoff & A.Pak         ",
-  "v" <> $TopoIDVersion <> " (" <> $TopoIDDate <> ")\n"];
+  "v" <> $TopoIDVersion <> " (" <> $TopoIDDate <> ")\n\n"];
 
 Begin["`Private`"];
 
