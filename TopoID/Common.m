@@ -126,7 +126,7 @@ TODO";
 (* --- common defines, symbols: *)
 
 {Elective,
- Inherit,Iterate, $NamingRulesKeys,
+ Inherit,Iterate,InheritIterate, $NamingRulesKeys,
  VerbosityRules};
 
 (* --- common helpers: *)
@@ -169,6 +169,7 @@ $NamingRulesKeys =
 {Inherit, Inherit[_String],
  Iterate, Iterate[_Integer], Iterate[_String],
  Iterate[_String, _Integer], Iterate[_Integer, _String],
+ InheritIterate[_String],
  _List, _Integer, _String, _Symbol, _Function};
 
 NamingRules::list = "\

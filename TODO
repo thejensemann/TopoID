@@ -36,3 +36,5 @@ Internal/Code
 - check whether TopoID:Cuts can handle 3 or more connectivity components
 
 - TODO stuff from Todoist
+
+- Polynomial.m: sort zeros

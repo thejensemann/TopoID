@@ -43,6 +43,10 @@ ToMapping[<rule(s)>, [opts]] -> <map(s)>
 ToMapping[<expr>, [<key(s)>], [opts]] -> <map(s)>
 -- convert arbitrary expressions into mapping(s)
 
+SectorToMapping[<sec(s)>] -> <map(s)>
+SectorToSubset[<sec(s)>] -> <list(s)>
+-- convert sectors to mappings or line subsets
+
 *)
 
 (* --- package begin ------------------------------------------------ *)
@@ -68,6 +72,9 @@ BeginPackage[
  MappingToGraph,
  (*$ToMappingHash,*) (*$ToMappingInherit,*)
  $ToMappingUniqueRules, (*$ToMappingUnique,*) ToMapping};
+
+{$SectorToMapping, SectorToMapping,
+ SectorToSubset};
 
 Begin["`Private`"];
 
@@ -742,11 +749,13 @@ NamingRules[ToMapping] =
    (ToString[Head[#]] <> "m" <> StringReplace[
      StringJoin @@ ToString /@ #, "-" -> "N"] & ),
  Inherit[s_String] ->
-   (s <> StringReplace[StringJoin @@ ToString /@ #, "-" -> "N"] & ),
+   (ToString[Head[#]] <> s <> StringReplace[
+     StringJoin @@ ToString /@ #, "-" -> "N"] & ),
  Inherit[s_Symbol] ->
-   (ToString[s] <> StringReplaceStringJoin @@ ToString /@ # & ),
+   (ToString[s] <> StringReplace[
+     StringJoin @@ ToString /@ #, "-" -> "N"] & ),
 
- Iterate ->
+ Iterate | InheritIterate ->
    (ToString[Head[#1]] <> "m" <> ToString[#2] & ),
  Iterate[s_String] ->
    (s <> ToString[#2] & ),
@@ -758,6 +767,9 @@ NamingRules[ToMapping] =
    (s <> ToString[i + #2] & ),
  Iterate[s_Symbol, i_Integer] | Iterate[i_Integer, s_Symbol] ->
    (ToString[s] <> ToString[i + #2] & ),
+
+ InheritIterate[s_String] ->
+   (ToString[Head[#1]] <> s <> ToString[#2] & ),
 
  i_Integer ->
    (ToString[i] & ),
@@ -871,6 +883,46 @@ ToMapping[
 (* trap *)
 ToMapping[___] :=
   (Message[ToMapping::usage];
+   Abort[]);
+
+(* --- SectorToMapping, SectorToSubset ------------------------------ *)
+
+SectorToMapping::usage = "\
+SectorToMapping[<expr>, [<key(s)>], [opts]] extracts from arbitrary \
+expressions objects matching the MappingPattern[] definition, in \
+analogy to ToMapping[], which are understood to denote sectors.";
+
+$SectorToMapping[sec:{___Integer}] :=
+  Last[Fold[
+    If[
+      #2 === 0,
+      {First[#1], Append[Last[#1], 0]},
+      {First[#1] + 1, Append[Last[#1], First[#1]]}] & ,
+    {1, {}}, sec]];
+
+SectorToMapping[x_, ks___:{}, opts:OptionsPattern[]] :=
+  (ToMapping[x, ks, opts]
+   /. Rule[id, y_] :> Rule[id, $SectorToMapping[y]]);
+
+(* trap *)
+SectorToMapping[___] :=
+  (Message[SectorToMapping::usage];
+   Abort[]);
+
+(* -- *)
+
+SectorToSubset::usage = "\
+SectorToSubset[<expr>, [<key(s)>], [opts]] extracts from arbitrary \
+expressions objects matching the MappingPattern[] definition, in \
+analogy to ToMapping[], which are understood to denote sectors and \
+converts them into the subset notation.";
+
+SectorToSubset[x_, ks___:{}, opts:OptionsPattern[]] :=
+  id /. ReverseMapping[SectorToMapping[x, ks, opts]] /. id -> {};
+
+(* trap *)
+SectorToSubset[___] :=
+  (Message[SectorToSubset::usage];
    Abort[]);
 
 (* --- package end -------------------------------------------------- *)
