@@ -1250,9 +1250,6 @@ LookUp[TTA[1, 1, 1, 1, 1, 1, 1]],
 - LookUp[..., {TTA, TTB}], LookUp[..., TTA, TTB],
 - LookUp[..., \"TT*\"], LookUp[..., RegularExpression[\"TT.*\"]].";
 
-LookUp::path = "\
-Warning: Could not resolve path \"`1`\".";
-
 LookUp::file = "\
 Could not find table file for \"`1`\" in \"`2`\" or on $Path.";
 
@@ -1291,7 +1288,7 @@ $LookUp[
     pr = Quiet[Check[AbsoluteFileName[pt], Null]];
     (* check: Path name *)
     If[pr === Null,
-       Message[LookUp::path, pt],
+       Message[TopoID::path, pt],
        pt = pr];
     (* find file in Path or on $Path *)
     fn = DeleteCases[
@@ -1346,7 +1343,7 @@ $LookUp[
     pr = Quiet[Check[AbsoluteFileName[pt], Null]];
     (* check: Path name *)
     If[pr === Null,
-       Message[LookUp::path, pt],
+       Message[TopoID::path, pt],
        pt = pr];
     (* find file in Path or on $Path *)
     fn = DeleteCases[

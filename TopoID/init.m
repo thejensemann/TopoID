@@ -52,8 +52,7 @@ BeginPackage[
 
      }];
 
-TopoID::usage = StringJoin[
-  "
+TopoID::usage = StringJoin["
               _______                      _   ____
  --->---+--- |__   __| ------------------ | | |  _ \\ ---+--->---
          \\      | |   __    ____     __   | | | | \\ \\   |
@@ -64,7 +63,8 @@ TopoID::usage = StringJoin[
           |   \\            | |                       / \\
  --->-----+----+---------- |_| ---------------------+---+--->---
        by J.Hoff & A.Pak         ",
-  "v" <> $TopoIDVersion <> " (" <> $TopoIDDate <> ")\n\n"];
+  "v" <> $TopoIDVersion <> " (" <> $TopoIDDate <> ")
+"];
 
 Begin["`Private`"];
 
@@ -74,8 +74,21 @@ End[];
 
 EndPackage[];
 
+(* supersede Print[] in batch mode *)
+If[
+  $FrontEnd === Null,
+  SetOptions[
+    {"stdout", "stderr"},
+    {FormatType -> OutputForm,
+     PageWidth -> 100,
+     TotalWidth -> Infinity}];
+  Unprotect[Print];
+  Print[xs___] := $Print[xs];
+  Protect[Print]];
+
+(* TODO: make that work *)
 SetOptions[ParallelMap, DistributedContexts -> Automatic];
 
-WriteString["stdout", TopoID::usage];
+$Print[TopoID::usage];
 
 (* ------------------------------------------------------------------ *)

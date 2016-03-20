@@ -1183,7 +1183,7 @@ TopologyPlot[
     First[Quiet[
       GraphTopologies[top, set, All, -1, Sequence @@ FilterRules[
         {opts}, Options[GraphTopologies]]],
-      {GraphTopologies::externals, TopoID::method}]],
+      {GraphTopologies::externals, TopoID::method2}]],
     Sequence @@ FilterRules[
       DeleteCases[{opts}, HoldPattern[Method -> _]],
       Options[TopologyPlot]]];

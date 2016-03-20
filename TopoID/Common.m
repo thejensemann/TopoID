@@ -53,14 +53,12 @@ $TopoIDMetric = If[
   * construct metric for canonical ordering.
 *)
 
-
-
-
 {TopoID};
 
+(* --- common messages *)
 
-
-
+TopoID::path = "\
+Warning: Could not resolve path \"`1`\".";
 
 (* --- common symbols (for wrappers): *)
 
@@ -110,6 +108,7 @@ a function to which the following arguments are passed:
 (* --- common symbols storing information: *)
 
 {Defaults,
+ Methods,
  MethodRules,
  NamingRules};
 
@@ -131,10 +130,18 @@ TODO";
 
 (* --- common helpers: *)
 
+{$ToString};
+
 {$CheckKeys, $CheckName, $CheckMethod, $CheckLevel,
  $AppendOptions, $AppendToOptions};
 
 {$FlagRules};
+
+{$Print};
+
+{CheckMethod};
+
+{(*$FileDate,*) (*$WriteStringFileDate,*) WriteStringFile};
 
 (* --- where to put this: *)                                            (* TODO: remove at some point *)
 
@@ -240,6 +247,23 @@ Infinity
 0
 *)
 
+(* --- $ToString ---------------------------------------------------- *)
+
+$ToString::usage = "\
+$ToString[<arg(s)>] converts argument(s) <args(s)> to string(s) only \
+if they are of different type.";
+
+(* main *)
+$ToString[x_] :=
+  If[Head[x] === String, x, ToString[x, InputForm]];
+
+(* overload: list *)
+$ToString[l_List] :=
+  $ToString /@ l;
+
+(* overload: sequence *)
+$ToString[xs___] :=
+  StringJoin[$ToString /@ {xs}];
 
 (* --- $CheckKeys --------------------------------------------------- *)  (* DONE *)
 
@@ -286,9 +310,11 @@ $CheckName[tn_String] := Module[
 - Return the symbol or throw an Abort[] otherwise.
 *)
 
+
+
 (* --- $CheckMethod ------------------------------------------------- *)  (* DONE *)
 
-TopoID::method = "\
+TopoID::method2 = "\
 Warning: Invalid option value(s) for [Method] in `1` will be ignored.
 Possible choices are from `2` (as strings).";
 
@@ -298,9 +324,38 @@ $CheckMethod[me__:{}, ma_:{}] := Module[
   {mf, mg} = {Flatten[{me}], Flatten[{ma}]};
   cp = Complement[mf, mg];
   If[cp =!= {},
-     Message[TopoID::method, cp, f /@ mg];
+     Message[TopoID::method2, cp, f /@ mg];
      mf = Complement[mf, cp]];
   mf];
+
+(* --- CheckMethod -------------------------------------------------- *)
+
+CheckMethod::usage = "\
+CheckMethod[<x>, <list>] checks whether the setting for the option \
+[Method] in <x> matches any of the patterns in <list>, reports and \
+discards cases which do not pass this test.";
+
+TopoID::unsmeths = "\
+Warning: Methods[`1`] is not set to a list of valid patterns for the \
+option value(s) of [Method] of `1`.";
+
+TopoID::invmeths = "\
+Warning: Invalid option value(s) for [Method] in `1` will be ignored.  \
+For possible choices see Methods[`2`]";
+
+CheckMethod[me_, fh_Symbol] := Module[
+  {mf, mes, mg, cp},
+  mf = Flatten[{me}];
+  mes = Methods[fh];
+  If[Head[mes] =!= List,
+     Message[TopoID::unsmeths, fh];
+     Return[me]];
+  mes = Alternatives @@ mes;
+  mg = Select[mf, MatchQ[#, mes] & ];
+  cp = Complement[mf, mg];
+  If[cp =!= {}, Message[TopoID::invmeths, cp, fh]];
+  If[mg === {}, Return[{Automatic}]];
+  mg];
 
 (* --- $CheckLevel -------------------------------------------------- *)  (* DONE *)
 
@@ -367,6 +422,18 @@ $FlagRules =
  0 | None | Off | False -> False,
  _ -> False};
 
+(* --- $Print ------------------------------------------------------- *)
+
+$Print::usage = "\
+$Print[<expr(s)>] is an alternative to Print[] to write the \
+expression(s) <expr(s)> on the standard output stream which may be \
+advantageous (e.g. no quotes around strings) in batch mode.";
+
+$Print[xs___] := Module[
+  {f, ys},
+  f = If[Head[#] === String, #, InputForm[#]] & ;
+  ys = {xs} /. MatrixForm | TableForm -> Identity;
+  WriteString["stdout", Sequence @@ (f /@ ys), "\n"]];
 
 
 
@@ -379,48 +446,121 @@ $FlagRules =
 
 
 
-(* --- from old init.m --- *)
 
-If[$FrontEnd === Null,
 
-(* set output options *)
-SetOptions[{"stdout", "stderr"},
-           {PageWidth -> 100,
-            TotalWidth -> Infinity,
-            FormatType -> OutputForm}];
 
-(* redefine Print (no quotes around strings) for batch mode *)
 
-Unprotect[Print];
 
-Print[pr___] :=
-    WriteString["stdout",
-                Sequence @@
-                    (If[#[[0]] === String, #, InputForm[#]] & /@ ({pr} /. TableForm[x__] -> x)),
-                "\n"];
 
-Protect[Print];
 
-];
 
-(* ------------------------------------------------------------------ *)
+
+(* --- WriteStringFile ---------------------------------------------- *)
+
+(* fix for Mathematica 10 *)
+$FileDate[fn_String] :=
+  FileDate[fn] /. {DateObject -> Join, TimeObject -> Identity};
+
+(* helper: formatted modification date of file <fn> or current date *)
+$WriteStringFileDate[fn_String:""] := Module[
+  {dt},
+  dt = If[fn === "", DateList[], $FileDate[fn]];
+  (* round date components *)
+  dt = ToString /@ Round /@ dt;
+  (* fix number of digits to at least two *)
+  dt = If[StringLength[#] >= 2, #, "0" <> #] & /@ dt;
+  (* apply formatting  *)
+  StringJoin[
+    dt[[1]], "-", dt[[2]], "-", dt[[3]], "_",
+    dt[[4]], ":", dt[[5]], ":", dt[[6]]]];
+
+Methods[WriteStringFile] =
+{Automatic, Append, None, RenameFile};
+
+MethodRules[WriteStringFile] =
+{Automatic -> RenameFile};
+
+Options[WriteStringFile] =
+{FormatType -> InputForm,
+ Method -> Automatic,
+ Path -> "."};
+
+$AppendToOptions[WriteStringFile, OpenWrite];
+
+WriteStringFile::usage = "\
+WriteStringFile[<file>, <expr(s)>, [opts]] works similar to \
+WriteString[<stream>, <expr(s)>], but does not require <stream> opened \
+beforehand.  Instead, the expressions <expr(s)> are converted to \
+strings and written directly to <file>.
+The option [Method] allows to control how to proceed in case <file> \
+already exists:
+- Append -- append new content to the old file,
+- None -- overwrite the existing file,
+- RenameFile (Automatic) -- rename the old file.
+The option [Path] allows to specify the relative directory.";
+
+WriteStringFile::switch = "\
+Warning: Switched [Method] from `1` to `2`.";
+
+WriteStringFile::moved = "\
+Warning: The file \"`1`\" was moved to \"`2`\".";
+
+WriteStringFile::failed = "\
+Could not write to the file \"`1`\".";
+
+WriteStringFile[fn_String, xs___, opts:OptionsPattern[]] := Module[  (* fn_String:"" *)
+  {f, pt,me, optr, pr, ys, fm = fn, fo, rf, fs},
+  (* helper: convert to string *)
+  f = If[Head[#] === String, #, ToString[#, OptionValue[FormatType]]] & ;
+  (*  options *)
+  {pt, me} = OptionValue[{Path, Method}];
+  me = CheckMethod[me, WriteStringFile];
+  me = me /. MethodRules[WriteStringFile];
+  optr = FilterRules[{opts}, Options[OpenWrite]];
+  (* check: path name *)
+  pr = AbsoluteFileName[pt];
+  If[pr === $Failed, Message[TopoID::path, pt], pt = pr];
+  (* convert input *)
+  ys = f /@ {xs};
+  (* file name *)
+  fm = If[fn === "", Hold[Sequence[]], FileNameJoin[{pt, fm}]];
+  (* method: rename file *)
+  If[fn =!= "" && First[me] === RenameFile && FileExistsQ[fm],
+     fo = fm <> "_" <> $WriteStringFileDate[fm];
+     rf = RenameFile[fm, fo];
+     (* check: rename file *)
+     If[rf === $Failed,
+        me = {Append};
+        Message[WriteStringFile::switch, RenameFile, Append],
+        Message[WriteStringFile::moved, fn, fo]]];
+  (* method: append *)
+  Check[
+    fs = If[First[me] === Append, OpenAppend, OpenWrite][
+      Release[fm], Sequence @@ optr];
+    If[fn === "", fm = First[fs]],
+    Message[WriteStringFile::failed, fm];
+    Return[fs]];
+  Check[
+    WriteString[fs, Sequence @@ ys, "\n"],
+    Message[WriteStringFile::failed, fm];
+    Return[$Failed]];
+  Check[
+    Close[fs],
+    Message[WriteStringFile::failed, fm];
+    $Failed]];
+
+WriteStringFile[___] :=
+  (Message[WriteStringFile::usage];
+   Abort[]);
+
+
+
+
+
 
 (* TODO:
-- Handle TableForm[MatrixForm[]]
-- ...
+- check options
 *)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

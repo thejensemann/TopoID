@@ -1,0 +1,113 @@
+# -- Crusher config file
+
+# --- symbol declaration
+
+# symbols used in input file (and external IBPs)
+symb=k1,k2,q1,q2,q3,d,mh2,mt2
+
+# symbols to be substituted for powers (optional)
+powsymb=a1,a2,a3,a4,a5,a6,a7,a8,a9
+
+# invariants of the problem; including the dimension d (for Fermat)
+inv=mt2,s12,s13,s23,d
+
+# --- kinematic setup
+
+# list: independent external momenta p, values of p^2
+ext=q1,0
+ext=q2,0
+ext=q3,0
+
+# list: loop momenta
+limp=k1
+limp=k2
+
+# relations among the invariants (optional)
+#userrep=s12==0
+
+# --- topology definition
+
+# list: propagator momenta and masses
+prop=k1,1
+prop=k2,1
+prop=k1-k2,0
+prop=k1-q1,1
+prop=k2-q1,1
+prop=k1-q1-q2,1
+prop=k2-q1-q2,1
+prop=k1-q1-q2-q3,1
+prop=k2-q1-q2-q3,1
+
+# list: toplevel topologies (as ordering mask)
+toptopo=1,1,1,1,1,1,0,1,0
+toptopo=1,1,1,0,1,1,1,1,0
+toptopo=1,0,1,1,1,1,1,1,0
+toptopo=1,1,1,1,0,1,0,1,1
+# (not allowed with external symmetries)
+
+# list: starting topologies (to be solved)
+topo=1,1,1,1,1,1,0,1,0
+topo=1,1,1,0,1,1,1,1,0
+topo=1,0,1,1,1,1,1,1,0
+topo=1,1,1,1,0,1,0,1,1
+
+# list: vanishing topologies (optional)
+zerotopo=0,0,0,0,1,1,1,1,1,0
+
+# --- symmetries
+
+# constrained to sector: 0/1 (optional; default 1)
+useintsym=0
+
+# among different sectors: 0/1 (optional; default 1)
+usesym=0
+# (not allowed with external symmetries)
+
+# from external file (optional)
+extsymfile=symmA
+
+# --- master integrals
+
+# integrals to be eliminated first: PROP/SP (optional; default SP)
+elim=SP
+
+# basis to be used: NEG/POS (optional; default NEG)
+basis=NEG
+
+# reveal master integrals (no insertion of subtopologies): 0/1 (optional; default 0)
+#get_master=0
+
+# --- seed integrals
+
+# seeds to be generated for starting topology: dots and scalar products
+seeds=7,4
+
+# minimal seeds to be generated (optional; default 1,1)
+minseeds=1,1
+
+# adaptive mode for integral from file on command line: 0/1 (optional; default 0)
+adaptive=0
+
+# --- substitution list
+
+# integral name (optional; default Int)
+intname=A
+
+# deliminator between propagators and scalar products (optional; default none)
+#delim=X
+
+# output format: 0/1/2 (FORM/Mathematica/Maple) (optional; default 0)
+program=1
+
+# --- program parameters
+
+# data directory (optional; default ./data)
+dir=./data_A
+
+# debugging/verbosity level: 0/1/2/3 (optional; default 1)
+debug=2
+
+# number of threads
+threads=12
+
+# --
