@@ -47,6 +47,9 @@ SectorToMapping[<sec(s)>] -> <map(s)>
 SectorToSubset[<sec(s)>] -> <list(s)>
 -- convert sectors to mappings or line subsets
 
+GroupToSector[<grp(s)>] -> <sec(s)>
+-- convert group to sector notation
+
 *)
 
 (* --- package begin ------------------------------------------------ *)
@@ -74,7 +77,8 @@ BeginPackage[
  $ToMappingUniqueRules, (*$ToMappingUnique,*) ToMapping};
 
 {$SectorToMapping, SectorToMapping,
- SectorToSubset};
+ SectorToSubset,
+ GroupToSector};
 
 Begin["`Private`"];
 
@@ -925,6 +929,25 @@ SectorToSubset[___] :=
   (Message[SectorToSubset::usage];
    Abort[]);
 
+(* --- GroupToSector ------------------------------------------------ *)
+
+GroupToSector::usage = "\
+GroupToSector[<group(s)>] converts the line subset(s) <group(s)> to \
+sector notation.";
+
+(* main: singular *)
+GroupToSector[sg:{___Integer}, n_Integer:-1] :=
+  ReplacePart[Table[0, {Max[sg, n]}], # -> 1 & /@ sg];
+
+(* overload: plural *)
+GroupToSector[sgs:{__List}, n_Integer:-1] :=
+  GroupToSector[#, Max[sgs, n]] & /@ sgs;
+
+(* trap *)
+GroupToSector[___] :=
+  (Message[GroupToSector::usage];
+   Abort[]);
+
 (* --- package end -------------------------------------------------- *)
 
 Protect["TopoID`Mapping`*"];
@@ -946,6 +969,10 @@ EndPackage[];
 
 (* --- TODO:
 
--
+- SectorToSubset[] -> SectorToGroup[]?
+
+- ReverseMapping[]: use GroupToSector[]?
+
+- GroupToSector[]: move? where?
 
 *)

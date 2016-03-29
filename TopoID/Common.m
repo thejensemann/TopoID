@@ -130,7 +130,7 @@ TODO";
 
 (* --- common helpers: *)
 
-{$ToString};
+{$ToString, $PowerToSymbol};
 
 {$CheckKeys, $CheckName, $CheckMethod, $CheckLevel,
  $AppendOptions, $AppendToOptions};
@@ -264,6 +264,16 @@ $ToString[l_List] :=
 (* overload: sequence *)
 $ToString[xs___] :=
   StringJoin[$ToString /@ {xs}];
+
+(* --- $PowerToSymbol ----------------------------------------------- *)
+
+$PowerToSymbol::usage = "\
+$PowerToSymbol holds replacement rules to convert powers of symbols to \
+new symbols.";
+
+$PowerToSymbol =
+{s_^p_?Negative :> Symbol[$ToString[s] <> "i" <> ToString[-p]],
+ s_^p_ :> Symbol[$ToString[s] <> $ToString[p]]};
 
 (* --- $CheckKeys --------------------------------------------------- *)  (* DONE *)
 
