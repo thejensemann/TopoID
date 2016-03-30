@@ -187,7 +187,7 @@ Function passed as option value of [Naming] failed sanity check (no \
 string value produced).";
 
 NamingRules::keys = "\
-Invalid option value for [Naming]: `1`.
+Invalid (or not implemented) option value for [Naming]: `1`.
 Use one of the following instead: `2`.";
 
 

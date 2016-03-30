@@ -19,16 +19,22 @@ BeginPackage[
    "TopoID`Setup`",
    "TopoID`Topology`",
 
-   "TopoID`Mapping`"}];  (* TODO: -> Polynomial? *)
+   "TopoID`Mapping`",  (* TODO: -> Polynomial? *)
+
+   "TopoID`Calculate`",
+
+   "TopoID`FORM`"}];
 
 (* functions *)
 {CrusherConfig, WriteCrusherConfig,
  CrusherSymmetries, WriteCrusherSymmetries,
- CrusherList, WriteCrusherList};
+ CrusherList, WriteCrusherList,
+ CrusherLimits};
 
 (* wrappers *)
 {CrusherComment, CrusherSetting,
  CrusherRelation, CrusherRelations,
+ CrusherIntegral,
  CrusherFile};
 
 Begin["`Private`"];
@@ -36,9 +42,9 @@ Begin["`Private`"];
 (* --- CrusherConfig ------------------------------------------------ *)
 
 CrusherConfig::usage = "\
-CrusherConfig[<top>, <set>, [opts]] generates a Crusher config file \
-for topology <top> in the kinematic setup <set>.  See \
-Options[CrusherConfig] for the available options.";
+CrusherConfig[<top(s)>, [<set>], [opts]] generates the Crusher \
+config(s) for topologies <top(s)> in the kinematic setup [<set>].  See \
+Options[CrusherConfig] for the full list of available options.";
 
 Options[CrusherConfig] =
 {"symb" -> Automatic,        (* {(String | Symbol)...} *)
@@ -75,142 +81,125 @@ Options[CrusherConfig] =
  "debug" -> 2,               (* 0 | 1 | 2 | 3 *)
  "threads" -> 12,            (* _Integer?Positive *)
 
- OutputForm -> Automatic};   (* cf. Defaults[CrusherConfig] *)
+ FormatType -> Automatic};   (* cf. Defaults[CrusherConfig] *)
 
 (* #1: <top>, #2: <setup> *)
 Defaults[CrusherConfig] =
-{
+{"symb" -> (Join[ps /. #2, ks /. #2, Variables[Join[
+  xs /. #2, ms^2 /. #2, Last /@ (rs /. #2)] /. $PowerToSymbol], {"d"}] & ),
 
-   "symb" -> (Join[
-     ps /. #2, ks /. #2, Variables[
-       Join[xs /. #2, ms^2 /. #2, Last /@ (rs /. #2)]
-       /. $PowerToSymbol], {"d"}] & ),
+ "powsymb" -> (Function[i, "a" <> ToString[i]] /@ Range[Length[facs /. #]] & ),
 
-   "powsymb" ->
-     (Function[i, "a" <> ToString[i]] /@ Range[Length[facs /. #]] & ),
+ "inv" -> (Append[Variables[Join[
+   xs /. #2, ms^2 /. #2, Last /@ (rs /. #2)] /. $PowerToSymbol], "d"] & ),
 
-   "inv" -> (Append[Variables[
-     Join[xs /. #2, ms^2 /. #2, Last /@ (rs /. #2)]
-     /. $PowerToSymbol], "d"] & ),
+ "ext" -> (Transpose[{ps /. #2, ps^2 /. #2 //. (cs /. #2)}] & ),
 
-   "ext" ->
-     (Transpose[{ps /. #2, ps^2 /. #2 //. (cs /. #2)}] & ),
+ "limp" -> (ks /. #2 & ),
 
-   "limp" ->
-     (ks /. #2 & ),
+ "userrep" -> (rs /. #2 /. $PowerToSymbol & ),
 
-   "userrep" ->
-     (rs /. #2 /. $PowerToSymbol & ),
+ "prop" -> (Transpose[{TopologyMomentaFlows[##], TopologyMasses[##] /. $PowerToSymbol}] & ),
 
-   "prop" -> (Transpose[
-     {TopologyMomentaFlows[##], TopologyMasses[##]
-      /. $PowerToSymbol}] & ),
+ (* depending on available data *)
+ "toptopo" | "topo" -> (Which[
+   (* >subt< *)
+   (subt /. #) =!= subt,
+   DeleteDuplicates[Join @@ GroupToSector[
+     Select[subt /. #, Function[s, Length[First[s]] === Length[Part[subt /. #, 1, 1]]]],
+     Length[facs /. #]]],
+   (* >pros< *)
+   (pros /. #) =!= pros,
+   {Function[p, If[p[[1]] === Null || p[[3]] === p[[4]] === 0, 0, 1]] /@ (pros /. #)},
+   (* default: >facs< *)
+   True,
+   {DenominatorSymbolQ /@ First /@ (facs /. #) /. {False -> 0, True -> 1}}
+   ] & ),
 
-   "toptopo" | "topo" -> (Which[
-     (* <subt> *)
-     (subt /. #) =!= subt, DeleteDuplicates[GroupToSector[
-       Join @@ Select[subt /. #, Function[
-         s, Length[First[s]] === Length[Part[subt /. #, 1, 1]]]],
-       Length[facs /. #]]],
-     (* <pros> *)
-     (pros /. #) =!= pros, Function[
-       p, If[p[[1]] === Null || p[[3]] === p[[4]] === 0, 0, 1]
-     ] /@ (pros /. #1),
-     (* default: <facs> *)
-     True, Function[
-       f, If[DenominatorSymbolQ[First[f]], 1, 0]] /@ (facs /. #1)
-     ] & ),
+ "zerotopo" -> (GroupToSector[zero /. # /. zero -> {}, Length[facs /. #]] & ),
 
-   "zerotopo" ->
-     (GroupToSector[zero /. # /. zero -> {}, Length[facs /. #]] & ),
+ "extsymfile" -> ("symm_" <> (name /. #) <> ".dat" & ),
 
-   "extsymfile" ->
-     ("symm_" <> (name /. #) <> ".dat" & ),
+ "intname" -> (name /. # & ),
 
-   "intname" ->
-     (name /. # & ),
+ "dir" -> ("data_" <> (name /. #) <> ".dir" & ),
 
-   "dir" ->
-     ("data_" <> (name /. #) <> ".dir" & ),
+ FormatType -> (CrusherFile[
+   CrusherComment[2, "Crusher config file"], "\n",
+   CrusherComment[3, "symbol declaration"], "\n",
+   CrusherComment["symbols used in input file (and external IBPs)"],
+   CrusherSetting["symb", "symb" /. #], "\n",
+   CrusherComment["symbols to be substituted for powers (optional)"],
+   CrusherSetting["powsymb", "powsymb" /. #], "\n",
+   CrusherComment["invariants of the problem; including the dimension d (for Fermat)"],
+   CrusherSetting["inv", "inv" /. #], "\n",
+   CrusherComment[3, "kinematic setup"], "\n",
+   CrusherComment["list: independent external momenta p, values of p^2"],
+   Function[ex, CrusherSetting["ext", ex]] /@ ("ext" /. #), "\n",
+   CrusherComment["list: loop momenta"],
+   Function[li, CrusherSetting["limp", li]] /@ ("limp" /. #), "\n",
+   CrusherComment["relations among the invariants (optional)"],
+   Function[us, CrusherSetting["userrep", us]] /@ ("userrep" /. #), "\n",
+   CrusherComment[3, "topology definition"], "\n",
+   CrusherComment["list: propagator momenta and masses"],
+   Function[pr, CrusherSetting["prop", pr]] /@ ("prop" /. #), "\n",
+   CrusherComment["list: toplevel topologies (as ordering mask)"],
+   Function[to, CrusherSetting["toptopo", to]] /@ ("toptopo" /. #),
+   CrusherComment["(not allowed with external symmetries)"], "\n",
+   CrusherComment["list: starting topologies (to be solved)"],
+   Function[to, CrusherSetting["topo", to]] /@ ("topo" /. #), "\n",
+   CrusherComment["list: vanishing topologies (optional)"],
+   Function[ze, CrusherSetting["zerotopo", ze]] /@ ("zerotopo" /. #), "\n",
+   CrusherComment[3, "symmetries"], "\n",
+   CrusherComment["constrained to sector: 0/1 (optional; default 1)"],
+   CrusherSetting["useintsym", "useintsym" /. #], "\n",
+   CrusherComment["among different sectors: 0/1 (optional; default 1)"],
+   CrusherSetting["usesym", "usesym" /. #], "\n",
+   CrusherComment["from external file (optional)"],
+   CrusherSetting["extsymfile", "extsymfile" /. #],
+   CrusherComment["(not allowed with external symmetries)"], "\n",
+   CrusherComment[3, "master integrals"], "\n",
+   CrusherComment["integrals to be eliminated first: PROP/SP (optional; default SP)"],
+   CrusherSetting["elim", "elim" /. #], "\n",
+   CrusherComment["basis to be used: NEG/POS (optional; default NEG)"],
+   CrusherSetting["basis", "basis" /. #], "\n",
+   CrusherComment["reveal master integrals (no insertion of subtopologies): 0/1 (optional; default 0)"],
+   CrusherSetting["get_master", "get_master" /. #], "\n",
+   CrusherComment[3, "seed integrals"], "\n",
+   CrusherComment["seeds to be generated for starting topology: dots and scalar products"],
+   CrusherSetting["seeds", "seeds" /. #], "\n",
+   CrusherComment["minimal seeds to be generated (optional; default 1,1)"],
+   CrusherSetting["minseeds", "minseeds" /. #], "\n",
+   CrusherComment["adaptive mode for integral from file on command line: 0/1 (optional; default 0)"],
+   CrusherSetting["adaptive", "adaptive" /. #], "\n",
+   CrusherComment[3, "substitution list"], "\n",
+   CrusherComment["integral name (optional; default Int)"],
+   CrusherSetting["intname", "intname" /. #], "\n",
+   CrusherComment["deliminator between propagators and scalar products (optional; default none)"],
+   CrusherSetting["delim", "delim" /. #], "\n",
+   CrusherComment["output format: 0/1/2 (FORM/Mathematica/Maple) (optional; default 0)"],
+   CrusherSetting["program", "program" /. #], "\n",
+   CrusherComment[3, "program parameters"], "\n",
+   CrusherComment["data directory (optional; default ./data)"],
+   CrusherSetting["dir", "dir" /. #], "\n",
+   CrusherComment["debugging/verbosity level: 0/1/2/3 (optional; default 1)"],
+   CrusherSetting["debug", "debug" /. #], "\n",
+   CrusherComment["number of threads"],
+   CrusherSetting["threads", "threads" /. #], "\n",
+   CrusherComment[2]] & ),
 
-   OutputForm -> (CrusherFile[
-     CrusherComment[2, "Crusher config file"], "\n",
-     CrusherComment[3, "symbol declaration"], "\n",
-     CrusherComment["symbols used in input file (and external IBPs)"],
-     CrusherSetting["symb", "symb" /. #], "\n",
-     CrusherComment["symbols to be substituted for powers (optional)"],
-     CrusherSetting["powsymb", "powsymb" /. #], "\n",
-     CrusherComment["invariants of the problem; including the dimension d (for Fermat)"],
-     CrusherSetting["inv", "inv" /. #], "\n",
-     CrusherComment[3, "kinematic setup"], "\n",
-     CrusherComment["list: independent external momenta p, values of p^2"],
-     Function[ex, CrusherSetting["ext", ex]] /@ ("ext" /. #), "\n",
-     CrusherComment["list: loop momenta"],
-     Function[li, CrusherSetting["limp", li]] /@ ("limp" /. #), "\n",
-     CrusherComment["relations among the invariants (optional)"],
-     Function[us, CrusherSetting["userrep", us]] /@ ("userrep" /. #), "\n",
-     CrusherComment[3, "topology definition"], "\n",
-     CrusherComment["list: propagator momenta and masses"],
-     Function[pr, CrusherSetting["prop", pr]] /@ ("prop" /. #), "\n",
-     CrusherComment["list: toplevel topologies (as ordering mask)"],
-     Function[to, CrusherSetting["toptopo", to]] /@ ("toptopo" /. #),
-     CrusherComment["(not allowed with external symmetries)"], "\n",
-     CrusherComment["list: starting topologies (to be solved)"],
-     Function[to, CrusherSetting["topo", to]] /@ ("topo" /. #), "\n",
-     CrusherComment["list: vanishing topologies (optional)"],
-     Function[ze, CrusherSetting["zerotopo", ze]] /@ ("zerotopo" /. #), "\n",
-     CrusherComment[3, "symmetries"], "\n",
-     CrusherComment["constrained to sector: 0/1 (optional; default 1)"],
-     CrusherSetting["useintsym", "useintsym" /. #], "\n",
-     CrusherComment["among different sectors: 0/1 (optional; default 1)"],
-     CrusherSetting["usesym", "usesym" /. #], "\n",
-     CrusherComment["from external file (optional)"],
-     CrusherSetting["extsymfile", "extsymfile" /. #],
-     CrusherComment["(not allowed with external symmetries)"], "\n",
-     CrusherComment[3, "master integrals"], "\n",
-     CrusherComment["integrals to be eliminated first: PROP/SP (optional; default SP)"],
-     CrusherSetting["elim", "elim" /. #], "\n",
-     CrusherComment["basis to be used: NEG/POS (optional; default NEG)"],
-     CrusherSetting["basis", "basis" /. #], "\n",
-     CrusherComment["reveal master integrals (no insertion of subtopologies): 0/1 (optional; default 0)"],
-     CrusherSetting["get_master", "get_master" /. #], "\n",
-     CrusherComment[3, "seed integrals"], "\n",
-     CrusherComment["seeds to be generated for starting topology: dots and scalar products"],
-     CrusherSetting["seeds", "seeds" /. #], "\n",
-     CrusherComment["minimal seeds to be generated (optional; default 1,1)"],
-     CrusherSetting["minseeds", "minseeds" /. #], "\n",
-     CrusherComment["adaptive mode for integral from file on command line: 0/1 (optional; default 0)"],
-     CrusherSetting["adaptive", "adaptive" /. #], "\n",
-     CrusherComment[3, "substitution list"], "\n",
-     CrusherComment["integral name (optional; default Int)"],
-     CrusherSetting["intname", "intname" /. #], "\n",
-     CrusherComment["deliminator between propagators and scalar products (optional; default none)"],
-     CrusherSetting["delim", "delim" /. #], "\n",
-     CrusherComment["output format: 0/1/2 (FORM/Mathematica/Maple) (optional; default 0)"],
-     CrusherSetting["program", "program" /. #], "\n",
-     CrusherComment[3, "program parameters"], "\n",
-     CrusherComment["data directory (optional; default ./data)"],
-     CrusherSetting["dir", "dir" /. #], "\n",
-     CrusherComment["debugging/verbosity level: 0/1/2/3 (optional; default 1)"],
-     CrusherSetting["debug", "debug" /. #], "\n",
-     CrusherComment["number of threads"],
-     CrusherSetting["threads", "threads" /. #], "\n",
-     CrusherComment[2]] & ),
-
-   None -> ""};
+ None -> ""};
 
 (* main *)
-CrusherConfig[                                                                                  (* TODO: clean up -v *)
+CrusherConfig[
   top:TopologyPattern[], set:SetupPattern[], opts:OptionsPattern[]] :=
   Module[
-    {optr, keys, optt, optu, opf},
-
-    optr = Options[CrusherConfig];
-
-    keys = Cases[First /@ optr, _String];
-
+    {ops, keys, opt, opu, opf},
+    ops = Options[CrusherConfig];
+    (*keys = Cases[First /@ ops, _String];*)
+    keys = First /@ ops;
     (* handle symmetries *)
-    optt = If[
+    opt = If[
       (symm /. top) =!= symm,
       {"powsymb" -> Automatic,
        "useintsym" -> 0,
@@ -220,30 +209,34 @@ CrusherConfig[                                                                  
        "useintsym" -> 1,
        "usesym" -> 1,
        "extsymfile" -> None}];
-
-    optu = MapThread[Rule, {keys, keys /. {opts} /. optr}];
-
+    (* complete list of keys and values *)
+    opu = MapThread[Rule, {keys, keys /. {opts} /. ops}];
     (* apply defaults *)
-    optu = optu /. Rule[k_, Automatic] :> Rule[k, k /. optt];
-    optu = optu /. Rule[k_, Automatic] :> Rule[k, k /. Defaults[CrusherConfig]];
-    optu = optu /. Rule[k_, v_] :> Rule[k, v /. Defaults[CrusherConfig]];
-
-    (* apply functions *)
-    optu = optu /. Rule[k_, v_Function] :> Rule[k, v[top, set]];
-
+    (opu = opu
+     (* symmetries *)
+     /. Rule[k_, Automatic] :> Rule[k, k /. opt]
+     (* Automatic defaults *)
+     /. Rule[k_, Automatic] :> Rule[k, k /. Defaults[CrusherConfig]]
+     (* remaining defaults *)
+     /. Rule[k_, v_] :> Rule[k, v /. Defaults[CrusherConfig]]
+     (* call functions *)
+     /. Rule[k_String, v_Function] :> Rule[k, v[top, set]]);
     (* handle symmetries *)
-    optu = optu /. Rule["symb", v_] :> Rule["symb", Join[v, "powsymb" /. optu]];
-
+    opu = opu /. Rule["symb", v_] :> Rule["symb", Join[v, "powsymb" /. opu]];
     (* option: output form *)
-    opf = OptionValue[OutputForm];
-    opf = opf /. Automatic -> (OutputForm /. Defaults[CrusherConfig]);
-
+    opf = FormatType /. opu;
     (* result *)
-    opf[optu]];
+    opf[opu]];
+
+(* alias: "Setup" *)
+CrusherConfig[
+  top:TopologyPattern["Setup"], opts:OptionsPattern[]] :=
+  CrusherConfig[top, setp /. top, opts];
 
 (* overload: plural *)
 CrusherConfig[
-  tops_?TopologyListQ, set:SetupPattern[], opts:OptionsPattern[]] :=
+  tops_?TopologyListQ, set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
   CrusherConfig[#, set, opts] & /@ tops;
 
 (* trap *)
@@ -261,13 +254,68 @@ CrusherConfig[___] :=
 
 *)
 
-(* TODO:
+(* --- WriteCrusherConfig ------------------------------------------- *)
 
-- <setp> alias
+WriteCrusherConfig::usage = "\
+WriteCrusherConfig[<file>, <top(s)>, <set>, [opts]] generates the \
+Crusher config(s) <file> for topologies <top(s)> in the kinematic \
+setup <set>.  See \ Options[WriteCrusherConfig] for the full list of \
+available options.";
 
-*)
+Options[WriteCrusherConfig] =
+{Naming -> Inherit};
 
-(* --- CrusherSymmetries -------------------------------------------- *)
+$AppendToOptions[
+  WriteCrusherConfig,
+  CrusherConfig, ToFORMCodeString, WriteStringFile];
+
+(* #1: _String; from (>name< /. <top>) *)
+NamingRules[WriteCrusherConfig] =
+{Inherit -> ("input_" <> # <> ".dat" & ),
+ Inherit[s_String] -> (s <> # <> ".dat" & ),
+ x_ :> (Message[NamingRules::keys, x, $NamingRulesKeys]; Abort[])};
+
+(* main: singular *)
+WriteCrusherConfig[
+  fn_String:"", top:TopologyPattern[], set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng, tmp},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherConfig];
+    ng = If[fn === "", ng[name /. top], fn];
+    tmp = CrusherConfig[
+      top, set,
+      Sequence @@ FilterRules[{opts}, Options[CrusherConfig]]];
+    WriteStringFile[
+      ng, tmp, FormatType -> OutputForm,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* main: plural *)
+WriteCrusherConfig[
+  fn_String:"", tops_?TopologyListQ, set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherConfig];
+    tmp = CrusherConfig[
+      #, set,
+      Sequence @@ FilterRules[{opts}, Options[CrusherConfig]]] &
+        /@ tops;
+    tmp = ToString[#, OutputForm] & /@ tmp;
+    tmp = MapThread[FORMFold, {ng /@ (name /. tops), tmp}];
+    tmp = ToFORMCodeString[
+      Riffle[tmp, "\n\n\n"],
+      Sequence @@ FilterRules[{opts}, Options[ToFORMCodeString]]];
+    WriteStringFile[
+      fn, tmp,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* trap *)
+WriteCrusherConfig[___] :=
+  (Message[WriteCrusherConfig::usage];
+   Abort[]);
+
+(* --- CrusherSymmetries -------------------------------------------- *)  (* TODO *)
 
 CrusherSymmetries::usage = "\
 CrusherSymmetries[<top>] returns symmetry relations of the topology \
@@ -343,6 +391,122 @@ CrusherSymmetries[___] :=
   (Message[CrusherSymmetries::usage];
    Abort[]);
 
+(* --- WriteCrusherSymmetries --------------------------------------- *)  (* TODO *)
+
+
+WriteCrusherSymmetries::usage = "\
+WriteCrusherSymmetries[<file>, <top(s)>, <set>, [opts]] generates the \
+Crusher config(s) <file> for topologies <top(s)> in the kinematic \
+setup <set>.  See \ Options[WriteCrusherSymmetries] for the full list of \
+available options.";
+
+Options[WriteCrusherSymmetries] =
+{Naming -> Inherit};
+
+$AppendToOptions[
+  WriteCrusherSymmetries,
+  CrusherSymmetries, ToFORMCodeString, WriteStringFile];
+
+NamingRules[WriteCrusherSymmetries] =
+  NamingRules[WriteCrusherSymmetries];
+
+(* main: singular *)
+WriteCrusherSymmetries[
+  fn_String:"", top:TopologyPattern[], set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng, tmp},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherSymmetries];
+    ng = If[fn === "", ng[name /. top], fn];
+    tmp = CrusherSymmetries[
+      top, set,
+      Sequence @@ FilterRules[{opts}, Options[CrusherSymmetries]]];
+    WriteStringFile[
+      ng, tmp, FormatType -> OutputForm,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* main: plural *)
+WriteCrusherSymmetries[
+  fn_String:"", tops_?TopologyListQ, set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherSymmetries];
+    tmp = CrusherSymmetries[
+      #, set,
+      Sequence @@ FilterRules[{opts}, Options[CrusherSymmetries]]] &
+        /@ tops;
+    tmp = ToString[#, OutputForm] & /@ tmp;
+    tmp = MapThread[FORMFold, {ng /@ (name /. tops), tmp}];
+    tmp = ToFORMCodeString[
+      Riffle[tmp, "\n\n\n"],
+      Sequence @@ FilterRules[{opts}, Options[ToFORMCodeString]]];
+    WriteStringFile[
+      fn, tmp,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* trap *)
+WriteCrusherSymmetries[___] :=
+  (Message[WriteCrusherSymmetries::usage];
+   Abort[]);
+
+(* --- CrusherList -------------------------------------------------- *)
+
+CrusherList::usage = "
+CrusherList[<expr(s)>] extracts a list of integrals matching \
+TopologyIntegralPattern[] from <expr(s)> and returns them properly \
+formatted for Crusher.";
+
+CrusherList[x__] := CrusherFile[Riffle[
+  CrusherIntegral
+    /@ (TopologyIntegralList[{x}] /. _Symbol[is__Integer] -> {is}),
+  "\n"]];
+
+(* trap *)
+CrusherList[___] :=
+  (Message[CrusherList::usage];
+   Abort[]);
+
+(* --- WriteCrusherList --------------------------------------------- *)
+
+WriteCrusherList::usage = "
+WriteCrusherList[<file>, <expr(s)>] extracts a list of integrals \
+matching TopologyIntegralPattern[] from <expr(s)> and writes them \
+properly formatted for Crusher to <file>.";
+
+Options[WriteCrusherList] = Options[WriteStringFile];
+
+WriteCrusherList[fn_String:"", x__, opts:OptionsPattern[]] :=
+  WriteStringFile[fn, CrusherList[x], FormatType -> OutputForm, opts];
+
+(* trap *)
+WriteCrusherList[___] :=
+  (Message[WriteCrusherList::usage];
+   Abort[]);
+
+(* --- CrusherLimits ------------------------------------------------ *)
+
+CrusherLimits::usage = "\
+CrusherLimits[<expr(s)>] extracts a list of integrals matching \
+TopologyIntegralPattern[] from <expr(s)> and gives the maximum numbers \
+of appearing dots (higher powers of denominators) and scalar products \
+(powers of numerators) suitable for the option \"seeds\" of \
+CrusherConfig[].";
+
+CrusherLimits[x__] :=
+  Module[
+    {tmp, ds,ns},
+    tmp = TopologyIntegralList[{x}] /. _Symbol[is__Integer] -> {is};
+    ds = Cases[#, _?Positive] & /@ tmp;
+    ds = Plus[#] - Length[#] & /@ ds;
+    ns = -Plus[Cases[#, _?Negative]] & /@ tmp;
+    {ds, ns}];
+
+(* trap *)
+CrusherLimits[___] :=
+  (Message[CrusherLimits::usage];
+   Abort[]);
+
 (* --- wrappers ----------------------------------------------------- *)
 
 CrusherComment::usage = "\
@@ -350,26 +514,35 @@ CrusherComment[[n], <text(s)>] is a wrapper for a commentary line in a \
 Crusher config file.  The number [n] controls the indentation level of \
 <text(s)>.";
 
-Format[CrusherComment[n_Integer:0, str___]] :=
-  StringJoin[
-    "#", If[n < 0, "", {" ", Table["-", {n}], If[n > 0, " ", ""]}],
-    $ToString[str], "\n"];
+Format[CrusherComment[n_Integer:0, str___]] := StringJoin[
+  "#", If[n < 0, "", {" ", Table["-", {n}]}],
+  If[n > 0 && {str} =!= {}, " ", ""], $ToString[str], "\n"];
+
+(* -- *)
 
 CrusherSetting::usage = "\
 CrusherSetting[<var>, <val(s)>] is a wrapper for a Crusher input \
-setting, where <var> denotes the set variable and <val(s)> its \
+setting, where <var> denotes the variable to be set and <val(s)> its \
 corresponding value(s).";
 
-(* alias: list *)
+(* alias: List *)
 CrusherSetting[var_, a___, b_List, c___] :=
   CrusherSetting[var, a, Sequence @@ b, c];
 
+(* alias: Rule *)
 CrusherSetting[var_, a___, b_Rule, c___] :=
   CrusherSetting[var, a, $ToString[First[b], "==", Last[b]], c];
 
 Format[CrusherSetting[var_, vals___]] :=
   StringJoin[First[#], "=", Riffle[Rest[#], ","], "\n"] & @
   StringReplace[$ToString /@ {var, vals}, " " -> ""];
+
+
+
+
+
+
+(* -- *)  (* TODO *)
 
 CrusherRelation::usage = "\
 CrusherRelation[<term(s)>] is a wrapper for a relation equal to zero \
@@ -383,36 +556,61 @@ The format of \"`x`\" is not
 where <coeff> is a coefficient, <top> a topology symbol and <inds> a \
 sequence of integer or symbolic indices.";
 
-(* alias: list *)
+(* alias: List *)
 CrusherRelation[a___, b_List, c___] :=
   CrusherRelation[a, Sequence @@ b, c];
-                                                                        (* TODO: Riffle[] instead of /@ ? *)
+
 Format[CrusherRelation[expr___]] :=
-  StringJoin[#, "\n"] & @
-  (# /.
+  StringJoin[# /.
    {c_.*ts_Symbol[is__] /; MatchQ[{is}, {(_Integer | _Symbol)..}] :>
     {ToString[ts], "[", Riffle[ToString /@ {is}, ","], "]\n",
      ToString[c, InputForm], "\n"},
     x_ :>
       (Message[CrusherRelation::format, x];
-       "!!! PARSING ERROR !!!\n")} & /@ {expr});
+       "!!! PARSING ERROR !!!\n")} & /@ {expr}];
+
+
+
+
+(* -- *)  (* TODO *)
 
 CrusherRelations::usage = "\
 CrusherRelations[<rel(s)>] is a wrapper for relation(s) <rel(s)> \
-wrapped itself in CrusherRelation.";
+wrapped itself in CrusherRelation[].";
 
-(* alias: list *)
+(* alias: List *)
 CrusherRelations[a___, b_List, c___] :=
   CrusherRelations[a, Sequence @@ b, c];
 
 Format[CrusherRelations[expr___]] :=
-  StringJoin[ToString /@ {expr}, "\n"];
+  StringJoin[Riffle[ToString /@ {expr}, "\n"]];
+
+
+
+
+
+
+
+(* -- *)
+
+CrusherIntegral::usage = "\
+CrusherIntegral[<inds>] is a wrapper for an integral with the list of \
+indices <inds>.";
+
+(* alias: Sequence *)
+CrusherIntegral[a_, b__]:=
+  CrusherIntegral /@ {a, b};
+
+Format[CrusherIntegral[is_List]] :=
+  StringJoin[Riffle[$ToString /@ is, ","]];
+
+(* -- *)
 
 CrusherFile::usage = "\
-CrusherFile[<conts>] is a wrapper for the contents <conts> of a file \
-suitable for parsing by Crusher.";
+CrusherFile[<cont(s)>] is a wrapper for the content(s) <cont(s)> of a \
+file suitable for parsing by Crusher.";
 
-(* alias: list *)
+(* alias: List *)
 CrusherFile[a___, b_List, c___] :=
   CrusherFile[a, Sequence @@ b, c];
 
@@ -437,27 +635,7 @@ EndPackage[];
 
 (* --- TODO:
 
--
+- Add methods to NamingRules[WriteCrusherFile],
+  NamingRules[WriteCrusherSymmetries].
 
-*)
-
-
-
-
-
-
-
-
-
-
-(*
-WriteCrusherList[fn_String, l_List] := Module[
-  {s, fs},
-  s = l /. Int[x_, ___] -> x /. _Symbol[x__Integer] -> {x};
-  s = Cases[s, {__Integer}, {0, Infinity}];
-  s = StringJoin[Riffle[ToString /@ #, ","]] & /@ s;
-  s = StringJoin[Riffle[s, "\n"]];
-  fs = OpenWrite[fn];
-  WriteString[fs, s];
-  Close[fs]];
 *)
