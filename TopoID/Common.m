@@ -302,7 +302,7 @@ $CheckKeys[ks___] := Module[
 (* --- $CheckName --------------------------------------------------- *)  (* DONE *)
 
 TopoID::name = "\
-The topology name \"`1`\" cannot be converted to a valid symbol.";
+The string \"`1`\" cannot be converted to a valid symbol.";
 
 $CheckName[tn_String] := Module[
   {ts},
