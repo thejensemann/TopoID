@@ -284,7 +284,7 @@ WriteCrusherConfig[
   fn_String:"", tops_?TopologyListQ, set:Elective[SetupPattern[]],
   opts:OptionsPattern[]] :=
   Module[
-    {ng},
+    {ng, tmp},
     ng = OptionValue[Naming] /. NamingRules[WriteCrusherConfig];
     tmp = CrusherConfig[
       #, set,
@@ -365,8 +365,12 @@ $AppendToOptions[
   WriteCrusherSymmetries,
   ToFORMCodeString, WriteStringFile];
 
+(* #1: _String; from (>name< /. <top>) *)
 NamingRules[WriteCrusherSymmetries] =
-  NamingRules[WriteCrusherConfig];
+{Inherit -> ("symm_" <> # <> ".dat" & ),
+ Inherit[s_String] -> (s <> # <> ".dat" & ),
+
+ x_ :> (Message[NamingRules::keys, x, $NamingRulesKeys]; Abort[])};
 
 (* main: singular *)
 WriteCrusherSymmetries[
@@ -386,7 +390,7 @@ WriteCrusherSymmetries[
   fn_String:"", tops_?TopologyListQ,
   opts:OptionsPattern[]] :=
   Module[
-    {ng},
+    {ng, tmp},
     ng = OptionValue[Naming] /. NamingRules[WriteCrusherSymmetries];
     tmp = CrusherSymmetries /@ tops;
     tmp = ToString[#, OutputForm] & /@ tmp;
@@ -406,16 +410,15 @@ WriteCrusherSymmetries[___] :=
 (* --- CrusherList -------------------------------------------------- *)
 
 CrusherList::usage = "
-CrusherList[<expr(s)>] extracts a list of integrals matching \
-TopologyIntegralPattern[] from <expr(s)> and returns them properly \
-formatted for Crusher.";
+CrusherList[<expr(s)>] extracts integrals matching \
+TopologyIntegralPattern[] from <expr(s)> and returns them as \
+replacement list, where left-hand sides are topology names and \
+right-hand sides are lists properly formatted for Crusher.";
 
-CrusherList[
-  x__] :=
-  CrusherFile[Riffle[
-    CrusherIntegral
-      /@ (TopologyIntegralList[{x}] /. _Symbol[is__Integer] -> {is}),
-    "\n"]];
+CrusherList[x__] :=
+  (ToString[First[#]] ->
+   CrusherFile[Riffle[CrusherIntegral /@ List @@@ Last[#], "\n"]] &
+   /@ TopologyIntegralRules[{x}]);
 
 (* trap *)
 CrusherList[___] :=
@@ -425,19 +428,38 @@ CrusherList[___] :=
 (* --- WriteCrusherList --------------------------------------------- *)
 
 WriteCrusherList::usage = "
-WriteCrusherList[<file>, <expr(s)>] extracts a list of integrals \
-matching TopologyIntegralPattern[] from <expr(s)> and writes them \
-properly formatted for Crusher to <file>.";
+WriteCrusherList[<file>, <expr(s)>] extracts integrals matching \
+TopologyIntegralPattern[] from <expr(s)> and writes for each topology \
+a list to <file>, properly formatted for Crusher.";
 
 Options[WriteCrusherList] =
-  Options[WriteStringFile];
+{Naming -> Inherit};
+
+$AppendToOptions[
+  WriteCrusherList,
+  ToFORMCodeString, WriteStringFile];
+
+(* #1: _String; from First /@ CrusherList[<x>] *)
+NamingRules[WriteCrusherList] =
+{Inherit -> ("ints_" <> # <> ".dat" & ),
+ Inherit[s_String] -> (s <> # <> ".dat" & ),
+
+ x_ :> (Message[NamingRules::keys, x, $NamingRulesKeys]; Abort[])};
 
 WriteCrusherList[
   fn_String:"", x__,
   opts:OptionsPattern[]] :=
-  WriteStringFile[
-    fn, CrusherList[x],
-    FormatType -> OutputForm, opts];
+  Module[
+    {ng, tmp},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherList];
+    tmp = FORMFold[ng[First[#]], ToString[Last[#], OutputForm], "\n"] &
+      /@ CrusherList[{x}];
+    tmp = ToFORMCodeString[
+      Riffle[tmp, "\n\n"],
+      Sequence @@ FilterRules[{opts}, Options[ToFORMCodeString]]];
+    WriteStringFile[
+      fn, tmp,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
 
 (* trap *)
 WriteCrusherList[___] :=
@@ -447,21 +469,23 @@ WriteCrusherList[___] :=
 (* --- CrusherLimits ------------------------------------------------ *)
 
 CrusherLimits::usage = "\
-CrusherLimits[<expr(s)>] extracts a list of integrals matching \
-TopologyIntegralPattern[] from <expr(s)> and gives the maximum numbers \
-of appearing dots (higher powers of denominators) and scalar products \
-(powers of numerators) suitable for the option \"seeds\" of \
-CrusherConfig[].";
+CrusherLimits[<expr(s)>] extracts from <expr(s)> lists of integrals \
+matching TopologyIntegralPattern[] and gives in the form of \
+replacement rules for each topology the maximum numbers of appearing \
+dots (higher powers of denominators) and scalar products (powers of \
+numerators) suitable for the option \"seeds\" of CrusherConfig[].";
 
-CrusherLimits[
-  x__] :=
+$CrusherLimits[x:{_List...}] :=
   Module[
-    {tmp, ds,ns},
-    tmp = TopologyIntegralList[{x}] /. _Symbol[is__Integer] -> {is};
-    ds = Cases[#, _?Positive] & /@ tmp;
+    {ds, ns},
+    ds = Cases[#, _?Positive] & /@ x;
     ds = (Plus @@ #) - Length[#] & /@ ds;
-    ns = -Plus[Cases[#, _?Negative]] & /@ tmp;
+    ns = -Plus @@ Cases[#, _?Negative] & /@ x;
     Max /@ {ds, ns}];
+
+CrusherLimits[x__] :=
+  (ToString[First[#]] -> $CrusherLimits[List @@@ Last[#]] &
+   /@ TopologyIntegralRules[{x}]);
 
 (* trap *)
 CrusherLimits[___] :=
@@ -511,6 +535,7 @@ made up of term(s) <term(s)>.  Each term is a coefficient times an \
 integral of the form: <coeff>*<top>[<inds>].  In this <coeff> is a \
 rational coefficient, <top> is a topology symbol and <inds> a sequence \
 of integer or symbolic indices.";
+
 
 CrusherRelation::format = "\
 The format of \"`x`\" is not <coeff>*<top>[<inds>], see the \
@@ -602,8 +627,8 @@ EndPackage[];
 
 - CrusherLimits[] is intended to be used in conjunction with
   CrusherConfig[] as for example by:
-    CrusherConfig[<top>, ..., "seeds" -> CrusherLimits[
-      Select[<ints>, ToString[Head[#]] === (name /. <top>) & ]]]
+    sds = CrusherLimits[<ints>];
+    cfg = CrusherConfig[<top>, ..., "seeds" -> (<top> /. sds)];
 
 *)
 

@@ -58,7 +58,7 @@ BeginPackage[
 {TopologyIntegralPattern,TopologyIntegralQ};
 
 {TopologyIntegralComplexity,
- TopologyIntegralSort, TopologyIntegralList, TopologyMaxIntegral};
+ TopologyIntegralSort, TopologyIntegralList, TopologyIntegralRules, TopologyMaxIntegral};
 
 
 
@@ -376,6 +376,21 @@ TopologyIntegralList[x_] :=
 (* trap *)
 TopologyIntegralList[___] :=
   (Message[TopologyIntegralList::usage];
+   Abort[]);
+
+(* -- *)
+
+TopologyIntegralRules::usage = "\
+TopologyIntegralRules[<x>] gives for <x> replacement lists with \
+topology symbols as left-hand sides and integrals sorted by their \
+respective complexity as right-hand sides.";
+
+TopologyIntegralRules[x_] :=
+  Part[#, 1, 0] -> # & /@ GatherBy[TopologyIntegralList[x], Head];
+
+(* trap *)
+TopologyIntegralRules[___] :=
+  (Message[TopologyIntegralRules::usage];
    Abort[]);
 
 (* -- *)
