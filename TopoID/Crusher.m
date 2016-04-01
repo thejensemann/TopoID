@@ -79,7 +79,9 @@ Options[CrusherConfig] =
  "debug" -> 2,               (* 0 | 1 | 2 | 3 *)
  "threads" -> 12,            (* _Integer?Positive *)
 
- FormatType -> Automatic};   (* cf. Defaults[CrusherConfig] *)
+ FormatType -> Automatic,    (* cf. Defaults[CrusherConfig] *)
+
+ Transformations -> {}};     (* {___Rule} *)
 
 (* #1: <top>, #2: <setup> *)
 Defaults[CrusherConfig] =
@@ -192,9 +194,8 @@ Defaults[CrusherConfig] =
 CrusherConfig[
   top:TopologyPattern[], set:SetupPattern[], opts:OptionsPattern[]] :=
   Module[
-    {ops, keys, opt, opu, opf},
+    {ops, keys, opt, topt,sett, opu, opf},
     ops = Options[CrusherConfig];
-    (*keys = Cases[First /@ ops, _String];*)
     keys = First /@ ops;
     (* handle symmetries *)
     opt = If[
@@ -209,6 +210,8 @@ CrusherConfig[
        "extsymfile" -> None}];
     (* complete list of keys and values *)
     opu = MapThread[Rule, {keys, keys /. {opts} /. ops}];
+    (* apply transformations *)
+    {topt, sett} = {top, set} //. (Transformations /. opu);
     (* apply defaults *)
     (opu = opu
      (* symmetries *)
@@ -218,7 +221,7 @@ CrusherConfig[
      (* remaining defaults *)
      /. Rule[k_, v_] :> Rule[k, v /. Defaults[CrusherConfig]]
      (* call functions *)
-     /. Rule[k_String, v_Function] :> Rule[k, v[top, set]]);
+     /. Rule[k_String, v_Function] :> Rule[k, v[topt, sett]]);
     (* handle symmetries *)
     opu = opu /. Rule["symb", v_] :> Rule["symb", Join[v, "powsymb" /. opu]];
     (* option: output form *)
