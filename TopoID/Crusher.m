@@ -1,12 +1,6 @@
 (* -- "Crusher.m": Interface to Crusher ----------------------------- *)
 
-(* --- provided functions:
-
-TODO
-
-*)
-
-(* --- package begin ------------------------------------------------ *)
+(* --- package begin *)
 
 Unprotect["TopoID`Crusher`*"];
 
@@ -23,17 +17,19 @@ BeginPackage[
    "TopoID`FORM`",
    "TopoID`Calculate`"}];
 
-(* functions *)
+(* ---- provided functions *)
 {CrusherConfig, WriteCrusherConfig,
  CrusherSymmetries, WriteCrusherSymmetries,
- CrusherList, WriteCrusherList,
+ CrusherList, WriteCrusherList, ReadCrusherList,
  CrusherLimits};
 
-(* wrappers *)
+(* ---- wrappers *)
 {CrusherComment, CrusherSetting,
  CrusherRelation, CrusherRelations,
  CrusherIntegral,
  CrusherFile};
+
+(* ---- *)
 
 Begin["`Private`"];
 
@@ -73,7 +69,7 @@ Options[CrusherConfig] =
 
  "intname" -> Automatic,     (* _String | _Symbol *)
  "delim" -> None,            (* _String | _Symbol *)
- "program" -> 1,             (* 0 | 1 | 2 *)
+ "program" -> 3,             (* 0 | 1 | 2 | 3 *)
 
  "dir" -> Automatic,         (* _String *)
  "debug" -> 2,               (* 0 | 1 | 2 | 3 *)
@@ -177,8 +173,9 @@ Defaults[CrusherConfig] =
    CrusherSetting["intname", "intname" /. #], "\n",
    CrusherComment["deliminator between propagators and scalar products (optional; default none)"],
    CrusherSetting["delim", "delim" /. #], "\n",
-   CrusherComment["output format: 0/1/2 (FORM/Mathematica/Maple) (optional; default 0)"],
-   CrusherSetting["program", "program" /. #], "\n",
+   CrusherComment["output format: 0/1/2/3 (FORM/Set/Maple/Rule) (optional; default 0)"],
+   CrusherSetting["program", "program" /. #],
+   CrusherComment["(Set and Rule are different Mathematica formats)"], "\n",
    CrusherComment[3, "program parameters"], "\n",
    CrusherComment["data directory (optional; default ./data)"],
    CrusherSetting["dir", "dir" /. #], "\n",
@@ -412,7 +409,7 @@ WriteCrusherSymmetries[___] :=
 
 (* --- CrusherList -------------------------------------------------- *)
 
-CrusherList::usage = "
+CrusherList::usage = "\
 CrusherList[<expr(s)>] extracts integrals matching \
 TopologyIntegralPattern[] from <expr(s)> and returns them as \
 replacement list, where left-hand sides are topology names and \
@@ -430,7 +427,7 @@ CrusherList[___] :=
 
 (* --- WriteCrusherList --------------------------------------------- *)
 
-WriteCrusherList::usage = "
+WriteCrusherList::usage = "\
 WriteCrusherList[<file>, <expr(s)>] extracts integrals matching \
 TopologyIntegralPattern[] from <expr(s)> and writes for each topology \
 a list to <file>, properly formatted for Crusher.";
@@ -467,6 +464,22 @@ WriteCrusherList[
 (* trap *)
 WriteCrusherList[___] :=
   (Message[WriteCrusherList::usage];
+   Abort[]);
+
+(* --- ReadCrusherList ---------------------------------------------- *)
+
+ReadCrusherList::usage = "\
+ReadCrusherList[<file>, [<h>]] reads a Crusher integral list from \
+<file> and returns it as Mathematica list with head [<h>] (default \
+List) applied to its elements.";
+
+ReadCrusherList[fn_String, ts_Symbol:List] :=
+  ts @@@ ToExpression[ReadList[
+    fn, Word, RecordLists -> True, WordSeparators -> ","]];
+
+(* trap *)
+ReadCrusherList[___] :=
+  (Message[ReadCrusherList::usage];
    Abort[]);
 
 (* --- CrusherLimits ------------------------------------------------ *)
@@ -539,7 +552,6 @@ integral of the form: <coeff>*<top>[<inds>].  In this <coeff> is a \
 rational coefficient, <top> is a topology symbol and <inds> a sequence \
 of integer or symbolic indices.";
 
-
 CrusherRelation::format = "\
 The format of \"`x`\" is not <coeff>*<top>[<inds>], see the \
 description in ?CrusherRelation.";
@@ -604,7 +616,7 @@ Format[CrusherFile[
   expr___]] :=
   StringJoin[ToString /@ {expr}];
 
-(* --- package end -------------------------------------------------- *)
+(* --- package end *)
 
 Protect["TopoID`Crusher`*"];
 
@@ -617,8 +629,6 @@ End[];
 EndPackage[];
 
 (* ------------------------------------------------------------------ *)
-
-
 
 (* --- NOTE:
 

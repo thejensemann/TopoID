@@ -518,65 +518,57 @@ Warning: The file \"`1`\" was moved to \"`2`\".";
 WriteStringFile::failed = "\
 Could not write to the file \"`1`\".";
 
-WriteStringFile[fn_String, xs___, opts:OptionsPattern[]] := Module[  (* fn_String:"" *)
-  {f, pt,me, optr, pr, ys, fm = fn, fo, rf, fs},
-  (* helper: convert to string *)
-  f = If[Head[#] === String, #, ToString[#, OptionValue[FormatType]]] & ;
-  (*  options *)
-  {pt, me} = OptionValue[{Path, Method}];
-  me = CheckMethod[me, WriteStringFile];
-  me = me /. MethodRules[WriteStringFile];
-  optr = FilterRules[{opts}, Options[OpenWrite]];
-  (* check: path name *)
-  pr = AbsoluteFileName[pt];
-  If[pr === $Failed, Message[TopoID::path, pt], pt = pr];
-  (* convert input *)
-  ys = f /@ {xs};
-  (* file name *)
-  fm = If[fn === "", Hold[Sequence[]], FileNameJoin[{pt, fm}]];
-  (* method: rename file *)
-  If[fn =!= "" && First[me] === RenameFile && FileExistsQ[fm],
-     fo = fm <> "_" <> $WriteStringFileDate[fm];
-     rf = RenameFile[fm, fo];
-     (* check: rename file *)
-     If[rf === $Failed,
-        me = {Append};
-        Message[WriteStringFile::switch, RenameFile, Append],
-        Message[WriteStringFile::moved, fn, fo]]];
-  (* method: append *)
-  Check[
-    fs = If[First[me] === Append, OpenAppend, OpenWrite][
-      Release[fm], Sequence @@ optr];
-    If[fn === "", fm = First[fs]],
-    Message[WriteStringFile::failed, fm];
-    Return[fs]];
-  Check[
-    WriteString[fs, Sequence @@ ys, "\n"],
-    Message[WriteStringFile::failed, fm];
-    Return[$Failed]];
-  Check[
-    Close[fs],
-    Message[WriteStringFile::failed, fm];
-    $Failed]];
+WriteStringFile[
+  fn_String, xs___,                                                     (* fn_String:"" *)
+  opts:OptionsPattern[]] :=
+  Module[
+    {f, pt,me, optr, pr, ys, fm = fn, fo, fs},
+    (* helper: convert to string *)
+    f = If[
+      Head[#] === String, #, ToString[#, OptionValue[FormatType]]] & ;
+    (*  options *)
+    {pt, me} = OptionValue[{Path, Method}];
+    me = CheckMethod[me, WriteStringFile];
+    me = me /. MethodRules[WriteStringFile];
+    optr = FilterRules[{opts}, Options[OpenWrite]];
+    (* check: path name *)
+    pr = AbsoluteFileName[pt];
+    If[pr === $Failed, Message[TopoID::path, pt], pt = pr];
+    (* convert input *)
+    ys = f /@ {xs};
+    (* file name *)
+    fm = If[fn === "", Hold[Sequence[]], FileNameJoin[{pt, fm}]];
+    (* method: rename file *)
+    If[fn =!= "" && First[me] === RenameFile && FileExistsQ[fm],
+       fo = fm <> "_" <> $WriteStringFileDate[fm];
+       (* check: rename file *)
+       If[RenameFile[fm, fo] === $Failed,
+          me = {Append};
+          Message[WriteStringFile::switch, RenameFile, Append],
+          Message[WriteStringFile::moved, fn, fo]]];
+    (* method: append *)
+    Check[
+      fs = If[First[me] === Append, OpenAppend, OpenWrite][
+        Release[fm], Sequence @@ optr];
+      If[fn === "", fm = First[fs]],
+      Message[WriteStringFile::failed, fm];
+      Return[fs]];
+    Check[
+      WriteString[fs, Sequence @@ ys, "\n"],
+      Message[WriteStringFile::failed, fm];
+      Return[$Failed]];
+    Check[
+      Close[fs],
+      Message[WriteStringFile::failed, fm];
+      $Failed]];
 
 WriteStringFile[___] :=
   (Message[WriteStringFile::usage];
    Abort[]);
 
-
-
-
-
-
 (* TODO:
-- check options
+- Check options?
 *)
-
-
-
-
-
-
 
 (* ------------------------------------------------------------------ *)
 
