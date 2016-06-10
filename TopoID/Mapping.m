@@ -416,7 +416,7 @@ SelectBackwardMapping[
     If[cp =!= {},
        Message[SelectMapping::keys, cp]];
     (* helper: matching function *)
-    f = Or @@ (Function[k, StringMatchQ[#, k]] /@ sl) & ;
+    f = Or @@ (Function[k, StringMatchQ[# /. 0 -> "0", k]] /@ sl) & ;
     (* last part *)
     lt = Select[Last[maps], f[to /. #] & ];
     (* combine keys *)
@@ -467,7 +467,7 @@ SelectForwardMapping[
     If[cp =!= {},
        Message[SelectMapping::keys, cp]];
     (* helper: matching function *)
-    f = Or @@ (Function[k, StringMatchQ[#, k]] /@ sl) & ;
+    f = Or @@ (Function[k, StringMatchQ[# /. 0 -> "0", k]] /@ sl) & ;
     (* first part *)
     ft = Select[First[maps], f[fr /. #] & ];
     (* combine keys *)
@@ -517,7 +517,7 @@ SelectMapping[
     If[cp =!= {},
        Message[SelectMapping::keys, cp]];
     (* helper: matching function *)
-    f = Or @@ (Function[k, StringMatchQ[#, k]] /@ sl) & ;
+    f = Or @@ (Function[k, StringMatchQ[# /. 0 -> "0", k]] /@ sl) & ;
     (* first appearance of a key *)
     l = LengthWhile[maps, And @@ (!f[fr /. #] & /@ #) & ];
     (* check: search only forward *)

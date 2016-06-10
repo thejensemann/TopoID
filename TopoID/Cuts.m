@@ -625,6 +625,16 @@ Cuts[
   obj:DiagramPattern[], noc_Integer:0, opts:OptionsPattern[]] :=
   First /@ $Cuts[obj, noc, opts];
 
+Cuts[
+  objs_List, noc_Integer:0, opts:OptionsPattern[]] :=
+  (Cuts[#, noc, opts] & /@ objs);
+
+(*                                                                      TODO
+Cuts[
+  objs_?DiagramListQ, noc_Integer:0, opts:OptionsPattern[]] :=
+  (Cuts[#, noc, opts] & /@ objs);
+*)
+
 (* trap *)
 Cuts[___] :=
   (Message[Cuts::usage];
@@ -653,6 +663,16 @@ CutsComponents[
   obj:DiagramPattern[], noc_Integer:0, opts:OptionsPattern[]] :=
   Last /@ $Cuts[obj, noc, opts];
 
+CutsComponents[
+  objs_List, noc_Integer:0, opts:OptionsPattern[]] :=
+  (CutsComponents[#, noc, opts] & /@ objs);
+
+(*                                                                      TODO
+CutsComponents[
+  objs_?DiagramListQ, noc_Integer:0, opts:OptionsPattern[]] :=
+  (CutsComponents[#, noc, opts] & /@ objs);
+*)
+
 (* trap *)
 CutsComponents[___] :=
   (Message[CutsComponents::usage];
@@ -678,6 +698,16 @@ TODO";
 CutsSymbols[
   top:TopologyPattern["Graph"], noc_Integer:0, opts:OptionsPattern[]] :=
   Sort[Sort[Part[First /@ (facs /. top), #]] & /@ Cuts[top, noc, opts]];
+
+CutsSymbols[
+  objs_List, noc_Integer:0, opts:OptionsPattern[]] :=
+  (CutsSymbols[#, noc, opts] & /@ objs);
+
+(*                                                                      TODO
+CutsSymbols[
+  objs_?DiagramListQ, noc_Integer:0, opts:OptionsPattern[]] :=
+  (CutsSymbols[#, noc, opts] & /@ objs);
+*)
 
 (* trap *)
 CutsSymbols[___] :=
@@ -705,6 +735,16 @@ TODO";
 CutsQ[
   obj:DiagramPattern[], opts:OptionsPattern[]] :=
   (Cuts[obj, 1, opts] =!= {});
+
+CutsQ[
+  objs_List, opts:OptionsPattern[]] :=
+  (Cuts[#, 1, opts] =!= {} & /@ objs);
+
+(*                                                                      TODO
+CutsQ[
+  objs_?DiagramListQ, opts:OptionsPattern[]] :=
+  (Cuts[#, 1, opts] =!= {} & /@ objs);
+*)
 
 (* trap *)
 CutsQ[___] :=

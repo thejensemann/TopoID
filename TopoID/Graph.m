@@ -753,16 +753,16 @@ $TopologyStyle =
  _ -> {Black, Thickness[1/60]}};
 
 $DiagramStyle =
-{"gh" -> {Purple},
- "gl" -> {Red},
- "hb" -> {Black, Dashed, Thick},
- "hp" -> {Black, Thick},
- "qu" | "Qu" -> {Lighter[Blue]},
- "qd" | "Qd" -> {Darker[Blue]},
- "qt" | "Qt" -> {Blue, Thick},
- "si" -> {Gray, Dotted},
- Null -> {Black, Dotted, Thin},
- _ -> {Black}};
+{"gh" -> {Purple, Thickness[1/60]},
+ "gl" -> {Red, Thickness[1/60]},
+ "hb" -> {Black, Dashed, Thickness[1/40]},
+ "hp" -> {Black, Thickness[1/20]},
+ "qu" | "Qu" -> {Lighter[Blue], Thickness[1/60]},
+ "qd" | "Qd" -> {Darker[Blue], Thickness[1/60]},
+ "qt" | "Qt" -> {Blue, Thickness[1/40]},
+ "si" -> {Gray, Dotted, Thickness[1/60]},
+ Null -> {Black, Dotted, Thickness[1/120]},
+ _ -> {Black, Thickness[1/60]}};
 
 $IntegralStyle =
   $TopologyStyle;

@@ -104,7 +104,7 @@ BeginPackage[
  TopologyQ, TopologyListQ,
  $TopologyKeys, Topology};
 
-{DiagramPattern, DiagramQ, DiaDiagramListQ, Diagram};
+{DiagramPattern, DiagramQ, DiagramListQ, Diagram};
 
 {IntegralPattern, IntegralQ, IntegralListQ, Integral};
 

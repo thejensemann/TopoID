@@ -38,3 +38,8 @@ Internal/Code
 - TODO stuff from Todoist
 
 - Polynomial.m: sort zeros
+
+
+- Add "Integral.m" sub-package?  (Pattern, index handling routines, ...?)
+
+- Verbosity -> Global`
