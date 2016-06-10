@@ -41,6 +41,8 @@ BeginPackage[
    "TopoID`Topology`",
    "TopoID`Mapping`",
 
+   "TopoID`Core`",
+
    "TopoID`Cuts`",  (* TODO: needed? *)
    "TopoID`FORM`",
 
@@ -119,6 +121,8 @@ BeginPackage[
 
 {$LookUpMethods, $LookUpCommands, $LookUp,LookUp,
  LookUps, LookUpClear, TAP};                                            (* DONE *)
+
+{IntegralRelations};
 
 
 (* REVISIT *)
@@ -1374,7 +1378,7 @@ $LookUp[
     ln = Catch[Quiet[
       Scan[
         Function[l, If[l =!= $Failed, Throw[l]]] @
-          Block[{WriteString}, Install[#]] & ,
+          Block[{WriteString, Print}, Install[#]] & ,
         {"KLink", "KLink64"}];
       Null]];
     (* check: MathLink call *)
@@ -1604,6 +1608,196 @@ TAP[ks___:{}, opts:OptionsPattern[]] :=
 TAP[___] :=
   (Message[TAP:usage];
    Abort[]);
+
+
+
+
+(* --- adopted from "minimize.m" in the "results/math/" directory on "/x1/" --- *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*
+
+- IntegralRelations[
+    <ints> | <expr>,
+    <tops>,
+    <setup>,
+    [opts: those of ToMapping[], MapIntegralToTopology[], LookUp[],
+     Method -> {"Ordered", ...}]
+  ]
+
+  returns (a) replacement rules for integral and (b) possibly additional
+  relations among integrals (indirect reductions; could be useful as
+  checks).  With "Ordered" in Method the order of topologies in <tops>
+  is used to find relations stepwise, otherwise all possible relations
+  are attempted to be found in one step.
+
+  TODO:
+
+  - Replace LookUp[] by generic function passed via options
+
+  - Rules option to pass additional information (e.g. for updates)
+
+  - optionally return steps
+
+  - optionally extend given set of relations
+
+  - add keywords to Method such that several steps may be selected
+
+  - filter and inherit options properly
+
+  - move to TopoID/Calculate.m
+
+  - EliminationOrder -> {<list of topology names>} | All | Full -> use all topologies given, regardless of appearing integrals
+
+*)
+
+
+(* TODO: use inheriting of options *)
+Options[IntegralRelations] =
+{Path -> ".",
+ Method -> {"Rules", "Minimize", "KLink"}};
+
+IntegralRelations[
+  x_, tops_?TopologyListQ, setup:SetupPattern[],
+  opts:OptionsPattern[]] :=
+  Module[
+    {(*ints,*) utops, (*truls,*) (*iruls,*) imaps, tmp, top, ggg (*vars,eqns,sols*), me, optr, res1, res2},
+
+    optr = FilterRules[{opts}, Options[LookUp]];
+    optr = optr /. {Rule[Method, m_] :> Rule[Method, Intersection[m, $LookUpMethods]]};
+
+    me = OptionValue[Method];
+
+    Print["Extract integrals..."];
+    ints[0] = TopologyIntegralList[x];
+    Print["-> ", Length[ints[0]], "."];
+
+    utops[0] = ToString /@ Union[Head /@ ints[0]];
+    utops[1] = Select[tops, MemberQ[utops[0], name /. #] & ];
+
+    Print["Construct topology rules..."];
+    truls = TopologyToRules[utops[1]];
+
+    (* TODO: make optional *)
+    If[MemberQ[me, "Rules"],
+       Print["Apply topology rules..."];
+       ints[1] = TopologyCalculate[ints[0], truls];
+       ,
+       ints[1] = ints[0];
+     ];
+    iruls[1] = MapThread[Rule, {ints[0], ints[1]}];
+    ints[2] = Union[ints[1]];
+    Print["-> ", Length[ints[2]], "."];
+
+    Print["Create internal representations..."];
+    imaps[2] = ToMapping[ints[2]];
+    iruls[2] = Reverse /@ MappingToRule[imaps[2]];
+    {tmp, ints[2]} = MapTopologyToIntegral[imaps[2], utops[1]];
+
+    (* TODO: make optional *)
+    If[MemberQ[me, "Minimize"],
+       Print["Identify integrals..."];
+       {imaps[3], ints[3]} = MinimizeIntegrals[ints[2]];
+       iruls[3] = MappingToSymbolRule[imaps[3]];
+       ,
+       ints[3] = ints[2];
+       iruls[3] = {};
+     ];
+    Print["-> ", Length[ints[3]], "."];
+
+    Print["Find representations..."];
+    tmp = ints[3];
+    iruls[4] = {};
+    Do[
+      (* all integrals already mapped *)
+      If[tmp === {},
+         Break[]];
+
+      (* find integral representations *)
+      Print[name /. top, ": ", Length[tmp], " integrals left."];
+      iruls[4, name /. top] = MapIntegralToTopology[tmp, top, setup, Verbosity -> 0];  (* TODO: inherit *)
+
+      (* apply topology rules, reduction and identifications *)
+      Print["Rules, reduce, identify, factor..."];
+      iruls[5, name /. top] = TopologyCalculate[iruls[4, name /. top], truls];
+      iruls[5, name /. top] = iruls[5, name /. top] /. Quiet[LookUp[iruls[5, name /. top], Sequence @@ optr]] /. Acc -> Identity /. (rs /. setup);
+      iruls[5, name /. top] = TopologyCalculate[iruls[5, name /. top], truls];
+
+      (* apply identifications obtained up so far *)
+      iruls[6, name /. top] = iruls[5, name /. top] /. iruls[2] /. iruls[3] /. iruls[4];
+      iruls[6, name /. top] = First[#] -> Collect[Last[#], TopologyIntegralPattern[], Factor] & /@ iruls[6, name /. top];
+      iruls[6, name /. top] = DeleteDuplicates[iruls[6, name /. top]];
+
+      (* mapped integrals *)
+      iruls[7, name /. top] = Cases[iruls[6, name /. top], HoldPattern[i_ -> i_]];
+      ints[7, name /. top] = ToString /@ First /@ iruls[7, name /. top];
+      Print[Length[ints[7, name /. top]], " master identifications."];
+      (* remove mapped integrals *)
+      tmp = Select[tmp, FreeQ[ints[7, name /. top], name /. #] & ];
+
+      (* auxiliary and related integrals *)
+      iruls[8, name /. top] = Complement[iruls[6, name /. top], iruls[7, name /. top]];
+      Print["Solve..."];  (* TODO: use RowReduce[] instead? *)
+      eqns = Equal @@@ iruls[8, name /. top];
+      vars = Join[Union[Last /@ iruls[3]], TopologyIntegralList[iruls[8, name /. top]]];  (* eliminate "masters" first, then "auxiliaries" *)
+      sols = Quiet[Solve[eqns, vars]];
+      sols = If[sols === {}, sols, First[sols]];
+      sols = First[#] -> Collect[Last[#], TopologyIntegralPattern[], Factor] & /@ sols;
+
+      (* check *)
+      chck = Cases[sols, HoldPattern[_ -> 0]];
+      If[chck =!= {},
+         Print["Warning: ", First /@ chck, " seem to be zero."]];
+
+      (* split by master/auxiliary *)
+      ints[8, name /. top] = ToString /@ Select[First /@ sols, MemberQ[Union[Last /@ iruls[3]], #] & ];
+      Print[Length[ints[8, name /. top]], " master relations."];
+      Print[Length[sols] - Length[ints[8, name /. top]], " auxiliary relations."];
+
+      (* remove mapped integrals *)
+      tmp = Select[tmp, FreeQ[ints[8, name /. top], name /. #] & ];
+
+      (* add to mapping rules *)
+      iruls[4] = Join[iruls[4], sols];
+
+      , {top, utops[1]}];
+
+
+    (* TODO: final report *)
+
+
+    (* TODO: combine all the rules *)
+    res1 = First[#] -> ((((Last[#] /. iruls[2]) /. iruls[3]) /. iruls[4]) /. (Reverse /@ iruls[2])) & /@ iruls[1];
+    res2 = Cases[iruls[4], r_Rule /; TopologyIntegralQ[First[r]]] /. (Reverse /@ iruls[2]);
+
+    (* TODO: correct numbers *)
+    Print["Found ", Length[res1], " relations among master integrals and ", Length[res2], " auxiliary reductions."];
+
+    Join[res1, res2]];
+
+
+
+(* ------------------------------------------------------------------ *)
+
+
+
+
+
+
+
+
 
 (* --- LaportaInit -------------------------------------------------- *)
 

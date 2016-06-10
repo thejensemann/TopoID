@@ -49,7 +49,10 @@ DiagramGrid[RandomChoice[tops[0], 20]]
 (*Translate diagrams to topologies...*)
 
 
-{maps[1], tops[1]} = MapDiagramToTopology[tops[0], setup];
+Options[MapDiagramToTopology]
+
+
+{maps[1], tops[1]} = MapDiagramToTopology[tops[0], setup, Naming -> Inherit["NNLOrDT"]];
 
 
 TopologyGrid[RandomChoice[tops[1], 20]]
@@ -62,7 +65,7 @@ tops[1] = CutsTopology[tops[1]];
 (*Minimize their set...*)
 
 
-{maps[2], tops[2]} = MinimizeTopologies[tops[1], Naming -> Iterate];
+{maps[2], tops[2]} = MinimizeTopologies[tops[1], Naming -> Iterate["NNLOrGT"]];
 
 
 TopologyGrid[tops[2], VertexCoordinateRules -> {}]
@@ -75,7 +78,7 @@ TopologyDependentQ[tops[2], setup]
 (*Map to linearly independent ones...*)
 
 
-{maps[3], tops[3]} = MapTopologyToIndependents[tops[2], setup];
+{maps[3], tops[3]} = MapTopologyToIndependents[tops[2], setup, Naming -> Inherit["s"]];
 
 
 TopologyGrid[tops[3], VertexCoordinateRules -> {}]
@@ -97,7 +100,7 @@ CutsQ[tops[3]]
 (*Minimize their set once more...*)
 
 
-{maps[4], tops[4]} = MinimizeTopologies[tops[3], Naming -> Iterate["BT"]];
+{maps[4], tops[4]} = MinimizeTopologies[tops[3], Naming -> Iterate["NNLOrBT"]];
 
 
 TopologyGrid[tops[4], VertexCoordinateRules -> {}]
@@ -188,9 +191,6 @@ gbmaps = ComposeMapping[maps[3], maps[4]];
 LayeredGraphPlot[MappingToGraph[gbmaps], VertexLabeling -> True, ImageSize -> {1200, 400}]
 
 
-SymmetrizeTopology//Options
-
-
 cuts /. tops[4]
 
 
@@ -238,3 +238,10 @@ bcode = FORMTopology[btops];
 
 
 WriteStringFile["out/H-NNLO_bcode.inc", ToFORMCodeString[Riffle[bcode, "\n\n\n"]]];
+
+
+(* ::Subsection:: *)
+(*Save some information...*)
+
+
+Save["out/H-NNLO.map", {setup, btops}];
