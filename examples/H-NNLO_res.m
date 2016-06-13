@@ -29,10 +29,11 @@ TopologyIntegralList[res] // Length
 reds = LookUp[res, "NNLOr*", Method -> {"KLink"}, Path -> "in/"];
 
 
-red = Collect[res /. reds, {L[_], TopologyIntegralPattern[]}, Acc[Factor[# /. Acc -> Identity]] & ]; 
+red = Collect[res /. reds, {L[_], TopologyIntegralPattern[]}, Acc[Factor[# /. Acc -> Identity]] & ] /. Acc[0] -> 0;
 
 
-TopologyIntegralList[red] // Length
+nis = TopologyIntegralList[red]
+Length[nis]
 
 
 (* ::Subsection:: *)
@@ -47,20 +48,27 @@ setup = ATSetup["NNLOr"];
 btops = ATTops["pre-b", "NNLOr"];
 
 
-mrels = IntegralRelations[red, btops, setup, Method -> {"Rules", "Minimize", "KLink"}, Path -> "in/"];
+setup = setup /. Rule[rs, _] -> Rule[rs, {mh^i_?EvenQ -> (s*x)^(i/2)}];
 
 
-fin = Collect[red /. mrels, {L[_], TopologyIntegralPattern[]}, Acc[Factor[# /. Acc -> Identity]] & ];
+mrels = IntegralRelations[nis, btops, setup, Method -> {"Rules", "Minimize", "KLink"}, Path -> "in/"];
+
+
+mrels
+
+
+fin = Collect[red /. mrels, {L[_], TopologyIntegralPattern[]}, Acc[Factor[# /. Acc -> Identity]] & ] /. Acc[0] -> 0;
 
 
 (* ::Subsection:: *)
 (*Draw the master integrals...*)
 
 
-mis = TopologyIntegralList[fin];
-
-
+mis = TopologyIntegralList[fin]
 Length[mis]
 
 
 IntegralShow[mis, btops]
+
+
+fin /. i_?TopologyIntegralQ :> IntegralPlot[i, btops, Background -> None, EdgeLabeling -> False]

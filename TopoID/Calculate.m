@@ -1673,7 +1673,7 @@ IntegralRelations[
   x_, tops_?TopologyListQ, setup:SetupPattern[],
   opts:OptionsPattern[]] :=
   Module[
-    {(*ints,*) utops, (*truls,*) (*iruls,*) imaps, tmp, top, ggg (*vars,eqns,sols*), me, optr, res1, res2},
+    {ints, utops, truls, iruls, imaps, tmp, top, ggg, vars,eqns,sols, me, optr, res1, res2},
 
     optr = FilterRules[{opts}, Options[LookUp]];
     optr = optr /. {Rule[Method, m_] :> Rule[Method, Intersection[m, $LookUpMethods]]};
@@ -1732,7 +1732,7 @@ IntegralRelations[
       (* apply topology rules, reduction and identifications *)
       Print["Rules, reduce, identify, factor..."];
       iruls[5, name /. top] = TopologyCalculate[iruls[4, name /. top], truls];
-      iruls[5, name /. top] = iruls[5, name /. top] /. Quiet[LookUp[iruls[5, name /. top], Sequence @@ optr]] /. Acc -> Identity /. (rs /. setup);
+      iruls[5, name /. top] = iruls[5, name /. top] /. Quiet[LookUp[iruls[5, name /. top], Sequence @@ optr]] /. Global`Acc -> Identity /. (rs /. setup);
       iruls[5, name /. top] = TopologyCalculate[iruls[5, name /. top], truls];
 
       (* apply identifications obtained up so far *)

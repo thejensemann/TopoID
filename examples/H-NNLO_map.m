@@ -49,9 +49,6 @@ DiagramGrid[RandomChoice[tops[0], 20]]
 (*Translate diagrams to topologies...*)
 
 
-Options[MapDiagramToTopology]
-
-
 {maps[1], tops[1]} = MapDiagramToTopology[tops[0], setup, Naming -> Inherit["NNLOrDT"]];
 
 
