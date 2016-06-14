@@ -764,3 +764,769 @@ btops = {{name -> "NNLOrBT1", hist ->
 Attributes[FORMSymbol] = {HoldAll}
  
 FORMSymbol /: FORMSymbol::usage = ""
+setup = {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+     ss -> {s[1] -> p1*v1, s[2] -> p2*v1, s[3] -> v1^2, s[4] -> p1*v2, 
+       s[5] -> p2*v2, s[6] -> v1*v2, s[7] -> v2^2}, 
+     is -> {p1*v1 -> s[1], p2*v1 -> s[2], v1^2 -> s[3], p1*v2 -> s[4], 
+       p2*v2 -> s[5], v1*v2 -> s[6], v2^2 -> s[7]}, xs -> {s, mh^2}, 
+     cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+       m["qu"] -> 0, m["si"] -> Null, p3 -> p2, p4 -> p1, p1^2 -> 0, 
+       p2^2 -> 0, p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+     zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, ne -> 7}
+ 
+s /: s::usage = "Symbol introduced as wrapper s[<int>] in the constructor \
+function Setup[] which represents a specific scalar product in the setup of \
+external and internal momenta and under the given kinematic constraints.  \
+Such scalar products must involve at least one loop momentum.  They appear in \
+the >ss< and >is< entries of an object matching SetupPattern[].  These give \
+the relations of symbols and explicit expressions for scalar \
+products.\nExamples:\n  ss -> {s[1] -> k1^2, s[2] -> k1*p1, s[3] -> k1*p2},\n \
+ is -> {k1^2 -> s[1], k1*p1 -> s[2], k1*p2 -> s[3]}."
+ 
+m /: m::usage = "Wrapper m[<id>] introduced in the constructor function \
+Setup[] and present in the constraints entry >cs< in an object matching \
+SetupPattern[].  The rules in >cs< are applied, e.g., after reading diagrams \
+via GetDiagrams[] and wrapping the particle ID strings <id> in \
+m[<id>].\nExamples:\n- set the up quark mass to zero\n    m[\"qu\"] -> 0,\n- \
+assign the Higgs boson the mass mh\n    m[\"hb\"] -> mh."
+ 
+btops = {{name -> "NNLOrBT1", hist -> 
+       {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1433"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 6, 5, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 6, 5, 7}}, 
+        {"CanonicalizeTopology", {7, 6, 5, 2, 3, 4, 1}}, 
+        {"MapToTopology", {7, 6, 5, 2, 3, 4, 1}}, {"GraphMapTopology", 
+         {7, 6, 5, 2, 3, 4, 1}}, {"MapDiagramToTopology", "D1433", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1433"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT10s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> -s - 2*p1*v1 - 2*p2*v1 + v1^2 - 2*p1*v2 - 2*p2*v2 + 
+          2*v1*v2 + v2^2, d4 -> v2^2 + s*x, d6 -> -((2*p1 - v2)*v2), 
+        d5 -> -((2*p2 - v2)*v2), d3 -> -((2*p2 - v1)*v1), 
+        d2 -> -((2*p1 - v1)*v1), d1 -> v1^2}, 
+      scps -> {p1*v1 -> (d1 - d2)/2, p2*v1 -> (d1 - d3)/2, v1^2 -> d1, 
+        p1*v2 -> (d4 - d6 - s*x)/2, p2*v2 -> (d4 - d5 - s*x)/2, 
+        v1*v2 -> (d1 - d2 - d3 + d4 - d5 - d6 + d7 + s*FORMSymbol[1 - x])/2, 
+        v2^2 -> d4 - s*x}, rels -> {}, apar -> {alpha[1], alpha[2], alpha[3], 
+        alpha[4], alpha[5], alpha[6], alpha[7]}, 
+      arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + alpha[1]*alpha[4] + 
+         alpha[1]*alpha[5] + alpha[2]*alpha[5] + alpha[3]*alpha[5] + 
+         alpha[4]*alpha[5] + alpha[1]*alpha[6] + alpha[2]*alpha[6] + 
+         alpha[3]*alpha[6] + alpha[4]*alpha[6] + alpha[1]*alpha[7] + 
+         alpha[2]*alpha[7] + alpha[3]*alpha[7] + alpha[4]*alpha[7], 
+        mh^2*alpha[1]*alpha[2]^2 + mh^2*alpha[1]*alpha[2]*alpha[3] + 
+         mh^2*alpha[1]*alpha[2]*alpha[4] + s*alpha[1]*alpha[3]*alpha[4] + 
+         mh^2*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[2]^2*alpha[5] + 
+         mh^2*alpha[2]*alpha[3]*alpha[5] + s*alpha[1]*alpha[4]*alpha[5] + 
+         mh^2*alpha[2]*alpha[4]*alpha[5] + s*alpha[3]*alpha[4]*alpha[5] + 
+         mh^2*alpha[1]*alpha[2]*alpha[6] + mh^2*alpha[2]^2*alpha[6] + 
+         s*alpha[1]*alpha[3]*alpha[6] + mh^2*alpha[2]*alpha[3]*alpha[6] + 
+         mh^2*alpha[2]*alpha[4]*alpha[6] + s*alpha[3]*alpha[4]*alpha[6] + 
+         s*alpha[1]*alpha[5]*alpha[6] + s*alpha[2]*alpha[5]*alpha[6] + 
+         s*alpha[3]*alpha[5]*alpha[6] + s*alpha[4]*alpha[5]*alpha[6] + 
+         mh^2*alpha[1]*alpha[2]*alpha[7] - s*alpha[1]*alpha[2]*alpha[7] + 
+         mh^2*alpha[2]^2*alpha[7] + mh^2*alpha[2]*alpha[3]*alpha[7] + 
+         mh^2*alpha[2]*alpha[4]*alpha[7] + s*alpha[3]*alpha[4]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 2, 4, 3, 6, 5, 7}}, 
+        {{1, 2, 3, 6, 5, 7}, {1, 2, 4, 5, 6, 7}}, {{1, 5, 7, 2, 4, 3}, 
+         {1, 6, 7, 2, 3, 4}}, {{1, 2, 3, 5, 7}, {1, 2, 4, 6, 7}}, 
+        {{1, 2, 3, 6, 7}, {1, 2, 4, 5, 7}}, {{2, 1, 5, 6, 7}, 
+         {2, 1, 6, 5, 7}}, {{1, 7, 2, 3, 4}, {1, 7, 2, 4, 3}, 
+         {7, 1, 2, 3, 4}, {7, 1, 2, 4, 3}}, {{2, 1, 5, 7}, {2, 1, 6, 7}}, 
+        {{1, 7, 2, 3}, {1, 7, 2, 4}, {7, 1, 2, 3}, {7, 1, 2, 4}}, 
+        {{2, 1, 7}, {2, 7, 1}}}, zero -> {{2, 3, 4, 5, 6, 7}, {1, 3, 4, 5, 6, 
+        7}, {1, 2, 3, 4, 5, 6}}, symm -> {{{1, 2, 3, 4, 5, 6, 7}, 
+         {1, 2, 4, 3, 6, 5, 7}}, {{1, 2, 3, 4, 7}, {1, 2, 4, 3, 7}, 
+         {7, 2, 3, 4, 1}, {7, 2, 4, 3, 1}}}, cuts -> {{1, 2, 7}}, 
+      legs -> {{"gl", p1, in[1], 1}, {"gl", p2, in[2], 3}, 
+        {"gl", p1, 4, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"gh", p1 + p2 - v1 - v2, 5, 6}, {"hb", -v2, 4, 3}, 
+        {"gl", p1 - v2, 6, 4}, {"gl", -p2 + v2, 5, 3}, {"gh", p2 - v1, 6, 2}, 
+        {"gh", p1 - v1, 1, 5}, {"gh", -v1, 2, 1}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT10", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1301"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 6, 5, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 6, 5, 7}}, 
+        {"CanonicalizeTopology", {4, 2, 3, 7, 5, 6, 1}}, 
+        {"MapToTopology", {4, 2, 3, 7, 5, 6, 1}}, {"GraphMapTopology", 
+         {4, 2, 3, 7, 5, 6, 1}}, {"MapDiagramToTopology", "D1301", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1301"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT8s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> -2*p1*v1 + 2*p2*v1 + v1^2 - 2*p1*v2 + 2*p2*v2 + 
+          2*v1*v2 + v2^2 + s*FORMSymbol[1 + x], d2 -> -((2*p1 - v1)*v1), 
+        d3 -> v1*(2*p2 + v1), d1 -> v1^2, d6 -> -((2*p1 - v2)*v2), 
+        d5 -> v2*(2*p2 + v2), d4 -> v2^2}, scps -> {p1*v1 -> (d1 - d2)/2, 
+        p2*v1 -> (-d1 + d3)/2, v1^2 -> d1, p1*v2 -> (d4 - d6)/2, 
+        p2*v2 -> (-d4 + d5)/2, v1*v2 -> (d1 - d2 - d3 + d4 - d5 - d6 + d7 - 
+           s*FORMSymbol[1 + x])/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[1]*alpha[5] + alpha[2]*alpha[5] + 
+         alpha[3]*alpha[5] + alpha[4]*alpha[5] + alpha[1]*alpha[6] + 
+         alpha[2]*alpha[6] + alpha[3]*alpha[6] + alpha[4]*alpha[6] + 
+         alpha[1]*alpha[7] + alpha[2]*alpha[7] + alpha[3]*alpha[7] + 
+         alpha[4]*alpha[7], mh^2*alpha[1]^2*alpha[2] + mh^2*alpha[1]^2*
+          alpha[3] - s*alpha[1]*alpha[2]*alpha[3] + mh^2*alpha[1]^2*
+          alpha[4] + mh^2*alpha[1]^2*alpha[5] + mh^2*alpha[1]*alpha[2]*
+          alpha[5] - s*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[1]*alpha[3]*
+          alpha[5] - s*alpha[2]*alpha[3]*alpha[5] + mh^2*alpha[1]*alpha[4]*
+          alpha[5] + mh^2*alpha[1]^2*alpha[6] + mh^2*alpha[1]*alpha[2]*
+          alpha[6] + mh^2*alpha[1]*alpha[3]*alpha[6] - s*alpha[1]*alpha[3]*
+          alpha[6] - s*alpha[2]*alpha[3]*alpha[6] + mh^2*alpha[1]*alpha[4]*
+          alpha[6] - s*alpha[1]*alpha[5]*alpha[6] - s*alpha[2]*alpha[5]*
+          alpha[6] - s*alpha[3]*alpha[5]*alpha[6] - s*alpha[4]*alpha[5]*
+          alpha[6] + mh^2*alpha[1]^2*alpha[7] + mh^2*alpha[1]*alpha[2]*
+          alpha[7] + mh^2*alpha[1]*alpha[3]*alpha[7] - s*alpha[2]*alpha[3]*
+          alpha[7] + mh^2*alpha[1]*alpha[4]*alpha[7] + s*alpha[1]*alpha[4]*
+          alpha[7]}, subt -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 3, 2, 4, 6, 5, 7}, 
+         {1, 5, 6, 7, 2, 3, 4}, {1, 6, 5, 7, 3, 2, 4}}, 
+        {{1, 2, 3, 7, 5, 6}, {1, 3, 2, 7, 6, 5}, {1, 5, 6, 4, 2, 3}, 
+         {1, 6, 5, 4, 3, 2}}, {{1, 2, 4, 6, 5, 7}, {1, 3, 4, 5, 6, 7}, 
+         {1, 5, 7, 3, 2, 4}, {1, 6, 7, 2, 3, 4}}, {{1, 2, 3, 5, 6}, 
+         {1, 3, 2, 6, 5}, {1, 5, 6, 2, 3}, {1, 6, 5, 3, 2}}, 
+        {{1, 2, 3, 7, 6}, {1, 3, 2, 7, 5}, {1, 5, 6, 4, 3}, {1, 6, 5, 4, 2}}, 
+        {{1, 2, 4, 5, 7}, {1, 3, 4, 6, 7}, {1, 5, 7, 2, 4}, {1, 6, 7, 3, 4}}, 
+        {{1, 2, 6, 7, 5}, {1, 3, 5, 7, 6}, {1, 5, 3, 4, 2}, {1, 6, 2, 4, 3}}, 
+        {{1, 2, 6, 5}, {1, 3, 5, 6}, {1, 5, 3, 2}, {1, 6, 2, 3}}, 
+        {{1, 2, 7, 5}, {1, 3, 7, 6}, {1, 5, 4, 2}, {1, 6, 4, 3}}, 
+        {{1, 2, 5}, {1, 3, 6}, {1, 5, 2}, {1, 6, 3}}}, 
+      zero -> {{2, 3, 4, 5, 6, 7}, {1, 4, 5, 6, 7}, {1, 3, 4, 5, 7}, {1, 2, 
+        4, 6, 7}, {1, 2, 3, 4, 7}}, 
+      symm -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 3, 2, 4, 6, 5, 7}, 
+         {1, 5, 6, 7, 2, 3, 4}, {1, 6, 5, 7, 3, 2, 4}}}, 
+      cuts -> {{1, 2, 5}, {1, 3, 6}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 2}, {"gl", p1, 4, out[3]}, {"gl", p2, 3, out[4]}}, 
+      pros -> {{"hb", -p1 + p2 + v1 + v2, 6, 5}, {"gl", -p1 + v1, 5, 1}, 
+        {"gl", -p2 - v1, 6, 2}, {"gl", -v1, 2, 1}, {"gl", p1 - v2, 6, 4}, 
+        {"gl", p2 + v2, 5, 3}, {"gl", -v2, 4, 3}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT11", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1302"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 6, 5, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 6, 5, 7}}, 
+        {"CanonicalizeTopology", {6, 7, 5, 3, 2, 4, 1}}, 
+        {"MapToTopology", {6, 7, 5, 3, 2, 4, 1}}, {"GraphMapTopology", 
+         {6, 7, 5, 3, 2, 4, 1}}, {"MapDiagramToTopology", "D1302", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1302"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT9s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> s - 2*p1*v1 + 2*p2*v1 + v1^2 - 2*p1*v2 + 2*p2*v2 + 
+          2*v1*v2 + v2^2, d6 -> -2*p1*v2 + v2^2 + s*x, d4 -> v2^2, 
+        d5 -> v2*(2*p2 + v2), d3 -> v1*(2*p2 + v1), d1 -> v1^2, 
+        d2 -> -((2*p1 - v1)*v1)}, scps -> {p1*v1 -> (d1 - d2)/2, 
+        p2*v1 -> (-d1 + d3)/2, v1^2 -> d1, p1*v2 -> (d4 - d6 + s*x)/2, 
+        p2*v2 -> (-d4 + d5)/2, v1*v2 -> (d1 - d2 - d3 + d4 - d5 - d6 + d7 - 
+           s*FORMSymbol[1 - x])/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[1]*alpha[5] + alpha[2]*alpha[5] + 
+         alpha[3]*alpha[5] + alpha[4]*alpha[5] + alpha[1]*alpha[6] + 
+         alpha[2]*alpha[6] + alpha[3]*alpha[6] + alpha[4]*alpha[6] + 
+         alpha[1]*alpha[7] + alpha[2]*alpha[7] + alpha[3]*alpha[7] + 
+         alpha[4]*alpha[7], mh^2*alpha[1]*alpha[2]^2 + mh^2*alpha[1]*alpha[2]*
+          alpha[3] + mh^2*alpha[1]*alpha[2]*alpha[4] - s*alpha[1]*alpha[2]*
+          alpha[4] + mh^2*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[2]^2*
+          alpha[5] + mh^2*alpha[2]*alpha[3]*alpha[5] - s*alpha[1]*alpha[4]*
+          alpha[5] + mh^2*alpha[2]*alpha[4]*alpha[5] - s*alpha[2]*alpha[4]*
+          alpha[5] + mh^2*alpha[1]*alpha[2]*alpha[6] + mh^2*alpha[2]^2*
+          alpha[6] + s*alpha[1]*alpha[3]*alpha[6] + mh^2*alpha[2]*alpha[3]*
+          alpha[6] + mh^2*alpha[2]*alpha[4]*alpha[6] - s*alpha[2]*alpha[4]*
+          alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[7] - s*alpha[1]*alpha[2]*
+          alpha[7] + mh^2*alpha[2]^2*alpha[7] + mh^2*alpha[2]*alpha[3]*
+          alpha[7] + mh^2*alpha[2]*alpha[4]*alpha[7] - s*alpha[2]*alpha[4]*
+          alpha[7] - s*alpha[1]*alpha[5]*alpha[7] - s*alpha[2]*alpha[5]*
+          alpha[7] - s*alpha[3]*alpha[5]*alpha[7] - s*alpha[4]*alpha[5]*
+          alpha[7]}, subt -> {{{1, 2, 3, 4, 5, 6, 7}}, {{1, 2, 3, 5, 6, 7}}, 
+        {{1, 2, 4, 5, 6, 7}}, {{1, 5, 6, 2, 3, 4}}, {{1, 5, 7, 2, 3, 4}}, 
+        {{1, 6, 7, 2, 3, 4}}, {{2, 3, 4, 5, 7, 6}, {2, 3, 4, 7, 5, 6}}, 
+        {{1, 2, 3, 5, 7}}, {{1, 2, 3, 6, 7}}, {{1, 2, 4, 5, 6}}, 
+        {{1, 2, 4, 5, 7}}, {{1, 2, 4, 6, 7}}, {{2, 1, 5, 6, 7}}, 
+        {{1, 5, 2, 3, 4}, {5, 1, 2, 3, 4}}, {{1, 6, 2, 3, 4}, 
+         {6, 1, 2, 3, 4}}, {{1, 7, 2, 3, 4}, {7, 1, 2, 3, 4}}, 
+        {{2, 4, 5, 7, 6}, {2, 4, 7, 5, 6}}, {{5, 7, 2, 3, 4}, 
+         {7, 5, 2, 3, 4}}, {{2, 1, 5, 7}}, {{2, 1, 6, 7}}, 
+        {{1, 5, 2, 4}, {5, 1, 2, 4}}, {{1, 6, 2, 4}, {6, 1, 2, 4}}, 
+        {{1, 7, 2, 3}, {7, 1, 2, 3}}, {{1, 7, 2, 4}, {7, 1, 2, 4}}, 
+        {{2, 4, 5, 7}, {2, 4, 7, 5}}, {{2, 1, 7}, {2, 7, 1}}}, 
+      zero -> {{1, 3, 4, 5, 6, 7}, {2, 3, 5, 6, 7}, {2, 3, 4, 6, 7}, {2, 3, 
+        4, 5, 6}, {1, 2, 3, 5, 6}, {1, 2, 3, 4}}, 
+      symm -> {{{2, 3, 4, 5, 6, 7}, {2, 3, 4, 7, 6, 5}}, 
+        {{1, 2, 3, 4, 5}, {5, 2, 3, 4, 1}}, {{1, 2, 3, 4, 6}, 
+         {6, 2, 3, 4, 1}}, {{1, 2, 3, 4, 7}, {7, 2, 3, 4, 1}}}, 
+      cuts -> {{2, 4}, {1, 2, 7}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 2}, {"gl", p1, 4, out[3]}, {"gl", p2, 3, out[4]}}, 
+      pros -> {{"gl", -p1 + p2 + v1 + v2, 6, 5}, {"hb", p1 - v2, 6, 4}, 
+        {"gl", -v2, 4, 3}, {"gl", p2 + v2, 5, 3}, {"gl", -p2 - v1, 6, 2}, 
+        {"gl", -v1, 2, 1}, {"gl", -p1 + v1, 5, 1}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT2", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1435"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 6, 5, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 6, 5, 7}}, 
+        {"CanonicalizeTopology", {2, 3, 4, 5, 6, 7, 1}}, 
+        {"MapToTopology", {2, 3, 4, 5, 6, 7, 1}}, {"GraphMapTopology", 
+         {2, 3, 4, 5, 6, 7, 1}}, {"MapDiagramToTopology", "D1435", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1435"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT11s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> -2*p1*v1 - 2*p2*v1 + v1^2 - 2*p1*v2 - 2*p2*v2 + 
+          2*v1*v2 + v2^2 - s*FORMSymbol[1 - x], d1 -> v1^2, 
+        d2 -> -((2*p1 - v1)*v1), d3 -> -((2*p2 - v1)*v1), d4 -> v2^2, 
+        d6 -> -((2*p1 - v2)*v2), d5 -> -((2*p2 - v2)*v2)}, 
+      scps -> {p1*v1 -> (d1 - d2)/2, p2*v1 -> (d1 - d3)/2, v1^2 -> d1, 
+        p1*v2 -> (d4 - d6)/2, p2*v2 -> (d4 - d5)/2, 
+        v1*v2 -> (d1 - d2 - d3 + d4 - d5 - d6 + d7 + s*FORMSymbol[1 - x])/2, 
+        v2^2 -> d4}, rels -> {}, apar -> {alpha[1], alpha[2], alpha[3], 
+        alpha[4], alpha[5], alpha[6], alpha[7]}, 
+      arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + alpha[1]*alpha[4] + 
+         alpha[1]*alpha[5] + alpha[2]*alpha[5] + alpha[3]*alpha[5] + 
+         alpha[4]*alpha[5] + alpha[1]*alpha[6] + alpha[2]*alpha[6] + 
+         alpha[3]*alpha[6] + alpha[4]*alpha[6] + alpha[1]*alpha[7] + 
+         alpha[2]*alpha[7] + alpha[3]*alpha[7] + alpha[4]*alpha[7], 
+        mh^2*alpha[1]^2*alpha[2] + mh^2*alpha[1]^2*alpha[3] + 
+         mh^2*alpha[1]^2*alpha[4] + s*alpha[1]*alpha[3]*alpha[4] + 
+         mh^2*alpha[1]^2*alpha[5] + mh^2*alpha[1]*alpha[2]*alpha[5] - 
+         s*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[1]*alpha[3]*alpha[5] + 
+         mh^2*alpha[1]*alpha[4]*alpha[5] + s*alpha[3]*alpha[4]*alpha[5] + 
+         mh^2*alpha[1]^2*alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[6] + 
+         mh^2*alpha[1]*alpha[3]*alpha[6] + s*alpha[1]*alpha[3]*alpha[6] + 
+         mh^2*alpha[1]*alpha[4]*alpha[6] + s*alpha[3]*alpha[4]*alpha[6] + 
+         mh^2*alpha[1]^2*alpha[7] + mh^2*alpha[1]*alpha[2]*alpha[7] + 
+         mh^2*alpha[1]*alpha[3]*alpha[7] + mh^2*alpha[1]*alpha[4]*alpha[7] + 
+         s*alpha[1]*alpha[4]*alpha[7] + s*alpha[3]*alpha[4]*alpha[7] + 
+         s*alpha[1]*alpha[6]*alpha[7] + s*alpha[2]*alpha[6]*alpha[7] + 
+         s*alpha[3]*alpha[6]*alpha[7] + s*alpha[4]*alpha[6]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 2, 4, 3, 5, 7, 6}, 
+         {1, 5, 6, 7, 2, 3, 4}, {1, 5, 7, 6, 2, 4, 3}}, 
+        {{1, 2, 3, 7, 5, 6}, {1, 2, 4, 6, 5, 7}, {1, 5, 6, 4, 2, 3}, 
+         {1, 5, 7, 3, 2, 4}}, {{1, 2, 3, 5, 6}, {1, 2, 4, 5, 7}, 
+         {1, 5, 6, 2, 3}, {1, 5, 7, 2, 4}}, {{1, 2, 6, 7, 5}, 
+         {1, 2, 7, 6, 5}, {1, 5, 3, 4, 2}, {1, 5, 4, 3, 2}}, 
+        {{1, 3, 2, 7, 5}, {1, 4, 2, 6, 5}, {1, 6, 5, 4, 2}, {1, 7, 5, 3, 2}}, 
+        {{1, 2, 6, 5}, {1, 2, 7, 5}, {1, 5, 3, 2}, {1, 5, 4, 2}}, 
+        {{1, 2, 5}, {1, 5, 2}}}, zero -> {{2, 3, 4, 5, 6, 7}, {1, 3, 4, 5, 6, 
+        7}, {1, 2, 3, 4, 6, 7}}, symm -> {{{1, 2, 3, 4, 5, 6, 7}, 
+         {1, 2, 4, 3, 5, 7, 6}, {1, 5, 6, 7, 2, 3, 4}, {1, 5, 7, 6, 2, 4, 
+          3}}}, cuts -> {{1, 2, 5}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 3}, {"gl", p1, 4, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"hb", -p1 - p2 + v1 + v2, 6, 5}, {"gl", -v1, 2, 1}, 
+        {"gl", -p1 + v1, 5, 1}, {"gl", p2 - v1, 6, 2}, {"gl", -v2, 4, 3}, 
+        {"gl", p1 - v2, 6, 4}, {"gl", -p2 + v2, 5, 3}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT3", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1024"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 7, 6}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 7, 6}}, 
+        {"CanonicalizeTopology", {6, 5, 7, 4, 3, 2, 1}}, 
+        {"MapToTopology", {6, 5, 7, 4, 3, 2, 1}}, {"GraphMapTopology", 
+         {6, 5, 7, 4, 3, 2, 1}}, {"MapDiagramToTopology", "D1024", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1024"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT1s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d6 -> -2*p1*v1 + v1^2 + 2*p1*v2 - 2*v1*v2 + v2^2 + s*x, 
+        d7 -> (v1 - v2)^2, d5 -> -((2*p2 - v2)*v2), d4 -> v2^2, 
+        d2 -> -((2*p1 - v1)*v1), d1 -> v1^2, d3 -> -((2*p2 - v1)*v1)}, 
+      scps -> {p1*v1 -> (d1 - d2)/2, p2*v1 -> (d1 - d3)/2, v1^2 -> d1, 
+        p1*v2 -> (d1 - d2 + d6 - d7 - s*x)/2, p2*v2 -> (d4 - d5)/2, 
+        v1*v2 -> (d1 + d4 - d7)/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[3] + alpha[2]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[2]*alpha[4] + alpha[1]*alpha[5] + 
+         alpha[2]*alpha[5] + alpha[3]*alpha[5] + alpha[4]*alpha[5] + 
+         alpha[1]*alpha[6] + alpha[2]*alpha[6] + alpha[3]*alpha[6] + 
+         alpha[4]*alpha[6] + alpha[1]*alpha[7] + alpha[2]*alpha[7] + 
+         alpha[3]*alpha[7] + alpha[4]*alpha[7], mh^2*alpha[1]^2*alpha[3] + 
+         mh^2*alpha[1]*alpha[2]*alpha[3] + mh^2*alpha[1]^2*alpha[4] + 
+         mh^2*alpha[1]*alpha[2]*alpha[4] + mh^2*alpha[1]^2*alpha[5] + 
+         mh^2*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[1]*alpha[3]*alpha[5] + 
+         s*alpha[2]*alpha[3]*alpha[5] + mh^2*alpha[1]*alpha[4]*alpha[5] + 
+         mh^2*alpha[1]^2*alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[6] + 
+         mh^2*alpha[1]*alpha[3]*alpha[6] - s*alpha[1]*alpha[3]*alpha[6] + 
+         mh^2*alpha[1]*alpha[4]*alpha[6] + mh^2*alpha[1]^2*alpha[7] + 
+         mh^2*alpha[1]*alpha[2]*alpha[7] + mh^2*alpha[1]*alpha[3]*alpha[7] + 
+         mh^2*alpha[1]*alpha[4]*alpha[7] + s*alpha[1]*alpha[4]*alpha[7] + 
+         s*alpha[1]*alpha[5]*alpha[7] + s*alpha[2]*alpha[5]*alpha[7] + 
+         s*alpha[3]*alpha[5]*alpha[7] + s*alpha[4]*alpha[5]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}}, {{1, 2, 5, 6, 4, 3}}, 
+        {{1, 3, 4, 5, 6, 7}}, {{3, 1, 2, 5, 7, 6}}, {{1, 2, 3, 4, 6, 7}, 
+         {1, 2, 6, 7, 3, 4}}, {{3, 1, 2, 5, 6}}, {{1, 3, 4, 6, 7}, 
+         {1, 6, 7, 3, 4}}, {{1, 3, 5, 7, 6}, {1, 3, 7, 5, 6}}, 
+        {{1, 4, 3, 5, 6}, {1, 5, 6, 4, 3}}, {{3, 1, 2, 7, 6}, 
+         {6, 1, 2, 4, 3}}, {{3, 6, 1, 2}, {6, 3, 1, 2}}, 
+        {{1, 3, 5, 6}, {1, 3, 7, 6}, {1, 6, 4, 3}}, {{1, 3, 6}, {1, 6, 3}}}, 
+      zero -> {{2, 3, 4, 5, 6, 7}, {1, 2, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 7}}, 
+      symm -> {{{1, 2, 3, 4, 6, 7}, {1, 2, 6, 7, 3, 4}}, 
+        {{1, 3, 4, 5, 6}, {1, 6, 5, 4, 3}}, {{1, 3, 5, 6, 7}, 
+         {1, 3, 7, 6, 5}}, {{1, 3, 4, 6}, {1, 6, 5, 3}, {1, 6, 7, 3}}}, 
+      cuts -> {{1, 3, 6}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 3}, {"gl", p1, 4, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"hb", p1 - v1 + v2, 5, 4}, {"gl", v1 - v2, 6, 4}, 
+        {"gl", -p2 + v2, 6, 3}, {"gl", -v2, 5, 3}, {"gl", -p1 + v1, 5, 1}, 
+        {"gl", -v1, 2, 1}, {"gl", p2 - v1, 6, 2}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT4", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1048"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 7, 6}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 7, 6}}, 
+        {"CanonicalizeTopology", {5, 6, 7, 1, 2, 3, 4}}, 
+        {"MapToTopology", {5, 6, 7, 1, 2, 3, 4}}, {"GraphMapTopology", 
+         {5, 6, 7, 1, 2, 3, 4}}, {"MapDiagramToTopology", "D1048", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1048"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT2s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d4 -> v2^2, d5 -> -((2*p2 - v2)*v2), d7 -> (v1 - v2)^2, 
+        d6 -> (v1 - v2)*(-2*p1 + v1 - v2), d1 -> v1^2 + s*x, 
+        d2 -> -((2*p1 - v1)*v1), d3 -> -((2*p2 - v1)*v1)}, 
+      scps -> {p1*v1 -> (d1 - d2 - s*x)/2, p2*v1 -> (d1 - d3 - s*x)/2, 
+        v1^2 -> d1 - s*x, p1*v2 -> (d1 - d2 + d6 - d7 - s*x)/2, 
+        p2*v2 -> (d4 - d5)/2, v1*v2 -> (d1 + d4 - d7 - s*x)/2, v2^2 -> d4}, 
+      rels -> {}, apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], 
+        alpha[6], alpha[7]}, arep -> {alpha[1]*alpha[3] + alpha[2]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[2]*alpha[4] + alpha[1]*alpha[5] + 
+         alpha[2]*alpha[5] + alpha[3]*alpha[5] + alpha[4]*alpha[5] + 
+         alpha[1]*alpha[6] + alpha[2]*alpha[6] + alpha[3]*alpha[6] + 
+         alpha[4]*alpha[6] + alpha[1]*alpha[7] + alpha[2]*alpha[7] + 
+         alpha[3]*alpha[7] + alpha[4]*alpha[7], 
+        mh^2*alpha[1]*alpha[3]*alpha[5] + mh^2*alpha[2]*alpha[3]*alpha[5] + 
+         mh^2*alpha[1]*alpha[4]*alpha[5] + mh^2*alpha[2]*alpha[4]*alpha[5] - 
+         s*alpha[2]*alpha[4]*alpha[5] + mh^2*alpha[1]*alpha[5]^2 + 
+         mh^2*alpha[2]*alpha[5]^2 + mh^2*alpha[3]*alpha[5]^2 + 
+         mh^2*alpha[4]*alpha[5]^2 + s*alpha[2]*alpha[3]*alpha[6] + 
+         mh^2*alpha[1]*alpha[5]*alpha[6] + mh^2*alpha[2]*alpha[5]*alpha[6] + 
+         mh^2*alpha[3]*alpha[5]*alpha[6] + mh^2*alpha[4]*alpha[5]*alpha[6] + 
+         s*alpha[1]*alpha[4]*alpha[7] + mh^2*alpha[1]*alpha[5]*alpha[7] + 
+         mh^2*alpha[2]*alpha[5]*alpha[7] + mh^2*alpha[3]*alpha[5]*alpha[7] + 
+         mh^2*alpha[4]*alpha[5]*alpha[7] + s*alpha[1]*alpha[6]*alpha[7] + 
+         s*alpha[2]*alpha[6]*alpha[7] + s*alpha[3]*alpha[6]*alpha[7] + 
+         s*alpha[4]*alpha[6]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}, {3, 4, 1, 2, 5, 7, 6}}, 
+        {{2, 3, 4, 5, 6, 7}, {4, 1, 2, 5, 7, 6}}, {{5, 6, 3, 4, 1, 2}, 
+         {5, 7, 1, 2, 3, 4}}, {{2, 5, 6, 3, 4}, {4, 5, 7, 1, 2}}, 
+        {{2, 5, 7, 3, 4}, {4, 5, 6, 1, 2}}, {{5, 1, 2, 3, 4}, 
+         {5, 3, 4, 1, 2}}, {{2, 4, 5, 6, 7}, {2, 4, 5, 7, 6}, 
+         {4, 2, 5, 6, 7}, {4, 2, 5, 7, 6}}, {{5, 2, 3, 4}, {5, 4, 1, 2}}, 
+        {{2, 4, 5, 6}, {2, 4, 5, 7}, {4, 2, 5, 6}, {4, 2, 5, 7}}, 
+        {{5, 2, 4}, {5, 4, 2}}}, zero -> {{1, 3, 4, 5, 6, 7}, {1, 2, 3, 5, 6, 
+        7}, {1, 2, 3, 4, 6, 7}}, symm -> {{{1, 2, 3, 4, 5, 6, 7}, 
+         {3, 4, 1, 2, 5, 7, 6}}, {{2, 4, 5, 6, 7}, {2, 4, 5, 7, 6}, 
+         {4, 2, 5, 6, 7}, {4, 2, 5, 7, 6}}}, cuts -> {{2, 4, 5}}, 
+      legs -> {{"gl", p1, in[1], 1}, {"gl", p2, in[2], 3}, 
+        {"gl", p1, 4, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"gh", -v2, 5, 3}, {"gh", p2 - v2, 3, 6}, 
+        {"gh", v1 - v2, 6, 4}, {"gh", -p1 + v1 - v2, 4, 5}, 
+        {"hb", -v1, 2, 1}, {"gl", -p1 + v1, 5, 1}, {"gl", p2 - v1, 6, 2}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT5", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1135"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CanonicalizeTopology", {7, 6, 5, 4, 3, 2, 1}}, 
+        {"MapToTopology", {7, 6, 5, 4, 3, 2, 1}}, {"GraphMapTopology", 
+         {7, 6, 5, 4, 3, 2, 1}}, {"MapDiagramToTopology", "D1135", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1135"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT3s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> 2*p1*v1 - 2*p2*v1 + v1^2 - 2*p1*v2 + 2*p2*v2 - 2*v1*v2 + 
+          v2^2 + s*FORMSymbol[1 + x], d6 -> (v1 - v2)*(2*p1 + v1 - v2), 
+        d5 -> -((2*p1 - v2)*v2), d4 -> v2^2, d3 -> -((2*p2 - v1)*v1), 
+        d2 -> v1*(2*p1 + v1), d1 -> v1^2}, scps -> {p1*v1 -> (-d1 + d2)/2, 
+        p2*v1 -> (d1 - d3)/2, v1^2 -> d1, p1*v2 -> (d4 - d5)/2, 
+        p2*v2 -> (d1 - d3 - d6 + d7 - s*FORMSymbol[1 + x])/2, 
+        v1*v2 -> (d2 + d5 - d6)/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[3] + alpha[2]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[2]*alpha[4] + alpha[1]*alpha[5] + 
+         alpha[2]*alpha[5] + alpha[3]*alpha[5] + alpha[4]*alpha[5] + 
+         alpha[1]*alpha[6] + alpha[2]*alpha[6] + alpha[3]*alpha[6] + 
+         alpha[4]*alpha[6] + alpha[1]*alpha[7] + alpha[2]*alpha[7] + 
+         alpha[3]*alpha[7] + alpha[4]*alpha[7], mh^2*alpha[1]^2*alpha[3] + 
+         mh^2*alpha[1]*alpha[2]*alpha[3] + mh^2*alpha[1]^2*alpha[4] + 
+         mh^2*alpha[1]*alpha[2]*alpha[4] + mh^2*alpha[1]^2*alpha[5] + 
+         mh^2*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[1]*alpha[3]*alpha[5] + 
+         mh^2*alpha[1]*alpha[4]*alpha[5] - s*alpha[2]*alpha[4]*alpha[5] + 
+         mh^2*alpha[1]^2*alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[6] + 
+         mh^2*alpha[1]*alpha[3]*alpha[6] - s*alpha[1]*alpha[3]*alpha[6] + 
+         mh^2*alpha[1]*alpha[4]*alpha[6] - s*alpha[1]*alpha[5]*alpha[6] - 
+         s*alpha[2]*alpha[5]*alpha[6] - s*alpha[3]*alpha[5]*alpha[6] - 
+         s*alpha[4]*alpha[5]*alpha[6] + mh^2*alpha[1]^2*alpha[7] + 
+         mh^2*alpha[1]*alpha[2]*alpha[7] + mh^2*alpha[1]*alpha[3]*alpha[7] + 
+         mh^2*alpha[1]*alpha[4]*alpha[7] + s*alpha[1]*alpha[4]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}}, {{1, 2, 5, 6, 4, 3}}, 
+        {{1, 3, 4, 5, 6, 7}}, {{3, 1, 2, 5, 7, 6}}, {{1, 2, 3, 4, 6, 7}, 
+         {1, 2, 6, 7, 3, 4}}, {{1, 3, 5, 7, 6}}, {{1, 5, 6, 4, 3}}, 
+        {{3, 1, 2, 5, 6}}, {{1, 3, 4, 6, 7}, {1, 6, 7, 3, 4}}, 
+        {{3, 1, 2, 7, 6}, {6, 1, 2, 4, 3}}, {{1, 3, 5, 6}}, 
+        {{1, 3, 7, 6}, {1, 6, 4, 3}}, {{3, 6, 1, 2}, {6, 3, 1, 2}}, 
+        {{1, 3, 6}, {1, 6, 3}}}, zero -> {{2, 3, 4, 5, 6, 7}, {1, 2, 4, 5, 6, 
+        7}, {1, 2, 3, 4, 5, 7}}, symm -> {{{1, 2, 3, 4, 6, 7}, 
+         {1, 2, 6, 7, 3, 4}}}, cuts -> {{1, 3, 6}}, 
+      legs -> {{"gl", p1, in[1], 3}, {"gl", p2, in[2], 4}, 
+        {"gl", p1, 1, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"hb", p1 - p2 + v1 - v2, 6, 4}, {"gl", -p1 - v1 + v2, 5, 4}, 
+        {"gl", -p1 + v2, 6, 3}, {"gl", -v2, 5, 3}, {"gl", p2 - v1, 6, 2}, 
+        {"gl", p1 + v1, 5, 1}, {"gl", -v1, 2, 1}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT6", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1136"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CanonicalizeTopology", {6, 5, 7, 4, 3, 1, 2}}, 
+        {"MapToTopology", {6, 5, 7, 4, 3, 1, 2}}, {"GraphMapTopology", 
+         {6, 5, 7, 4, 3, 1, 2}}, {"MapDiagramToTopology", "D1136", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1136"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT4s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d6 -> 2*p1*v1 + v1^2 - 2*p1*v2 - 2*v1*v2 + v2^2 + s*x, 
+        d7 -> s + 2*p1*v1 - 2*p2*v1 + v1^2 - 2*p1*v2 + 2*p2*v2 - 2*v1*v2 + 
+          v2^2, d5 -> -((2*p1 - v2)*v2), d4 -> v2^2, d2 -> v1*(2*p1 + v1), 
+        d1 -> v1^2, d3 -> -((2*p2 - v1)*v1)}, 
+      scps -> {p1*v1 -> (-d1 + d2)/2, p2*v1 -> (d1 - d3)/2, v1^2 -> d1, 
+        p1*v2 -> (d4 - d5)/2, p2*v2 -> (d1 - d3 - d6 + d7 - 
+           s*FORMSymbol[1 - x])/2, v1*v2 -> (d2 + d5 - d6 + s*x)/2, 
+        v2^2 -> d4}, rels -> {}, apar -> {alpha[1], alpha[2], alpha[3], 
+        alpha[4], alpha[5], alpha[6], alpha[7]}, 
+      arep -> {alpha[1]*alpha[3] + alpha[2]*alpha[3] + alpha[1]*alpha[4] + 
+         alpha[2]*alpha[4] + alpha[1]*alpha[5] + alpha[2]*alpha[5] + 
+         alpha[3]*alpha[5] + alpha[4]*alpha[5] + alpha[1]*alpha[6] + 
+         alpha[2]*alpha[6] + alpha[3]*alpha[6] + alpha[4]*alpha[6] + 
+         alpha[1]*alpha[7] + alpha[2]*alpha[7] + alpha[3]*alpha[7] + 
+         alpha[4]*alpha[7], mh^2*alpha[1]^2*alpha[3] + mh^2*alpha[1]*alpha[2]*
+          alpha[3] + mh^2*alpha[1]^2*alpha[4] + mh^2*alpha[1]*alpha[2]*
+          alpha[4] + mh^2*alpha[1]^2*alpha[5] + mh^2*alpha[1]*alpha[2]*
+          alpha[5] + mh^2*alpha[1]*alpha[3]*alpha[5] - s*alpha[2]*alpha[3]*
+          alpha[5] + mh^2*alpha[1]*alpha[4]*alpha[5] + mh^2*alpha[1]^2*
+          alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[6] + mh^2*alpha[1]*alpha[3]*
+          alpha[6] + mh^2*alpha[1]*alpha[4]*alpha[6] + s*alpha[2]*alpha[4]*
+          alpha[6] + mh^2*alpha[1]^2*alpha[7] + mh^2*alpha[1]*alpha[2]*
+          alpha[7] + mh^2*alpha[1]*alpha[3]*alpha[7] + mh^2*alpha[1]*alpha[4]*
+          alpha[7] - s*alpha[1]*alpha[4]*alpha[7] - s*alpha[1]*alpha[5]*
+          alpha[7] - s*alpha[2]*alpha[5]*alpha[7] - s*alpha[3]*alpha[5]*
+          alpha[7] - s*alpha[4]*alpha[5]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}}, {{1, 2, 5, 7, 3, 4}}, 
+        {{1, 2, 6, 7, 3, 4}}, {{1, 3, 4, 5, 6, 7}}, {{4, 1, 2, 5, 6, 7}}, 
+        {{1, 4, 5, 6, 7}}, {{1, 5, 7, 3, 4}}, {{4, 1, 2, 5, 7}}, 
+        {{4, 1, 2, 6, 7}}, {{7, 1, 2, 3, 4}}, {{1, 3, 4, 6, 7}, 
+         {1, 6, 7, 3, 4}}, {{1, 4, 5, 7}}, {{1, 4, 6, 7}, {1, 7, 3, 4}}, 
+        {{4, 7, 1, 2}, {7, 4, 1, 2}}, {{1, 4, 7}, {1, 7, 4}}}, 
+      zero -> {{2, 3, 4, 5, 6, 7}, {1, 2, 3, 5, 6, 7}, {1, 2, 3, 4, 5, 6}}, 
+      symm -> {{{1, 3, 4, 6, 7}, {1, 6, 7, 3, 4}}, {{1, 2, 4, 7}, 
+         {1, 2, 7, 4}}}, cuts -> {{1, 4, 7}}, 
+      legs -> {{"gl", p1, in[1], 3}, {"gl", p2, in[2], 4}, 
+        {"gl", p1, 1, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"hb", -p1 - v1 + v2, 5, 4}, {"gl", p1 - p2 + v1 - v2, 6, 4}, 
+        {"gl", -p1 + v2, 6, 3}, {"gl", -v2, 5, 3}, {"gl", p1 + v1, 5, 1}, 
+        {"gl", -v1, 2, 1}, {"gl", p2 - v1, 6, 2}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT7", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1147"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CanonicalizeTopology", {6, 7, 5, 4, 3, 2, 1}}, 
+        {"MapToTopology", {6, 7, 5, 4, 3, 2, 1}}, {"GraphMapTopology", 
+         {6, 7, 5, 4, 3, 2, 1}}, {"MapDiagramToTopology", "D1147", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1147"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT5s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> s + 2*p1*v1 - 2*p2*v1 + v1^2 - 2*p1*v2 + 2*p2*v2 - 
+          2*v1*v2 + v2^2, d6 -> (v1 - v2)*(2*p1 + v1 - v2), 
+        d5 -> -((2*p1 - v2)*v2), d4 -> v2^2, d3 -> -2*p2*v1 + v1^2 + s*x, 
+        d1 -> v1^2, d2 -> v1*(2*p1 + v1)}, scps -> {p1*v1 -> (-d1 + d2)/2, 
+        p2*v1 -> (d1 - d3 + s*x)/2, v1^2 -> d1, p1*v2 -> (d4 - d5)/2, 
+        p2*v2 -> (d1 - d3 - d6 + d7 - s*FORMSymbol[1 - x])/2, 
+        v1*v2 -> (d2 + d5 - d6)/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[3] + alpha[2]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[2]*alpha[4] + alpha[1]*alpha[5] + 
+         alpha[2]*alpha[5] + alpha[3]*alpha[5] + alpha[4]*alpha[5] + 
+         alpha[1]*alpha[6] + alpha[2]*alpha[6] + alpha[3]*alpha[6] + 
+         alpha[4]*alpha[6] + alpha[1]*alpha[7] + alpha[2]*alpha[7] + 
+         alpha[3]*alpha[7] + alpha[4]*alpha[7], 
+        mh^2*alpha[1]*alpha[3]*alpha[5] + mh^2*alpha[2]*alpha[3]*alpha[5] + 
+         mh^2*alpha[1]*alpha[4]*alpha[5] + mh^2*alpha[2]*alpha[4]*alpha[5] - 
+         s*alpha[2]*alpha[4]*alpha[5] + mh^2*alpha[1]*alpha[5]^2 + 
+         mh^2*alpha[2]*alpha[5]^2 + mh^2*alpha[3]*alpha[5]^2 + 
+         mh^2*alpha[4]*alpha[5]^2 + s*alpha[1]*alpha[4]*alpha[6] + 
+         mh^2*alpha[1]*alpha[5]*alpha[6] + mh^2*alpha[2]*alpha[5]*alpha[6] + 
+         mh^2*alpha[3]*alpha[5]*alpha[6] + mh^2*alpha[4]*alpha[5]*alpha[6] - 
+         s*alpha[1]*alpha[3]*alpha[7] + mh^2*alpha[1]*alpha[5]*alpha[7] - 
+         s*alpha[1]*alpha[5]*alpha[7] + mh^2*alpha[2]*alpha[5]*alpha[7] - 
+         s*alpha[2]*alpha[5]*alpha[7] + mh^2*alpha[3]*alpha[5]*alpha[7] - 
+         s*alpha[3]*alpha[5]*alpha[7] + mh^2*alpha[4]*alpha[5]*alpha[7] - 
+         s*alpha[4]*alpha[5]*alpha[7]}, subt -> {{{1, 2, 3, 4, 5, 6, 7}}, 
+        {{1, 3, 4, 5, 6, 7}}, {{2, 3, 4, 5, 6, 7}}, {{3, 1, 2, 5, 6, 7}}, 
+        {{4, 1, 2, 5, 6, 7}}, {{5, 6, 1, 2, 3, 4}}, {{5, 7, 1, 2, 3, 4}, 
+         {5, 7, 3, 4, 1, 2}}, {{2, 5, 6, 3, 4}}, {{4, 5, 6, 1, 2}}, 
+        {{1, 3, 5, 6, 7}, {3, 1, 5, 6, 7}}, {{1, 4, 5, 6, 7}, 
+         {4, 1, 5, 6, 7}}, {{1, 5, 7, 3, 4}, {3, 5, 7, 1, 2}}, 
+        {{2, 3, 5, 6, 7}, {3, 2, 5, 6, 7}}, {{2, 4, 5, 6, 7}, 
+         {4, 2, 5, 6, 7}}, {{2, 5, 7, 3, 4}, {4, 5, 7, 1, 2}}, 
+        {{5, 1, 2, 3, 4}, {5, 3, 4, 1, 2}}, {{1, 3, 5, 7}, {3, 1, 5, 7}}, 
+        {{2, 4, 5, 6}, {4, 2, 5, 6}}, {{2, 4, 5, 7}, {4, 2, 5, 7}}, 
+        {{5, 2, 3, 4}, {5, 4, 1, 2}}, {{1, 4, 5, 7}, {2, 3, 5, 7}, 
+         {3, 2, 5, 7}, {4, 1, 5, 7}}, {{5, 2, 4}, {5, 4, 2}}}, 
+      zero -> {{1, 2, 3, 4, 6, 7}, {3, 4, 5, 6, 7}, {1, 3, 4, 5, 6}, {1, 2, 
+        5, 6, 7}, {1, 2, 3, 5, 6}}, 
+      symm -> {{{1, 2, 3, 4, 5, 7}, {3, 4, 1, 2, 5, 7}}, 
+        {{1, 3, 5, 6, 7}, {3, 1, 5, 6, 7}}, {{1, 4, 5, 6, 7}, 
+         {4, 1, 5, 6, 7}}, {{2, 3, 5, 6, 7}, {3, 2, 5, 6, 7}}, 
+        {{2, 4, 5, 6, 7}, {4, 2, 5, 6, 7}}, {{1, 4, 5, 7}, {2, 3, 5, 7}, 
+         {3, 2, 5, 7}, {4, 1, 5, 7}}}, cuts -> {{5, 7}, {2, 4, 5}}, 
+      legs -> {{"gl", p1, in[1], 3}, {"gl", p2, in[2], 4}, 
+        {"gl", p1, 1, out[3]}, {"gl", p2, 2, out[4]}}, 
+      pros -> {{"gl", p1 - p2 + v1 - v2, 6, 4}, {"gl", -p1 - v1 + v2, 5, 4}, 
+        {"gl", -p1 + v2, 6, 3}, {"gl", -v2, 5, 3}, {"hb", p2 - v1, 6, 2}, 
+        {"gl", -v1, 2, 1}, {"gl", p1 + v1, 5, 1}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT8", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1211"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CanonicalizeTopology", {2, 3, 4, 5, 7, 6, 1}}, 
+        {"MapToTopology", {2, 3, 4, 5, 7, 6, 1}}, {"GraphMapTopology", 
+         {2, 3, 4, 5, 7, 6, 1}}, {"MapDiagramToTopology", "D1211", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1211"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT6s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> v1^2 + 2*v1*v2 + v2^2 + s*x, d1 -> v1^2, 
+        d2 -> -((2*p1 - v1)*v1), d3 -> v1*(2*p2 + v1), d4 -> v2^2, 
+        d6 -> -((2*p2 - v2)*v2), d5 -> v2*(2*p1 + v2)}, 
+      scps -> {p1*v1 -> (d1 - d2)/2, p2*v1 -> (-d1 + d3)/2, v1^2 -> d1, 
+        p1*v2 -> (-d4 + d5)/2, p2*v2 -> (d4 - d6)/2, 
+        v1*v2 -> (-d1 - d4 + d7 - s*x)/2, v2^2 -> d4}, rels -> {}, 
+      apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], alpha[6], 
+        alpha[7]}, arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[1]*alpha[5] + alpha[2]*alpha[5] + 
+         alpha[3]*alpha[5] + alpha[4]*alpha[5] + alpha[1]*alpha[6] + 
+         alpha[2]*alpha[6] + alpha[3]*alpha[6] + alpha[4]*alpha[6] + 
+         alpha[1]*alpha[7] + alpha[2]*alpha[7] + alpha[3]*alpha[7] + 
+         alpha[4]*alpha[7], mh^2*alpha[1]^2*alpha[2] + mh^2*alpha[1]^2*
+          alpha[3] + mh^2*alpha[1]^2*alpha[4] - s*alpha[1]*alpha[3]*
+          alpha[4] + mh^2*alpha[1]^2*alpha[5] + mh^2*alpha[1]*alpha[2]*
+          alpha[5] + mh^2*alpha[1]*alpha[3]*alpha[5] + mh^2*alpha[1]*alpha[4]*
+          alpha[5] - s*alpha[3]*alpha[4]*alpha[5] + mh^2*alpha[1]^2*
+          alpha[6] + mh^2*alpha[1]*alpha[2]*alpha[6] + mh^2*alpha[1]*alpha[3]*
+          alpha[6] - s*alpha[1]*alpha[3]*alpha[6] + mh^2*alpha[1]*alpha[4]*
+          alpha[6] - s*alpha[3]*alpha[4]*alpha[6] + mh^2*alpha[1]^2*
+          alpha[7] + mh^2*alpha[1]*alpha[2]*alpha[7] + mh^2*alpha[1]*alpha[3]*
+          alpha[7] + mh^2*alpha[1]*alpha[4]*alpha[7] - s*alpha[1]*alpha[4]*
+          alpha[7] - s*alpha[3]*alpha[4]*alpha[7] - s*alpha[1]*alpha[6]*
+          alpha[7] - s*alpha[2]*alpha[6]*alpha[7] - s*alpha[3]*alpha[6]*
+          alpha[7] - s*alpha[4]*alpha[6]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 2, 4, 3, 5, 7, 6}, 
+         {1, 5, 6, 7, 2, 3, 4}, {1, 5, 7, 6, 2, 4, 3}}, 
+        {{1, 2, 3, 7, 5, 6}, {1, 2, 4, 6, 5, 7}, {1, 5, 6, 4, 2, 3}, 
+         {1, 5, 7, 3, 2, 4}}, {{1, 3, 4, 5, 6, 7}, {1, 4, 3, 5, 7, 6}, 
+         {1, 6, 7, 2, 3, 4}, {1, 7, 6, 2, 4, 3}}, {{1, 2, 3, 5, 6}, 
+         {1, 2, 4, 5, 7}, {1, 5, 6, 2, 3}, {1, 5, 7, 2, 4}}, 
+        {{1, 3, 4, 5, 7}, {1, 4, 3, 5, 6}, {1, 6, 7, 2, 4}, {1, 7, 6, 2, 3}}, 
+        {{1, 3, 4, 6, 7}, {1, 4, 3, 7, 6}, {1, 6, 7, 3, 4}, {1, 7, 6, 4, 3}}, 
+        {{1, 3, 7, 5, 6}, {1, 4, 6, 5, 7}, {1, 6, 4, 2, 3}, {1, 7, 3, 2, 4}}, 
+        {{1, 3, 5, 6}, {1, 4, 5, 7}, {1, 6, 2, 3}, {1, 7, 2, 4}}, 
+        {{1, 3, 7, 6}, {1, 4, 6, 7}, {1, 6, 4, 3}, {1, 7, 3, 4}}, 
+        {{1, 3, 6}, {1, 4, 7}, {1, 6, 3}, {1, 7, 4}}}, 
+      zero -> {{2, 3, 4, 5, 6, 7}, {1, 2, 5, 6, 7}, {1, 2, 4, 5, 6}, {1, 2, 
+        3, 5, 7}, {1, 2, 3, 4, 5}}, 
+      symm -> {{{1, 2, 3, 4, 5, 6, 7}, {1, 2, 4, 3, 5, 7, 6}, 
+         {1, 5, 6, 7, 2, 3, 4}, {1, 5, 7, 6, 2, 4, 3}}}, 
+      cuts -> {{1, 3, 6}, {1, 4, 7}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 2}, {"gl", p1, 3, out[3]}, {"gl", p2, 4, out[4]}}, 
+      pros -> {{"hb", v1 + v2, 6, 5}, {"gl", -v1, 2, 1}, 
+        {"gl", -p1 + v1, 5, 1}, {"gl", -p2 - v1, 6, 2}, {"gl", -v2, 4, 3}, 
+        {"gl", p2 - v2, 6, 4}, {"gl", p1 + v2, 5, 3}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}, {name -> "NNLOrBT9", 
+      hist -> {{"GetDiagrams", 
+         "/home/jens/dev/math/TopoID-dev/etc/dia/2.gr.dia # D1212"}, 
+        {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CanonicalizeTopology", {6, 7, 5, 3, 4, 2, 1}}, 
+        {"MapToTopology", {6, 7, 5, 3, 4, 2, 1}}, {"GraphMapTopology", 
+         {6, 7, 5, 3, 4, 2, 1}}, {"MapDiagramToTopology", "D1212", 
+         {"Euclidean"}}, {"CutsTopology"}, {"InspectTopology", All}, 
+        {"MinimizeTopologies", "NNLOrDT1212"}, {"MapToTopology", 
+         {1, 2, 3, 4, 5, 6, 7}}, {"GraphMapTopology", {1, 2, 3, 4, 5, 6, 7}}, 
+        {"CutsTopology"}, {"InspectTopology", All}, {"MinimizeTopologies", 
+         "NNLOrGT7s1"}, {"ReduceTopology"}, {"SymmetrizeTopology", All}, 
+        {"CutsTopology"}, {"ZeroCutsTopology"}, {"PrepareTopology"}}, 
+      facs -> {d7 -> (v1 + v2)^2, d6 -> -2*p2*v2 + v2^2 + s*x, d4 -> v2^2, 
+        d5 -> v2*(2*p1 + v2), d3 -> v1*(2*p2 + v1), d1 -> v1^2, 
+        d2 -> -((2*p1 - v1)*v1)}, scps -> {p1*v1 -> (d1 - d2)/2, 
+        p2*v1 -> (-d1 + d3)/2, v1^2 -> d1, p1*v2 -> (-d4 + d5)/2, 
+        p2*v2 -> (d4 - d6 + s*x)/2, v1*v2 -> (-d1 - d4 + d7)/2, v2^2 -> d4}, 
+      rels -> {}, apar -> {alpha[1], alpha[2], alpha[3], alpha[4], alpha[5], 
+        alpha[6], alpha[7]}, arep -> {alpha[1]*alpha[2] + alpha[1]*alpha[3] + 
+         alpha[1]*alpha[4] + alpha[1]*alpha[5] + alpha[2]*alpha[5] + 
+         alpha[3]*alpha[5] + alpha[4]*alpha[5] + alpha[1]*alpha[6] + 
+         alpha[2]*alpha[6] + alpha[3]*alpha[6] + alpha[4]*alpha[6] + 
+         alpha[1]*alpha[7] + alpha[2]*alpha[7] + alpha[3]*alpha[7] + 
+         alpha[4]*alpha[7], mh^2*alpha[1]*alpha[2]^2 + mh^2*alpha[1]*alpha[2]*
+          alpha[3] + mh^2*alpha[1]*alpha[2]*alpha[4] - s*alpha[1]*alpha[2]*
+          alpha[4] + mh^2*alpha[1]*alpha[2]*alpha[5] + mh^2*alpha[2]^2*
+          alpha[5] + mh^2*alpha[2]*alpha[3]*alpha[5] - s*alpha[1]*alpha[4]*
+          alpha[5] + mh^2*alpha[2]*alpha[4]*alpha[5] - s*alpha[2]*alpha[4]*
+          alpha[5] + mh^2*alpha[1]*alpha[2]*alpha[6] + mh^2*alpha[2]^2*
+          alpha[6] + mh^2*alpha[2]*alpha[3]*alpha[6] + mh^2*alpha[2]*alpha[4]*
+          alpha[6] - s*alpha[2]*alpha[4]*alpha[6] + mh^2*alpha[1]*alpha[2]*
+          alpha[7] - s*alpha[1]*alpha[2]*alpha[7] + mh^2*alpha[2]^2*
+          alpha[7] + mh^2*alpha[2]*alpha[3]*alpha[7] + mh^2*alpha[2]*alpha[4]*
+          alpha[7] - s*alpha[2]*alpha[4]*alpha[7] - s*alpha[1]*alpha[5]*
+          alpha[7] - s*alpha[2]*alpha[5]*alpha[7] - s*alpha[3]*alpha[5]*
+          alpha[7] - s*alpha[4]*alpha[5]*alpha[7]}, 
+      subt -> {{{1, 2, 3, 4, 5, 6, 7}}, {{1, 2, 3, 5, 6, 7}}, 
+        {{1, 2, 4, 5, 6, 7}}, {{1, 5, 6, 2, 3, 4}}, {{1, 5, 7, 2, 3, 4}}, 
+        {{1, 6, 7, 2, 3, 4}}, {{2, 3, 4, 5, 7, 6}, {2, 3, 4, 7, 5, 6}}, 
+        {{1, 2, 3, 5, 7}}, {{1, 2, 3, 6, 7}}, {{1, 2, 4, 5, 6}}, 
+        {{1, 2, 4, 5, 7}}, {{1, 2, 4, 6, 7}}, {{2, 1, 5, 6, 7}}, 
+        {{1, 5, 2, 3, 4}, {5, 1, 2, 3, 4}}, {{1, 6, 2, 3, 4}, 
+         {6, 1, 2, 3, 4}}, {{1, 7, 2, 3, 4}, {7, 1, 2, 3, 4}}, 
+        {{2, 4, 5, 7, 6}, {2, 4, 7, 5, 6}}, {{5, 7, 2, 3, 4}, 
+         {7, 5, 2, 3, 4}}, {{2, 1, 5, 7}}, {{2, 1, 6, 7}}, 
+        {{1, 5, 2, 4}, {5, 1, 2, 4}}, {{1, 6, 2, 4}, {6, 1, 2, 4}}, 
+        {{1, 7, 2, 3}, {7, 1, 2, 3}}, {{1, 7, 2, 4}, {7, 1, 2, 4}}, 
+        {{2, 4, 5, 7}, {2, 4, 7, 5}}, {{2, 1, 7}, {2, 7, 1}}}, 
+      zero -> {{1, 3, 4, 5, 6, 7}, {2, 3, 5, 6, 7}, {2, 3, 4, 6, 7}, {2, 3, 
+        4, 5, 6}, {1, 2, 3, 5, 6}, {1, 2, 3, 4}}, 
+      symm -> {{{2, 3, 4, 5, 6, 7}, {2, 3, 4, 7, 6, 5}}, 
+        {{1, 2, 3, 4, 5}, {5, 2, 3, 4, 1}}, {{1, 2, 3, 4, 6}, 
+         {6, 2, 3, 4, 1}}, {{1, 2, 3, 4, 7}, {7, 2, 3, 4, 1}}}, 
+      cuts -> {{2, 4}, {1, 2, 7}}, legs -> {{"gl", p1, in[1], 1}, 
+        {"gl", p2, in[2], 2}, {"gl", p1, 3, out[3]}, {"gl", p2, 4, out[4]}}, 
+      pros -> {{"gl", v1 + v2, 6, 5}, {"hb", p2 - v2, 6, 4}, 
+        {"gl", -v2, 4, 3}, {"gl", p1 + v2, 5, 3}, {"gl", -p2 - v1, 6, 2}, 
+        {"gl", -v1, 2, 1}, {"gl", -p1 + v1, 5, 1}}, 
+      setp -> {ps -> {p1, p2}, ks -> {v1, v2}, vs -> {p1, p2, v1, v2}, 
+        ss -> {s1 -> p1*v1, s2 -> p2*v1, s3 -> v1^2, s4 -> p1*v2, 
+          s5 -> p2*v2, s6 -> v1*v2, s7 -> v2^2}, 
+        is -> {p1*v1 -> s1, p2*v1 -> s2, v1^2 -> s3, p1*v2 -> s4, 
+          p2*v2 -> s5, v1*v2 -> s6, v2^2 -> s7}, xs -> {s, mh^2}, 
+        cs -> {m["gh"] -> 0, m["gl"] -> 0, m["hb"] -> mh, m["qd"] -> 0, 
+          m["qu"] -> 0, m["si"] -> Null, p1^2 -> 0, p2^2 -> 0, 
+          p1*p2 -> -s/2}, rs -> {mh^2 -> s*x}, ms -> {mh}, 
+        zs -> {p1^2, p2^2}, np -> 2, nk -> 2, nv -> 4, ns -> 7, nl -> 4, 
+        ne -> 7}}}
+ 
+Attributes[FORMSymbol] = {HoldAll}
+ 
+FORMSymbol /: FORMSymbol::usage = ""

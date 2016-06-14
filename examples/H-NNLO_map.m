@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-Quit[];
+(*Quit[];*)
 
 
 TopoIDMetric = Plus;
@@ -153,9 +153,6 @@ ttop = gtops[[1]];
 
 
 subt /. ttop
-
-
-Join @@ (subt /. ttop)
 
 
 smaps = MapIndexed[Mapping[(name /. ttop) <> "s" <> ToString[#2[[1]]], name /. ttop, #1] & , Join @@ (subt /. ttop)];

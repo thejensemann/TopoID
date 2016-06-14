@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-Quit[];
+(*Quit[];*)
 
 
 TopoIDMetric = Plus;
@@ -72,3 +72,13 @@ IntegralShow[mis, btops]
 
 
 fin /. i_?TopologyIntegralQ :> IntegralPlot[i, btops, Background -> None, EdgeLabeling -> False]
+
+
+(* ::Subsection:: *)
+(*Save some information ...*)
+
+
+Put[mrels, "out/H-NNLO_mis.m"];
+
+
+Put[fin, "out/2.gr.m"];
