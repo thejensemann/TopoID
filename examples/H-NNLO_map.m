@@ -7,6 +7,10 @@ TopoIDMetric = Plus;
 << TopoID`;
 
 
+(* ::Print:: *)
+(**)
+
+
 (* ::Subsection:: *)
 (*Setup the process and kinematics...*)
 
@@ -119,10 +123,10 @@ Print /@ Cuts[tops[4]];
 TopologyManipulate[tops[4][[1]]]
 
 
-TopologyManipulate[tops[4][[5]]]
+(*TopologyManipulate[tops[4][[5]]]*)
 
 
-TopologyManipulate[tops[4][[6]]]
+(*TopologyManipulate[tops[4][[6]]]*)
 
 
 TopologyGrid[tops[4]]
@@ -225,13 +229,13 @@ TopologyGrid[ytops]
 gcode = FORMTopologyProcess[gbmaps, gtops, btops];
 
 
-WriteStringFile["out/H-NNLO_gcode.inc", ToFORMCodeString[Riffle[gcode, "\n\n\n"]]];
+WriteStringFile["out/H-NNLO_gcode.inc", ToFORMCodeString[Riffle[gcode, "\n\n\n"]], Method -> {None}];
 
 
 bcode = FORMTopology[btops];
 
 
-WriteStringFile["out/H-NNLO_bcode.inc", ToFORMCodeString[Riffle[bcode, "\n\n\n"]]];
+WriteStringFile["out/H-NNLO_bcode.inc", ToFORMCodeString[Riffle[bcode, "\n\n\n"]], Method -> {None}];
 
 
 (* ::Subsection:: *)
