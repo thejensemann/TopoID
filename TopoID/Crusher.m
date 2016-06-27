@@ -264,21 +264,6 @@ NamingRules[WriteCrusherConfig] =
 
  x_ :> (Message[NamingRules::keys, x, $NamingRulesKeys]; Abort[])};
 
-(* main: singular *)
-WriteCrusherConfig[
-  fn_String:"", top:TopologyPattern[], set:Elective[SetupPattern[]],
-  opts:OptionsPattern[]] :=
-  Module[
-    {ng, tmp},
-    ng = OptionValue[Naming] /. NamingRules[WriteCrusherConfig];
-    ng = If[fn === "", ng[name /. top], fn];
-    tmp = CrusherConfig[
-      top, set,
-      Sequence @@ FilterRules[{opts}, Options[CrusherConfig]]];
-    WriteStringFile[
-      ng, tmp, FormatType -> OutputForm,
-      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
-
 (* main: plural *)
 WriteCrusherConfig[
   fn_String:"", tops_?TopologyListQ, set:Elective[SetupPattern[]],
@@ -297,6 +282,21 @@ WriteCrusherConfig[
       Sequence @@ FilterRules[{opts}, Options[ToFORMCodeString]]];
     WriteStringFile[
       fn, tmp,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* main: singular *)
+WriteCrusherConfig[
+  fn_String:"", top:TopologyPattern[], set:Elective[SetupPattern[]],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng, tmp},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherConfig];
+    ng = If[fn === "", ng[name /. top], fn];
+    tmp = CrusherConfig[
+      top, set,
+      Sequence @@ FilterRules[{opts}, Options[CrusherConfig]]];
+    WriteStringFile[
+      ng, tmp, FormatType -> OutputForm,
       Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
 
 (* trap *)
@@ -372,19 +372,6 @@ NamingRules[WriteCrusherSymmetries] =
 
  x_ :> (Message[NamingRules::keys, x, $NamingRulesKeys]; Abort[])};
 
-(* main: singular *)
-WriteCrusherSymmetries[
-  fn_String:"", top:TopologyPattern[],
-  opts:OptionsPattern[]] :=
-  Module[
-    {ng, tmp},
-    ng = OptionValue[Naming] /. NamingRules[WriteCrusherSymmetries];
-    ng = If[fn === "", ng[name /. top], fn];
-    tmp = CrusherSymmetries[top];
-    WriteStringFile[
-      ng, tmp, FormatType -> OutputForm,
-      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
-
 (* main: plural *)
 WriteCrusherSymmetries[
   fn_String:"", tops_?TopologyListQ,
@@ -400,6 +387,19 @@ WriteCrusherSymmetries[
       Sequence @@ FilterRules[{opts}, Options[ToFORMCodeString]]];
     WriteStringFile[
       fn, tmp,
+      Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
+
+(* main: singular *)
+WriteCrusherSymmetries[
+  fn_String:"", top:TopologyPattern[],
+  opts:OptionsPattern[]] :=
+  Module[
+    {ng, tmp},
+    ng = OptionValue[Naming] /. NamingRules[WriteCrusherSymmetries];
+    ng = If[fn === "", ng[name /. top], fn];
+    tmp = CrusherSymmetries[top];
+    WriteStringFile[
+      ng, tmp, FormatType -> OutputForm,
       Sequence @@ FilterRules[{opts}, Options[WriteStringFile]]]];
 
 (* trap *)
