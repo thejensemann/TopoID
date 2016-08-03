@@ -1717,6 +1717,9 @@ IntegralRelations[
      ];
     Print["-> ", Length[ints[3]], "."];
 
+    Put["~/TopoID.tmp"];
+    Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
+
     Print["Find representations..."];
     tmp = ints[3];
     iruls[4] = {};
@@ -1772,6 +1775,9 @@ IntegralRelations[
       (* add to mapping rules *)
       iruls[4] = Join[iruls[4], sols];
 
+      Put["~/TopoID.tmp"];
+      Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
+
       , {top, utops[1]}];
 
 
@@ -1784,6 +1790,9 @@ IntegralRelations[
 
     (* TODO: correct numbers *)
     Print["Found ", Length[res1], " relations among master integrals and ", Length[res2], " auxiliary reductions."];
+
+    Put["~/TopoID.tmp"];
+    Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
 
     Join[res1, res2]];
 
