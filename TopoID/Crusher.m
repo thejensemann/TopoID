@@ -643,6 +643,19 @@ EndPackage[];
     sds = CrusherLimits[<ints>];
     cfg = CrusherConfig[<top>, ..., "seeds" -> (<top> /. sds)];
 
+- The function $TopologyToRulesOrdering[] in "Calculate.m" may need to
+  be adjusted in order to symmetrize on the integrals preferred by
+  Crusher (the overwritten version in that file should do).
+
+- In crusher the criteria for ordering integrals are:
+    1) # a_i > 0       [nr. of lines]
+    2) sum_i abs(a_i)  ['corner distance']
+    3) # a_i > 1       [nr. of dots]
+    4) # a_i < 0       [nr. of sps]
+    5) lexicographic   [on numbers (!)]
+  This is the default (elim=SP).  Criteria 3) and 4) are interchanged
+  with elim=PROP.
+
 *)
 
 (* --- TODO:
