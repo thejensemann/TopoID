@@ -1737,7 +1737,7 @@ IntegralRelations[
     Print["Find representations..."];
     tmp = ints[3];
     iruls[4] = {};
-    utops[1] = {utops[1]};
+    (*utops[1] = {utops[1]};*)
     Do[
       (* all integrals already mapped *)
       If[tmp === {},
