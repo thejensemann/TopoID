@@ -1530,11 +1530,16 @@ LookUp[___] :=
   (Message[LookUp::usage];
    Abort[]);
 
-(*Off[LookUp::entry];*)
-(*Off[LookUp::complete];*)
+Off[LookUp::entry];
+Off[LookUp::complete];
 
 (* N.B.:
 - Case "KLink" is an adapted version of Takahiro's code.
+- It is not intended to look in multiple locations for reductions, since
+  then it is not clear anymore from where the information is taken.
+- It is also not inteded to use multiple reductions subsequently, since
+  this may require special treatment of coefficients in intermediate
+  insertion steps.
 *)
 
 (* --- LookUps ------------------------------------------------------ *)
@@ -1737,7 +1742,7 @@ IntegralRelations[
     Print["Find representations..."];
     tmp = ints[3];
     iruls[4] = {};
-    (*utops[1] = {utops[1]};*)
+    utops[1] = {utops[1]};
     Do[
       (* all integrals already mapped *)
       If[tmp === {},
