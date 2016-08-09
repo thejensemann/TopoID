@@ -1660,19 +1660,17 @@ TAP[___] :=
 
   TODO:
 
-  - Replace LookUp[] by generic function passed via options
+[ - Replace LookUp[] by generic function passed via options]
 
-  - Rules option to pass additional information (e.g. for updates)
+[ - Rules option to pass additional information (e.g. for updates)]
 
-  - optionally return steps
+[ - optionally return steps]
 
-  - optionally extend given set of relations
+[ - optionally extend given set of relations]
 
   - add keywords to Method such that several steps may be selected
 
   - filter and inherit options properly
-
-  - move to TopoID/Calculate.m
 
   - EliminationOrder -> {<list of topology names>} | All | Full -> use all topologies given, regardless of appearing integrals
 
