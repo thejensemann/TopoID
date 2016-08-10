@@ -1626,56 +1626,7 @@ TAP[___] :=
 
 
 
-
-(* --- adopted from "minimize.m" in the "results/math/" directory on "/x1/" --- *)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(*
-
-- IntegralRelations[
-    <ints> | <expr>,
-    <tops>,
-    <setup>,
-    [opts: those of ToMapping[], MapIntegralToTopology[], LookUp[],
-     Method -> {"Ordered", ...}]
-  ]
-
-  returns (a) replacement rules for integral and (b) possibly additional
-  relations among integrals (indirect reductions; could be useful as
-  checks).  With "Ordered" in Method the order of topologies in <tops>
-  is used to find relations stepwise, otherwise all possible relations
-  are attempted to be found in one step.
-
-  TODO:
-
-[ - Replace LookUp[] by generic function passed via options]
-
-[ - Rules option to pass additional information (e.g. for updates)]
-
-[ - optionally return steps]
-
-[ - optionally extend given set of relations]
-
-  - add keywords to Method such that several steps may be selected
-
-  - filter and inherit options properly
-
-  - EliminationOrder -> {<list of topology names>} | All | Full -> use all topologies given, regardless of appearing integrals
-
-*)
-
+(* --- IntegralRelations -------------------------------------------- *)
 
 $IntegralRelationsLookUp = Quiet[LookUp[
   #, Method -> {"KLink"}, Path -> "."]] & ;
@@ -1684,10 +1635,40 @@ $IntegralRelationsLookUpCrusher = Quiet[LookUp[
   #, Method -> {"KLink"}, Path -> ".",
   "RescaleFunction" -> $LookUpRescale[-1]]] & ;
 
+$IntegralRelationsMethods =
+{Full, "Rules", "Minimize", All};
+
 (* TODO: use inheriting of options *)
 Options[IntegralRelations] =
 {Method -> {"Rules", "Minimize"},
  LookUp -> $IntegralRelationsLookUp};
+
+IntegralRelations::usage = "\
+IntegralRelations[<x>, <top(s)>, <setup>, [opts]] returns for an \
+expression <x> containing integrals matching TopologyIntegralPattern[] \
+defined within topologies <top(s)> and kinematics <setup> possible \
+linear relations in the form of replacement rules.  These rules can \
+also contain auxiliary integrals not present in <x> (indirect \
+reductions useful for cross checks).
+The option [Method] steers the search with a list of keywords: with \
+\"Rules\" topology rules (cf. TopologyToRules[]) are used for \
+simplifications first, with \"Minimize\" MinimizeIntegrals[] is \
+invoked thereafter.  Full means to use all topologies in <top(s)> and \
+not just the subset referred to in <x>.  Using All relations for each \
+integral in each topology are produced simultaneously (this guarantees \
+to exploit all available information and to be independent of the \
+order in <top(s)>) instead of considering topologies stepwise in the \
+order of <top(s)>.
+The option [LookUp] specifies a generic function delivering reduction \
+relations in the form of replacement rules, cf. \
+$IntegralRelationsLookUp.";
+
+IntegralRelations::zero = "\
+Warning: Integrals `1` seem to be zero.";
+
+
+
+
 
 IntegralRelations[
   x_, tops_?TopologyListQ, setup:SetupPattern[],
@@ -1702,7 +1683,11 @@ IntegralRelations[
     Print["-> ", Length[ints[0]], "."];
 
     utops[0] = ToString /@ Union[Head /@ ints[0]];
-    utops[1] = Select[tops, MemberQ[utops[0], name /. #] & ];
+
+    utops[1] = If[
+      FreeQ[me, Full],
+      Select[tops, MemberQ[utops[0], name /. #] & ],
+      tops];
 
     Print["Construct topology rules..."];
     truls = TopologyToRules[utops[1]];
@@ -1734,13 +1719,13 @@ IntegralRelations[
      ];
     Print["-> ", Length[ints[3]], "."];
 
-    Put["~/TopoID.tmp"];
-    Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
-
     Print["Find representations..."];
     tmp = ints[3];
     iruls[4] = {};
-    utops[1] = {utops[1]};
+
+    If[MemberQ[me, All],
+       utops[1] = {utops[1]}];
+
     Do[
       (* all integrals already mapped *)
       If[tmp === {},
@@ -1796,9 +1781,6 @@ IntegralRelations[
       (* add to mapping rules *)
       iruls[4] = Join[iruls[4], sols];
 
-      Put["~/TopoID.tmp"];
-      Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
-
       , {top, utops[1]}];
 
 
@@ -1812,22 +1794,34 @@ IntegralRelations[
     (* TODO: correct numbers *)
     Print["Found ", Length[res1], " relations among master integrals and ", Length[res2], " auxiliary reductions."];
 
-    Put["~/TopoID.tmp"];
-    Save["~/TopoID.tmp", {ints, utops, truls, iruls, imaps}];
-
     Join[res1, res2]];
 
 
 
-(* ------------------------------------------------------------------ *)
 
 
+(* TODO:
 
+- replace Print[]?!
 
+- alias for <top>?!
 
+- filter/inherit options:
+  * Verbosity
+  * ToMapping[]
+  * MapIntegralToTopology[]
 
+- Return option to select returned steps?!
 
+*)
 
+(* ---- N.B.:
+
+- An update mechanism does not make sense, e.g. by passing rules with
+  additional information, since those integrals could either be
+  eliminated by the rules itself or by updated reductions.
+
+*)
 
 (* --- LaportaInit -------------------------------------------------- *)
 
