@@ -189,7 +189,9 @@ MapDiagramToTopology[
   dia:DiagramPattern[], set:SetupPattern[],
     opts:OptionsPattern[]] :=
   Module[
-    {me,ng, cp, s, nm, msk, top, fs,ft, mct, map},
+    {f, me,ng, cp, s, nm, msk, top, fs,ft, mct, map},
+
+    f = Expand[#] //. (cs /. set) & ;
 
     (* -- options -- *)
 
@@ -222,8 +224,10 @@ MapDiagramToTopology[
     (* -- construct factors -- *)
 
     (* mass, sign, momentum, constraints *)
-    fs = Expand[m[#[[1]]]^2 + s*#[[2]]^2] //. (cs /. set) &
-      /@ (pros /. top);
+    fs = FixedPoint[f, m[#[[1]]]^2 + s*#[[2]]^2] & /@ (pros /. top);
+
+    (*fs = Expand[m[#[[1]]]^2 + s*#[[2]]^2] //. (cs /. set) &
+      /@ (pros /. top);*)
 
     (* method: duplicates or unique *)
     ft = If[FreeQ[me, "Keep"], Union[fs], Sort[fs]];
