@@ -305,7 +305,7 @@ GraphTopologies[
     opts:OptionsPattern[]] :=
   Module[
     {                                                                         (* TODO *)
-       chk, m,m2r, lw, es,vb, et, mr,fs, sp,fp, mrs, prs, ord, lis, els, lgs,
+       chk, mp,m2r, lw, es,vb, et, mr,fs, sp,fp, mrs, prs, ord, lis, els, lgs,
        grk, gis,
        ivs, insert,grow, sort, gfs,
        split, order},
@@ -317,7 +317,7 @@ GraphTopologies[
       Length[l] === Length[DeleteDuplicates[First /@ l]];
 
     (* helper: rewrite powers of masses *)
-    m2r = _.*m_^_. :> m /; MemberQ[ms /. set, m];
+    m2r = _.*mp_^_. :> mp /; MemberQ[ms /. set, mp];
 
     lw = $CheckLevel[lv, Length[facs /. top]];
 
@@ -337,6 +337,22 @@ GraphTopologies[
     mr = TopologyMasses[top, set];
     fs = TopologyMomentaFlows[top, set];
 
+
+
+
+    (* TODO -> Method: ~"Flow" "Symbol" *)
+
+    fs = MapThread[
+      If[NumeratorSymbolQ[#2], 0, #1] & ,
+      {fs, First /@ (facs /. top)}];
+
+    mr = MapThread[
+      If[NumeratorSymbolQ[#2], Null, #1] & ,
+      {mr, First /@ (facs /. top)}];
+
+
+
+
     (* flow and symbol patterns *)
     sp = Join @@ Position[First /@ (facs /. top), _?DenominatorSymbolQ];
     fp = Join @@ Position[fs, x_ /; x =!= 0];
@@ -354,9 +370,9 @@ GraphTopologies[
 
 
     (* rewrite masses as line labels *)
-    mrs = Cases[cs /. set, Rule[m[l_], s_] -> Rule[s, l]];
+    mrs = Cases[cs /. set, HoldPattern[m[l_] -> s_] -> Rule[s, l]];
     (*mrs = {};*)
-    mr = mr /. mrs /. m2r /. mrs;
+    mr = mr (*/. mrs*) /. m2r /. mrs;
 
     (* temporary propagators *)
     prs = MapThread[{#1, #2, 0, 0} & , {mr, fs}];
@@ -389,7 +405,7 @@ GraphTopologies[
            in[1] -> Plus @@ (ps /.set)]]];
 
     (* line labels *)
-    els = Expand[Expand[#^2] /. (cs /. set)] /. mrs /. m2r /. mrs &
+    els = Expand[Expand[#^2] /. (cs /. set)] (*/. mrs*) /. m2r /. mrs &
       /@ (Last /@ es);
 
     (* temporary external legs *)

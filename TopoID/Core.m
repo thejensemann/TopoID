@@ -332,7 +332,7 @@ MapTopologyToTopology[
     {ps, rs} = {apar, arep} /. src;
     {pt, rt} = {apar, arep} /. trg;
 
-
+Print["in"];
 
     rs = rs /. MapIndexed[#1 -> pt[[First[#2]]] & , ps];
 
@@ -409,7 +409,7 @@ MapTopologyToTopology[
 
     (* demanded number *)
     If[n >= 0 && n < Length[maps], Take[maps, n], maps]];
-
+(*
 (* overload: plural, plural *)
 MapTopologyToTopology[
   srcs_?TopologyListQ, trgs_?TopologyListQ, n_Integer:-1,
@@ -446,7 +446,7 @@ MapTopologyToTopology[
     src, InspectTopology[
       trg, Sequence @@ FilterRules[{opts}, Options[InspectTopology]]],
     n, opts];
-
+*)
 (* trap *)
 MapTopologyToTopology[___] :=
   (Message[MapTopologyToTopology::usage];

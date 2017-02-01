@@ -43,3 +43,16 @@ Internal/Code
 - Add "Integral.m" sub-package?  (Pattern, index handling routines, ...?)
 
 - Verbosity -> Global`
+
+
+
+Topology.m:
+
+- T*MomentaFlows[], T*Masses[]: adapt for eikonal props.
+
+
+
+
+Graph.m:
+
+- GraphTopologies[]: n[], p[]
