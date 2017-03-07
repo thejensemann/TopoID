@@ -56,3 +56,22 @@ Topology.m:
 Graph.m:
 
 - GraphTopologies[]: n[], p[]
+
+
+
+
+* new symmetrization scheme, cf. Laporta.txt
+
+* IBPs:
+  lightweight reduction -> MIs (and seeds)
+
+* optimal momenta flows (better representations)
+
+* IBP generator for an external reduction package
+
+* good choice of irreducible scalar products
+
+  embedded in generalized graph? obtained from pinching and unpinching
+  box subgraphs (s-, t-, u-channels)? which one is the best? can this be
+  done on base of linear combinations alone? what about linear
+  dependency of props. in this graph. And completeness?

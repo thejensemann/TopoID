@@ -1082,11 +1082,11 @@ TopologyReduce[
   Module[
     {fc, vr, rl, rd, sr,fr, cp},
     (* factors: symbolic scalar products *)
-    fc = facs /. top /. (is /. set);
+    fc = facs /. top;
     (* variables: factor and scalar product symbols *)
     vr = Join[First /@ fc, First /@ (ss /. set)];
     (* system of linear equations *)
-    rl = Expand[Last[#] - First[#] == 0] & /@ fc;
+    rl = Expand[Last[#] - First[#] == 0] /. (is /. set) & /@ fc;
     (* solve for scalar products *)
     rd = {ToRules[Reduce[rl, vr, opts]]};
     (* pick only one solution *)

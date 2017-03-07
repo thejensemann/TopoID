@@ -332,8 +332,6 @@ MapTopologyToTopology[
     {ps, rs} = {apar, arep} /. src;
     {pt, rt} = {apar, arep} /. trg;
 
-Print["in"];
-
     rs = rs /. MapIndexed[#1 -> pt[[First[#2]]] & , ps];
 
 
@@ -1650,7 +1648,7 @@ MapIntegralToTopology[
       Report[vb, 2, "momenta shifts: ", shft];
 
       (* case: nothing found *)
-      If[ins =!= {} && shft === {},
+      If[ins =!= {} && (shft === {} || shft === $Failed),
          Continue[]];
 
       (* numerator: apply shifts *)
