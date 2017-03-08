@@ -9,25 +9,22 @@ TODO:
 
 - lvl_ -> lv_
 
+- make Method option values sole expressions?!
 - Method -> {...}
 
 - Global`* <-> Options[], SetOptions[]
 
+- >hist<-bug?!
+
+- comparing in general: replace (apar /. src) -> (apar /. trg)
 
 --------------------
 
-"init.m":
-"Common.m":
-"System.m":
+Common:
+=======
 
-
---------------------
-
-"Load.m":
-=========
-
--
-
+- handle levelspecs
+- handle joining options
 
 --------------------
 
@@ -38,30 +35,31 @@ TODO:
 
 - Constraints -> "Common.m"
 
-
 "Topology.m":
 =============
 
--- OK --
-
+- Allow multiple graphs?
+- use pros for shifts if present; check before (checking function)!
+- read off shift?
+- when should ext. mom. trans. be applied?!
 
 "Mapping.m":
 ============
 
 -- OK --
 
-
 "Polynomial.m":
 ===============
 
--
+- possible for PolynomialOrderings[] to produce only <n> orderings? otherwise two passes?
 
+- filtering cuts <-> symm::missed (Matthias' case?)
+  N3LOrBT1, 103, 106, ...
 
 "Cuts.m":
 =========
 
--
-
+--
 
 "Object.m":
 ===========
@@ -75,6 +73,11 @@ TODO:
 
 - Check subt, zero, cuts before and after MapToIndependents[].
 
+- IntegralScalefulQ[]
+- revise MapToTopology[]
+- revise PermuteTopology[]
+- cuts of integrals (lines connected to numerators)?
+- use zeros from SymmetrizeTopology[] in ZeroCutsTopology[]?
 
 "Core.m":
 =========
@@ -83,32 +86,43 @@ TODO:
 
 - MapIntegralToTopology.
 
--
+- contains mapping returned by MapTopologyToIntegral[] the source name?
 
+- SortTopologies[]: use NestWhile[]?
 
 --------------------
-
 
 "Calculate.m":
 ==============
 
 - Cleaning...
 
+- TopologySymbolList[]
+
+- Method option for TopologyRules[]
+- LookUp[] in diff. pathes until not $Failed; Path -> String or List of Strings
+
+- Check TopologyIBP[] for lin. combs.
+- LaportaGuess[] -> Option to LaportaHull[]?
+- LaportaInit[] for 3-particle-cuts?
+- plural for LaportaSeed[], ...
+- make LaportaScan[] act on LaportaLimits[] or LaportaHull[]
+- revisit LaportaSeed[], LaportaScan[], LaportaInit[]
+
+- check IBPs for scaleless integrals
+- verify working of IBP generator with Lee ideas
 
 --------------------
-
 
 "Text.m":
 =========
 
--
-
+--
 
 "FORM.m":
 =========
 
--
-
+--
 
 "Code.m":
 =========
@@ -117,30 +131,40 @@ TODO:
 
 - Variable scheme for FORMTopologyMain?
 
-
 "EXP.m":
 ========
 
--
-
+--
 
 "Super.m":
 ==========
 
 - UnionTopology, TopologyIntersections
 
-
-
 "FeynMF.m":
 ===========
 
--
-
+--
 
 "Graph.m":
 ==========
 
--
-
+- GraphTopologies[]:
+  - Method: "Order", "Filter"
+  - usage: describe Method
+  - general description
+  - naming of variables
+  - Method: "Flows"; sp/fp ignore and reintegrate (?)
+- TopologyToGraph[]:
+  - Internals -> "Labels"/"Masses" (use {cs, ms} /. set)
+- NickelIndex[]:
+  - minimize effort
+  - coloring by labels -> [opts]
+  - rules for relabeling (NickelRules)
+- TopologyPlot[]:
+  - integral: use topology coordinates if possible
+  - arrows for externals/internals separately
+  - cross/dot + label (index)
+  - draw cuts???
 
 --------------------
