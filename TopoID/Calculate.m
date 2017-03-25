@@ -1733,7 +1733,7 @@ IntegralRelations[
 
       (* find integral representations *)
       Print[name /. top, ": ", Length[tmp], " integrals left."];
-      iruls[4, name /. top] = MapIntegralToTopology[tmp, top, setup, Verbosity -> 0];  (* TODO: inherit *)
+      iruls[4, name /. top] = MapIntegralToTopology[tmp, top, setup, Verbosity -> 1];  (* TODO: inherit *)
 
       (* apply topology rules, reduction and identifications *)
       Print["Rules, reduce, identify, factor..."];
